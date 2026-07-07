@@ -7,9 +7,9 @@ import { createClient } from "@/lib/supabase/client";
 export default function FamilyLoginPage() {
   const router = useRouter();
   const [ramas, setRamas] = useState([]);
-  const [ramaSeleccionada, setRamaSeleccionada] = useState(null);
+  const [ramaId, setRamaId] = useState("");
   const [miembros, setMiembros] = useState([]);
-  const [miembroSeleccionado, setMiembroSeleccionado] = useState(null);
+  const [miembroId, setMiembroId] = useState("");
   const [dni, setDni] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -28,30 +28,22 @@ export default function FamilyLoginPage() {
       });
   }, []);
 
-  async function seleccionarRama(rama) {
+  async function handleRamaChange(e) {
+    const nuevaRamaId = e.target.value;
+    setRamaId(nuevaRamaId);
+    setMiembroId("");
+    setMiembros([]);
     setError(null);
-    setRamaSeleccionada(rama);
+
+    if (!nuevaRamaId) return;
+
     const supabase = createClient();
     const { data } = await supabase
       .from("miembros_publico")
       .select("*")
-      .eq("rama_id", rama.id)
+      .eq("rama_id", nuevaRamaId)
       .order("apellido");
     setMiembros(data ?? []);
-  }
-
-  function volverARamas() {
-    setRamaSeleccionada(null);
-    setMiembros([]);
-    setMiembroSeleccionado(null);
-    setDni("");
-    setError(null);
-  }
-
-  function volverAMiembros() {
-    setMiembroSeleccionado(null);
-    setDni("");
-    setError(null);
   }
 
   async function handleSubmit(e) {
@@ -60,7 +52,7 @@ export default function FamilyLoginPage() {
     setError(null);
 
     const supabase = createClient();
-    const email = `m${miembroSeleccionado.id}@grupo.local`;
+    const email = `m${miembroId}@grupo.local`;
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password: dni,
@@ -85,94 +77,78 @@ export default function FamilyLoginPage() {
         </h1>
 
         <div className="bg-white rounded-lg shadow p-6">
-          {cargando && (
+          {cargando ? (
             <p className="text-sm text-gray-500 text-center">Cargando...</p>
-          )}
-
-          {!cargando && !ramaSeleccionada && (
-            <>
-              <p className="text-sm font-medium text-gray-700 mb-3">
-                Elegí tu rama
-              </p>
-              <div className="space-y-2">
-                {ramas.map((rama) => (
-                  <button
-                    key={rama.id}
-                    onClick={() => seleccionarRama(rama)}
-                    className="w-full text-left border rounded px-3 py-2 hover:bg-gray-50"
-                  >
-                    {rama.nombre}
-                  </button>
-                ))}
-                {ramas.length === 0 && (
-                  <p className="text-sm text-gray-500">
-                    Todavía no hay ramas cargadas.
-                  </p>
-                )}
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Rama
+                </label>
+                <select
+                  required
+                  value={ramaId}
+                  onChange={handleRamaChange}
+                  className="w-full border rounded px-3 py-2"
+                >
+                  <option value="" disabled>
+                    Elegí tu rama...
+                  </option>
+                  {ramas.map((rama) => (
+                    <option key={rama.id} value={rama.id}>
+                      {rama.nombre}
+                    </option>
+                  ))}
+                </select>
               </div>
-            </>
-          )}
 
-          {ramaSeleccionada && !miembroSeleccionado && (
-            <>
-              <button
-                onClick={volverARamas}
-                className="text-sm text-blue-600 underline mb-3"
-              >
-                ← Volver
-              </button>
-              <p className="text-sm font-medium text-gray-700 mb-3">
-                {ramaSeleccionada.nombre}: elegí tu nombre
-              </p>
-              <div className="space-y-2">
-                {miembros.map((m) => (
-                  <button
-                    key={m.id}
-                    onClick={() => setMiembroSeleccionado(m)}
-                    className="w-full text-left border rounded px-3 py-2 hover:bg-gray-50"
-                  >
-                    {m.apellido}, {m.nombre}
-                  </button>
-                ))}
-                {miembros.length === 0 && (
-                  <p className="text-sm text-gray-500">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nombre
+                </label>
+                <select
+                  required
+                  disabled={!ramaId}
+                  value={miembroId}
+                  onChange={(e) => setMiembroId(e.target.value)}
+                  className="w-full border rounded px-3 py-2 disabled:bg-gray-100 disabled:text-gray-400"
+                >
+                  <option value="" disabled>
+                    {ramaId ? "Elegí tu nombre..." : "Elegí primero tu rama"}
+                  </option>
+                  {miembros.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.apellido}, {m.nombre}
+                    </option>
+                  ))}
+                </select>
+                {ramaId && miembros.length === 0 && (
+                  <p className="text-xs text-gray-500 mt-1">
                     No hay miembros cargados en esta rama.
                   </p>
                 )}
               </div>
-            </>
-          )}
 
-          {miembroSeleccionado && (
-            <form onSubmit={handleSubmit}>
-              <button
-                type="button"
-                onClick={volverAMiembros}
-                className="text-sm text-blue-600 underline mb-3"
-              >
-                ← Volver
-              </button>
-              <p className="text-sm font-medium text-gray-700 mb-3">
-                {miembroSeleccionado.apellido}, {miembroSeleccionado.nombre}
-              </p>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                DNI
-              </label>
-              <input
-                type="password"
-                inputMode="numeric"
-                required
-                autoFocus
-                value={dni}
-                onChange={(e) => setDni(e.target.value)}
-                className="w-full border rounded px-3 py-2 mb-3"
-              />
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  DNI
+                </label>
+                <input
+                  type="password"
+                  inputMode="numeric"
+                  required
+                  disabled={!miembroId}
+                  value={dni}
+                  onChange={(e) => setDni(e.target.value)}
+                  className="w-full border rounded px-3 py-2 disabled:bg-gray-100"
+                />
+              </div>
 
-              {error && <p className="text-sm text-red-600 mb-3">{error}</p>}
+              {error && <p className="text-sm text-red-600">{error}</p>}
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !miembroId}
                 className="w-full bg-blue-600 text-white rounded py-2 font-medium disabled:opacity-50"
               >
                 {loading ? "Ingresando..." : "Ingresar"}
