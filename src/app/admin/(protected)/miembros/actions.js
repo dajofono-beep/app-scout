@@ -31,6 +31,7 @@ export async function crearMiembro(formData) {
   const familia_id = formData.get("familia_id")?.toString() || null;
   const ordenRaw = formData.get("orden_familia")?.toString();
   const orden_familia = ordenRaw ? Number(ordenRaw) : null;
+  const fecha_nacimiento = formData.get("fecha_nacimiento")?.toString() || null;
 
   if (!nombre || !apellido || !dni || !rama_id) {
     throw new Error("Todos los campos son obligatorios");
@@ -45,7 +46,15 @@ export async function crearMiembro(formData) {
 
   const { data: miembro, error: insertError } = await admin
     .from("miembros")
-    .insert({ nombre, apellido, dni, rama_id, familia_id, orden_familia })
+    .insert({
+      nombre,
+      apellido,
+      dni,
+      rama_id,
+      familia_id,
+      orden_familia,
+      fecha_nacimiento,
+    })
     .select()
     .single();
   if (insertError) throw new Error(insertError.message);
@@ -85,6 +94,7 @@ export async function actualizarMiembro(formData) {
   const familia_id = formData.get("familia_id")?.toString() || null;
   const ordenRaw = formData.get("orden_familia")?.toString();
   const orden_familia = ordenRaw ? Number(ordenRaw) : null;
+  const fecha_nacimiento = formData.get("fecha_nacimiento")?.toString() || null;
 
   if (!nombre || !apellido || !rama_id) {
     throw new Error("Nombre, apellido y rama son obligatorios");
@@ -92,7 +102,15 @@ export async function actualizarMiembro(formData) {
 
   const { error } = await supabase
     .from("miembros")
-    .update({ nombre, apellido, rama_id, activo, familia_id, orden_familia })
+    .update({
+      nombre,
+      apellido,
+      rama_id,
+      activo,
+      familia_id,
+      orden_familia,
+      fecha_nacimiento,
+    })
     .eq("id", id);
   if (error) throw new Error(error.message);
 
