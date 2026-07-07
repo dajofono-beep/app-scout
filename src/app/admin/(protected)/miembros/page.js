@@ -9,6 +9,11 @@ export default async function MiembrosPage() {
     .select("*")
     .order("nombre");
 
+  const { data: familias } = await supabase
+    .from("familias")
+    .select("*")
+    .order("nombre");
+
   const { data: miembros } = await supabase
     .from("miembros")
     .select("*, ramas(nombre)")
@@ -61,6 +66,25 @@ export default async function MiembrosPage() {
               </option>
             ))}
           </select>
+          <select
+            name="familia_id"
+            defaultValue=""
+            className="border rounded px-3 py-2"
+          >
+            <option value="">Sin familia</option>
+            {(familias ?? []).map((f) => (
+              <option key={f.id} value={f.id}>
+                {f.nombre}
+              </option>
+            ))}
+          </select>
+          <input
+            name="orden_familia"
+            type="number"
+            min="1"
+            placeholder="Orden en la familia (1º, 2º...)"
+            className="border rounded px-3 py-2"
+          />
           <button
             type="submit"
             className="sm:col-span-2 bg-blue-600 text-white rounded py-2 font-medium"
@@ -99,6 +123,26 @@ export default async function MiembrosPage() {
                 </option>
               ))}
             </select>
+            <select
+              name="familia_id"
+              defaultValue={m.familia_id ?? ""}
+              className="border rounded px-2 py-1"
+            >
+              <option value="">Sin familia</option>
+              {(familias ?? []).map((f) => (
+                <option key={f.id} value={f.id}>
+                  {f.nombre}
+                </option>
+              ))}
+            </select>
+            <input
+              name="orden_familia"
+              type="number"
+              min="1"
+              defaultValue={m.orden_familia ?? ""}
+              placeholder="Orden"
+              className="border rounded px-2 py-1 w-20"
+            />
             <label className="flex items-center gap-1 text-sm">
               <input type="checkbox" name="activo" defaultChecked={m.activo} />
               Activo

@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import {
   crearCargoIndividual,
   crearCargoPorRama,
+  crearCargoPorFamilia,
   crearCargoManual,
 } from "./actions";
 
@@ -11,6 +12,10 @@ export default async function CargosPage() {
   const supabase = await createClient();
 
   const { data: ramas } = await supabase.from("ramas").select("*").order("nombre");
+  const { data: familias } = await supabase
+    .from("familias")
+    .select("*")
+    .order("nombre");
   const { data: productos } = await supabase
     .from("productos")
     .select("*")
@@ -94,6 +99,41 @@ export default async function CargosPage() {
               </button>
             </form>
           </section>
+
+          {(familias ?? []).length > 0 && (
+            <section className="bg-white rounded shadow p-4">
+              <h2 className="font-semibold mb-3">Asignar a toda una familia</h2>
+              <form
+                action={crearCargoPorFamilia}
+                className="grid grid-cols-1 sm:grid-cols-4 gap-3"
+              >
+                <select name="familia_id" required defaultValue="" className="border rounded px-3 py-2 sm:col-span-2">
+                  <option value="" disabled>Familia...</option>
+                  {familias.map((f) => (
+                    <option key={f.id} value={f.id}>{f.nombre}</option>
+                  ))}
+                </select>
+                <select name="producto_id" required defaultValue="" className="border rounded px-3 py-2">
+                  <option value="" disabled>Producto...</option>
+                  {(productos ?? []).map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.nombre} ({formatoMoneda(p.importe)}
+                      {p.aplica_descuento_hermanos ? ", con desc. hermanos" : ""})
+                    </option>
+                  ))}
+                </select>
+                <input type="date" name="fecha" required defaultValue={hoy()} className="border rounded px-3 py-2" />
+                <button type="submit" className="sm:col-span-4 bg-blue-600 text-white rounded py-2 font-medium">
+                  Asignar a toda la familia
+                </button>
+              </form>
+              <p className="text-xs text-gray-500 mt-2">
+                Si el producto tiene activado &quot;descuento por hermanos&quot;,
+                el importe de cada integrante se calcula según su orden dentro
+                de la familia (ver sección Descuentos).
+              </p>
+            </section>
+          )}
         </>
       )}
 
@@ -128,6 +168,11 @@ export default async function CargosPage() {
               </span>
               <span className="text-gray-600">{c.concepto}</span>
               <span className="text-gray-500">{c.fecha}</span>
+              {c.porcentaje_aplicado != null && (
+                <span className="text-xs text-amber-700">
+                  {c.porcentaje_aplicado}% aplicado
+                </span>
+              )}
               <span className="font-semibold">{formatoMoneda(c.importe)}</span>
             </div>
           ))}

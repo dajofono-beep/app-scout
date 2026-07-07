@@ -6,8 +6,10 @@ import LogoutButton from "./logout-button";
 const NAV_ITEMS = [
   { href: "/admin", label: "Resumen" },
   { href: "/admin/ramas", label: "Ramas" },
+  { href: "/admin/familias", label: "Familias" },
   { href: "/admin/miembros", label: "Miembros" },
   { href: "/admin/productos", label: "Productos" },
+  { href: "/admin/descuentos", label: "Descuentos" },
   { href: "/admin/cargos", label: "Cargos" },
   { href: "/admin/pagos", label: "Pagos" },
 ];

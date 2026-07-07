@@ -28,6 +28,9 @@ export async function crearMiembro(formData) {
   const apellido = formData.get("apellido")?.toString().trim();
   const dni = formData.get("dni")?.toString().trim();
   const rama_id = formData.get("rama_id")?.toString();
+  const familia_id = formData.get("familia_id")?.toString() || null;
+  const ordenRaw = formData.get("orden_familia")?.toString();
+  const orden_familia = ordenRaw ? Number(ordenRaw) : null;
 
   if (!nombre || !apellido || !dni || !rama_id) {
     throw new Error("Todos los campos son obligatorios");
@@ -42,7 +45,7 @@ export async function crearMiembro(formData) {
 
   const { data: miembro, error: insertError } = await admin
     .from("miembros")
-    .insert({ nombre, apellido, dni, rama_id })
+    .insert({ nombre, apellido, dni, rama_id, familia_id, orden_familia })
     .select()
     .single();
   if (insertError) throw new Error(insertError.message);
@@ -79,6 +82,9 @@ export async function actualizarMiembro(formData) {
   const apellido = formData.get("apellido")?.toString().trim();
   const rama_id = formData.get("rama_id")?.toString();
   const activo = formData.get("activo") === "on";
+  const familia_id = formData.get("familia_id")?.toString() || null;
+  const ordenRaw = formData.get("orden_familia")?.toString();
+  const orden_familia = ordenRaw ? Number(ordenRaw) : null;
 
   if (!nombre || !apellido || !rama_id) {
     throw new Error("Nombre, apellido y rama son obligatorios");
@@ -86,7 +92,7 @@ export async function actualizarMiembro(formData) {
 
   const { error } = await supabase
     .from("miembros")
-    .update({ nombre, apellido, rama_id, activo })
+    .update({ nombre, apellido, rama_id, activo, familia_id, orden_familia })
     .eq("id", id);
   if (error) throw new Error(error.message);
 

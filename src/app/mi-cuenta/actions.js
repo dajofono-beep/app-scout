@@ -10,22 +10,19 @@ export async function crearPago(formData) {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("No autenticado");
 
-  const { data: miembro } = await supabase
-    .from("miembros")
-    .select("id")
-    .eq("auth_user_id", user.id)
-    .maybeSingle();
-  if (!miembro) throw new Error("No autorizado");
-
+  const miembro_id = formData.get("miembro_id")?.toString();
   const importe = Number(formData.get("importe"));
   const fecha_pago = formData.get("fecha_pago")?.toString();
   const medio_pago = formData.get("medio_pago")?.toString().trim() || null;
 
+  if (!miembro_id) throw new Error("Elegí para quién es el pago");
   if (!importe || importe <= 0) throw new Error("El importe debe ser mayor a 0");
   if (!fecha_pago) throw new Error("La fecha es obligatoria");
 
+  // La política de RLS ("pagos_insertan_su_familia") valida que miembro_id
+  // pertenezca a la misma familia que el usuario logueado.
   const { error } = await supabase.from("pagos").insert({
-    miembro_id: miembro.id,
+    miembro_id,
     importe,
     fecha_pago,
     medio_pago,

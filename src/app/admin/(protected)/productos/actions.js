@@ -17,13 +17,26 @@ export async function crearProducto(formData) {
   const nombre = formData.get("nombre")?.toString().trim();
   const descripcion = formData.get("descripcion")?.toString().trim() || null;
   const importe = Number(formData.get("importe"));
+  const es_cuotable = formData.get("es_cuotable") === "on";
+  const cantidadRaw = formData.get("cantidad_cuotas")?.toString();
+  const cantidad_cuotas = cantidadRaw ? Number(cantidadRaw) : null;
+  const aplica_descuento_hermanos =
+    formData.get("aplica_descuento_hermanos") === "on";
 
   if (!nombre) throw new Error("El nombre es obligatorio");
   if (!importe || importe <= 0) throw new Error("El importe debe ser mayor a 0");
+  if (es_cuotable && (!cantidad_cuotas || cantidad_cuotas <= 0)) {
+    throw new Error("Indicá la cantidad de cuotas si el producto es cuotable");
+  }
 
-  const { error } = await supabase
-    .from("productos")
-    .insert({ nombre, descripcion, importe });
+  const { error } = await supabase.from("productos").insert({
+    nombre,
+    descripcion,
+    importe,
+    es_cuotable,
+    cantidad_cuotas: es_cuotable ? cantidad_cuotas : null,
+    aplica_descuento_hermanos,
+  });
   if (error) throw new Error(error.message);
 
   revalidatePath("/admin/productos");
@@ -36,13 +49,29 @@ export async function actualizarProducto(formData) {
   const descripcion = formData.get("descripcion")?.toString().trim() || null;
   const importe = Number(formData.get("importe"));
   const activo = formData.get("activo") === "on";
+  const es_cuotable = formData.get("es_cuotable") === "on";
+  const cantidadRaw = formData.get("cantidad_cuotas")?.toString();
+  const cantidad_cuotas = cantidadRaw ? Number(cantidadRaw) : null;
+  const aplica_descuento_hermanos =
+    formData.get("aplica_descuento_hermanos") === "on";
 
   if (!nombre) throw new Error("El nombre es obligatorio");
   if (!importe || importe <= 0) throw new Error("El importe debe ser mayor a 0");
+  if (es_cuotable && (!cantidad_cuotas || cantidad_cuotas <= 0)) {
+    throw new Error("Indicá la cantidad de cuotas si el producto es cuotable");
+  }
 
   const { error } = await supabase
     .from("productos")
-    .update({ nombre, descripcion, importe, activo })
+    .update({
+      nombre,
+      descripcion,
+      importe,
+      activo,
+      es_cuotable,
+      cantidad_cuotas: es_cuotable ? cantidad_cuotas : null,
+      aplica_descuento_hermanos,
+    })
     .eq("id", id);
   if (error) throw new Error(error.message);
 

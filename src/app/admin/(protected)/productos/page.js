@@ -40,6 +40,21 @@ export default async function ProductosPage() {
           placeholder="Descripción (opcional)"
           className="border rounded px-3 py-2 sm:col-span-2"
         />
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" name="es_cuotable" />
+          Es cuotable
+        </label>
+        <input
+          name="cantidad_cuotas"
+          type="number"
+          min="1"
+          placeholder="Cantidad de cuotas"
+          className="border rounded px-3 py-2"
+        />
+        <label className="flex items-center gap-2 text-sm sm:col-span-2">
+          <input type="checkbox" name="aplica_descuento_hermanos" />
+          Aplica descuento por hermanos
+        </label>
         <button
           type="submit"
           className="sm:col-span-2 bg-blue-600 text-white rounded py-2 font-medium"
@@ -74,6 +89,30 @@ export default async function ProductosPage() {
               defaultValue={p.descripcion ?? ""}
               className="border rounded px-2 py-1 flex-1 min-w-[10rem]"
             />
+            <label className="flex items-center gap-1 text-sm">
+              <input
+                type="checkbox"
+                name="es_cuotable"
+                defaultChecked={p.es_cuotable}
+              />
+              Cuotable
+            </label>
+            <input
+              name="cantidad_cuotas"
+              type="number"
+              min="1"
+              defaultValue={p.cantidad_cuotas ?? ""}
+              placeholder="Cuotas"
+              className="border rounded px-2 py-1 w-20"
+            />
+            <label className="flex items-center gap-1 text-sm">
+              <input
+                type="checkbox"
+                name="aplica_descuento_hermanos"
+                defaultChecked={p.aplica_descuento_hermanos}
+              />
+              Desc. hermanos
+            </label>
             <label className="flex items-center gap-1 text-sm">
               <input type="checkbox" name="activo" defaultChecked={p.activo} />
               Activo
