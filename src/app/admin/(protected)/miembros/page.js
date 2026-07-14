@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { crearMiembro, actualizarMiembro } from "./actions";
+import ImportarMiembrosForm from "./importar-form";
 
 export default async function MiembrosPage({ searchParams }) {
   const params = await searchParams;
@@ -40,6 +41,8 @@ export default async function MiembrosPage({ searchParams }) {
   return (
     <div className="max-w-6xl">
       <h1 className="text-2xl font-bold mb-6">Miembros</h1>
+
+      <ImportarMiembrosForm />
 
       {(ramas ?? []).length === 0 ? (
         <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded p-3 mb-6">
