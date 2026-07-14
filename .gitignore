@@ -37,6 +37,11 @@ yarn-error.log*
 # vercel
 .vercel
 
+# datos reales de miembros (contienen DNI, teléfono, fecha de nacimiento, etc.)
+# nunca deben subirse al repositorio
+miembros.xlsx
+~$*.xlsx
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
