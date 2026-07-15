@@ -36,6 +36,14 @@ export default async function CargosPage() {
   const formatoMoneda = (n) =>
     Number(n).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
 
+  const etiquetaProducto = (p) => {
+    const notas = [];
+    if (p.es_cuotable) notas.push(`en ${p.cantidad_cuotas} cuotas`);
+    if (p.aplica_descuento_hermanos) notas.push("con desc. hermanos");
+    const sufijo = notas.length > 0 ? `, ${notas.join(", ")}` : "";
+    return `${p.nombre} (${formatoMoneda(p.importe)}${sufijo})`;
+  };
+
   const sinDatos = (ramas ?? []).length === 0 || (productos ?? []).length === 0;
 
   return (
@@ -45,6 +53,14 @@ export default async function CargosPage() {
       {sinDatos && (
         <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded p-3">
           Necesitás al menos una rama y un producto activo para poder cargar cobros.
+        </p>
+      )}
+
+      {!sinDatos && (
+        <p className="text-sm text-gray-500 -mt-4">
+          Si elegís un producto marcado &quot;en N cuotas&quot;, se generan N
+          cargos automáticamente (uno por mes, empezando en la fecha que
+          indiques) en vez de un solo cargo.
         </p>
       )}
 
@@ -65,7 +81,7 @@ export default async function CargosPage() {
               <select name="producto_id" required defaultValue="" className="border rounded px-3 py-2">
                 <option value="" disabled>Producto...</option>
                 {(productos ?? []).map((p) => (
-                  <option key={p.id} value={p.id}>{p.nombre} ({formatoMoneda(p.importe)})</option>
+                  <option key={p.id} value={p.id}>{etiquetaProducto(p)}</option>
                 ))}
               </select>
               <input type="date" name="fecha" required defaultValue={hoy()} className="border rounded px-3 py-2" />
@@ -90,7 +106,7 @@ export default async function CargosPage() {
               <select name="producto_id" required defaultValue="" className="border rounded px-3 py-2">
                 <option value="" disabled>Producto...</option>
                 {(productos ?? []).map((p) => (
-                  <option key={p.id} value={p.id}>{p.nombre} ({formatoMoneda(p.importe)})</option>
+                  <option key={p.id} value={p.id}>{etiquetaProducto(p)}</option>
                 ))}
               </select>
               <input type="date" name="fecha" required defaultValue={hoy()} className="border rounded px-3 py-2" />
@@ -116,10 +132,7 @@ export default async function CargosPage() {
                 <select name="producto_id" required defaultValue="" className="border rounded px-3 py-2">
                   <option value="" disabled>Producto...</option>
                   {(productos ?? []).map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.nombre} ({formatoMoneda(p.importe)}
-                      {p.aplica_descuento_hermanos ? ", con desc. hermanos" : ""})
-                    </option>
+                    <option key={p.id} value={p.id}>{etiquetaProducto(p)}</option>
                   ))}
                 </select>
                 <input type="date" name="fecha" required defaultValue={hoy()} className="border rounded px-3 py-2" />
@@ -130,7 +143,9 @@ export default async function CargosPage() {
               <p className="text-xs text-gray-500 mt-2">
                 Si el producto tiene activado &quot;descuento por hermanos&quot;,
                 el importe de cada integrante se calcula según su orden dentro
-                de la familia (ver sección Descuentos).
+                de la familia (ver sección Descuentos). Si es cuotable, la
+                fecha elegida es la de la primera cuota; las siguientes se
+                generan una por mes.
               </p>
             </section>
           )}

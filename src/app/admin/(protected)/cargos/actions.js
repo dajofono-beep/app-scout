@@ -12,6 +12,56 @@ async function requireSession() {
   return { supabase, user };
 }
 
+function sumarMeses(fechaISO, meses) {
+  const [y, m, d] = fechaISO.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1 + meses, d)).toISOString().slice(0, 10);
+}
+
+// Reparte un importe en N cuotas de 2 decimales; la última cuota absorbe
+// el resto del redondeo para que la suma dé exacto al importe original.
+function dividirEnCuotas(importeTotal, cantidadCuotas) {
+  const base = Math.floor((importeTotal / cantidadCuotas) * 100) / 100;
+  const cuotas = Array(cantidadCuotas).fill(base);
+  const resto = Math.round((importeTotal - base * cantidadCuotas) * 100) / 100;
+  cuotas[cuotas.length - 1] = Math.round((cuotas[cuotas.length - 1] + resto) * 100) / 100;
+  return cuotas;
+}
+
+// Genera una o varias filas de `cargos` para un miembro a partir de un
+// producto: una sola fila si no es cuotable, o `cantidad_cuotas` filas
+// mensuales (con el concepto indicando "cuota N/M") si lo es.
+function generarFilasCargo({ producto, miembro_id, fecha, porcentaje, creado_por }) {
+  const importeConDescuento =
+    porcentaje != null
+      ? Math.round(producto.importe * (porcentaje / 100) * 100) / 100
+      : producto.importe;
+
+  if (!producto.es_cuotable) {
+    return [
+      {
+        miembro_id,
+        producto_id: producto.id,
+        concepto: producto.nombre,
+        importe: importeConDescuento,
+        fecha,
+        creado_por,
+        porcentaje_aplicado: porcentaje,
+      },
+    ];
+  }
+
+  const montos = dividirEnCuotas(importeConDescuento, producto.cantidad_cuotas);
+  return montos.map((importe, i) => ({
+    miembro_id,
+    producto_id: producto.id,
+    concepto: `${producto.nombre} (cuota ${i + 1}/${producto.cantidad_cuotas})`,
+    importe,
+    fecha: sumarMeses(fecha, i),
+    creado_por,
+    porcentaje_aplicado: porcentaje,
+  }));
+}
+
 export async function crearCargoIndividual(formData) {
   const { supabase, user } = await requireSession();
 
@@ -25,19 +75,20 @@ export async function crearCargoIndividual(formData) {
 
   const { data: producto, error: productoError } = await supabase
     .from("productos")
-    .select("nombre, importe")
+    .select("id, nombre, importe, es_cuotable, cantidad_cuotas")
     .eq("id", producto_id)
     .single();
   if (productoError) throw new Error(productoError.message);
 
-  const { error } = await supabase.from("cargos").insert({
+  const filas = generarFilasCargo({
+    producto,
     miembro_id,
-    producto_id,
-    concepto: producto.nombre,
-    importe: producto.importe,
     fecha,
+    porcentaje: null,
     creado_por: user.id,
   });
+
+  const { error } = await supabase.from("cargos").insert(filas);
   if (error) throw new Error(error.message);
 
   revalidatePath("/admin/cargos");
@@ -57,7 +108,7 @@ export async function crearCargoPorRama(formData) {
 
   const { data: producto, error: productoError } = await supabase
     .from("productos")
-    .select("nombre, importe")
+    .select("id, nombre, importe, es_cuotable, cantidad_cuotas")
     .eq("id", producto_id)
     .single();
   if (productoError) throw new Error(productoError.message);
@@ -73,14 +124,15 @@ export async function crearCargoPorRama(formData) {
     throw new Error("Esa rama no tiene miembros activos");
   }
 
-  const filas = miembros.map((m) => ({
-    miembro_id: m.id,
-    producto_id,
-    concepto: producto.nombre,
-    importe: producto.importe,
-    fecha,
-    creado_por: user.id,
-  }));
+  const filas = miembros.flatMap((m) =>
+    generarFilasCargo({
+      producto,
+      miembro_id: m.id,
+      fecha,
+      porcentaje: null,
+      creado_por: user.id,
+    })
+  );
 
   const { error } = await supabase.from("cargos").insert(filas);
   if (error) throw new Error(error.message);
@@ -114,7 +166,7 @@ export async function crearCargoPorFamilia(formData) {
 
   const { data: producto, error: productoError } = await supabase
     .from("productos")
-    .select("nombre, importe, aplica_descuento_hermanos")
+    .select("id, nombre, importe, es_cuotable, cantidad_cuotas, aplica_descuento_hermanos")
     .eq("id", producto_id)
     .single();
   if (productoError) throw new Error(productoError.message);
@@ -140,24 +192,18 @@ export async function crearCargoPorFamilia(formData) {
     escala = escalaData ?? [];
   }
 
-  const filas = miembros.map((m) => {
+  const filas = miembros.flatMap((m) => {
     const porcentaje = producto.aplica_descuento_hermanos
       ? porcentajeParaOrden(m.orden_familia, escala)
-      : 100;
-    const importeFinal =
-      Math.round(producto.importe * (porcentaje / 100) * 100) / 100;
+      : null;
 
-    return {
+    return generarFilasCargo({
+      producto,
       miembro_id: m.id,
-      producto_id,
-      concepto: producto.nombre,
-      importe: importeFinal,
       fecha,
+      porcentaje,
       creado_por: user.id,
-      porcentaje_aplicado: producto.aplica_descuento_hermanos
-        ? porcentaje
-        : null,
-    };
+    });
   });
 
   const { error } = await supabase.from("cargos").insert(filas);
