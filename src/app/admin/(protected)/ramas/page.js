@@ -1,65 +1,87 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { crearRama, actualizarRama, eliminarRama } from "./actions";
+import FiltrosRamas from "./filtros";
 
-export default async function RamasPage() {
+export default async function RamasPage({ searchParams }) {
+  const params = await searchParams;
+  const valores = { nombre: params?.nombre ?? "" };
+  const hayFiltros = Object.values(valores).some(Boolean);
+
   const supabase = await createClient();
-  const { data: ramas } = await supabase
+
+  let query = supabase
     .from("ramas")
-    .select("*")
+    .select("*, miembros(count)")
     .order("orden")
     .order("nombre");
 
+  if (valores.nombre) query = query.ilike("nombre", `%${valores.nombre}%`);
+
+  const { data: ramas } = await query;
+
   return (
     <div className="max-w-2xl">
-      <h1 className="text-2xl font-bold mb-6">Ramas</h1>
-
-      <form
-        action={crearRama}
-        className="bg-white rounded shadow p-4 flex gap-2 mb-6"
-      >
-        <input
-          name="nombre"
-          required
-          placeholder="Nombre de la rama"
-          className="flex-1 border rounded px-3 py-2"
-        />
-        <button
-          type="submit"
-          className="bg-blue-600 text-white rounded px-4 py-2 font-medium"
-        >
-          Agregar
-        </button>
-      </form>
-
-      <ul className="space-y-2">
-        {(ramas ?? []).map((rama) => (
-          <li
-            key={rama.id}
-            className="bg-white rounded shadow p-3 flex items-center gap-2"
+      <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
+        <h1 className="text-2xl font-bold">Ramas</h1>
+        <div className="flex items-center gap-3">
+          {hayFiltros && (
+            <Link href="/admin/ramas" className="text-sm text-gray-600 underline">
+              Limpiar filtros
+            </Link>
+          )}
+          <Link
+            href="/admin/ramas/nueva"
+            className="bg-blue-600 text-white rounded px-4 py-2 text-sm font-medium"
           >
-            <form action={actualizarRama} className="flex-1 flex gap-2">
-              <input type="hidden" name="id" value={rama.id} />
-              <input
-                name="nombre"
-                defaultValue={rama.nombre}
-                className="flex-1 border rounded px-2 py-1"
-              />
-              <button type="submit" className="text-sm text-blue-600 underline">
-                Guardar
-              </button>
-            </form>
-            <form action={eliminarRama}>
-              <input type="hidden" name="id" value={rama.id} />
-              <button type="submit" className="text-sm text-red-600 underline">
-                Eliminar
-              </button>
-            </form>
-          </li>
-        ))}
+            + Nueva rama
+          </Link>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto bg-white rounded shadow">
+        <table className="min-w-full text-sm">
+          <thead>
+            <tr className="text-left text-gray-500 border-b">
+              <th className="p-3 font-medium">Nombre</th>
+              <th className="p-3 font-medium">Orden</th>
+              <th className="p-3 font-medium">Miembros</th>
+              <th className="p-3"></th>
+            </tr>
+            <FiltrosRamas valores={valores} />
+          </thead>
+          <tbody>
+            {(ramas ?? []).map((rama) => (
+              <tr key={rama.id} className="border-b last:border-0 hover:bg-gray-50">
+                <td className="p-3">
+                  <Link
+                    href={`/admin/ramas/${rama.id}`}
+                    className="font-medium text-gray-900 hover:underline"
+                  >
+                    {rama.nombre}
+                  </Link>
+                </td>
+                <td className="p-3 text-gray-600">{rama.orden}</td>
+                <td className="p-3 text-gray-600">
+                  {rama.miembros?.[0]?.count ?? 0}
+                </td>
+                <td className="p-3 text-right">
+                  <Link
+                    href={`/admin/ramas/${rama.id}`}
+                    className="text-blue-600 hover:underline text-sm"
+                  >
+                    Ver
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
         {(ramas ?? []).length === 0 && (
-          <p className="text-gray-500 text-sm">Todavía no hay ramas cargadas.</p>
+          <p className="text-gray-500 text-sm p-4">
+            No hay ramas para este filtro.
+          </p>
         )}
-      </ul>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 async function requireSession() {
@@ -40,6 +41,7 @@ export async function crearProducto(formData) {
   if (error) throw new Error(error.message);
 
   revalidatePath("/admin/productos");
+  redirect("/admin/productos");
 }
 
 export async function actualizarProducto(formData) {
@@ -76,6 +78,7 @@ export async function actualizarProducto(formData) {
   if (error) throw new Error(error.message);
 
   revalidatePath("/admin/productos");
+  revalidatePath(`/admin/productos/${id}`);
 }
 
 export async function eliminarProducto(formData) {
@@ -86,4 +89,5 @@ export async function eliminarProducto(formData) {
   if (error) throw new Error(error.message);
 
   revalidatePath("/admin/productos");
+  redirect("/admin/productos");
 }

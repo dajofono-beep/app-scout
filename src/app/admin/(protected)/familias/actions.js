@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 async function requireSession() {
@@ -22,6 +23,7 @@ export async function crearFamilia(formData) {
 
   revalidatePath("/admin/familias");
   revalidatePath("/admin/miembros");
+  redirect("/admin/familias");
 }
 
 export async function actualizarFamilia(formData) {
@@ -37,6 +39,7 @@ export async function actualizarFamilia(formData) {
   if (error) throw new Error(error.message);
 
   revalidatePath("/admin/familias");
+  revalidatePath(`/admin/familias/${id}`);
 }
 
 export async function eliminarFamilia(formData) {
@@ -48,4 +51,5 @@ export async function eliminarFamilia(formData) {
 
   revalidatePath("/admin/familias");
   revalidatePath("/admin/miembros");
+  redirect("/admin/familias");
 }

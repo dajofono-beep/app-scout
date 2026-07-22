@@ -1,136 +1,110 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import {
-  crearProducto,
-  actualizarProducto,
-  eliminarProducto,
-} from "./actions";
+import FiltrosProductos from "./filtros";
 
-export default async function ProductosPage() {
+const formatoMoneda = (n) =>
+  Number(n).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
+
+export default async function ProductosPage({ searchParams }) {
+  const params = await searchParams;
+  const valores = {
+    nombre: params?.nombre ?? "",
+    activo: params?.activo ?? "",
+  };
+  const hayFiltros = Object.values(valores).some(Boolean);
+
   const supabase = await createClient();
-  const { data: productos } = await supabase
+
+  let query = supabase
     .from("productos")
     .select("*")
     .order("created_at", { ascending: false });
 
+  if (valores.nombre) query = query.ilike("nombre", `%${valores.nombre}%`);
+  if (valores.activo === "activos") query = query.eq("activo", true);
+  if (valores.activo === "inactivos") query = query.eq("activo", false);
+
+  const { data: productos } = await query;
+
   return (
-    <div className="max-w-3xl">
-      <h1 className="text-2xl font-bold mb-6">Productos</h1>
-
-      <form
-        action={crearProducto}
-        className="bg-white rounded shadow p-4 mb-6 grid grid-cols-1 sm:grid-cols-2 gap-3"
-      >
-        <input
-          name="nombre"
-          required
-          placeholder="Nombre (ej. Cuota mensual)"
-          className="border rounded px-3 py-2"
-        />
-        <input
-          name="importe"
-          type="number"
-          step="0.01"
-          min="0"
-          required
-          placeholder="Importe"
-          className="border rounded px-3 py-2"
-        />
-        <input
-          name="descripcion"
-          placeholder="Descripción (opcional)"
-          className="border rounded px-3 py-2 sm:col-span-2"
-        />
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="es_cuotable" />
-          Es cuotable
-        </label>
-        <input
-          name="cantidad_cuotas"
-          type="number"
-          min="1"
-          placeholder="Cantidad de cuotas"
-          className="border rounded px-3 py-2"
-        />
-        <label className="flex items-center gap-2 text-sm sm:col-span-2">
-          <input type="checkbox" name="aplica_descuento_hermanos" />
-          Aplica descuento por hermanos
-        </label>
-        <button
-          type="submit"
-          className="sm:col-span-2 bg-blue-600 text-white rounded py-2 font-medium"
-        >
-          Crear producto
-        </button>
-      </form>
-
-      <div className="space-y-2">
-        {(productos ?? []).map((p) => (
-          <form
-            key={p.id}
-            action={actualizarProducto}
-            className="bg-white rounded shadow p-3 flex flex-wrap items-center gap-2"
-          >
-            <input type="hidden" name="id" value={p.id} />
-            <input
-              name="nombre"
-              defaultValue={p.nombre}
-              className="border rounded px-2 py-1 w-40"
-            />
-            <input
-              name="importe"
-              type="number"
-              step="0.01"
-              min="0"
-              defaultValue={p.importe}
-              className="border rounded px-2 py-1 w-28"
-            />
-            <input
-              name="descripcion"
-              defaultValue={p.descripcion ?? ""}
-              className="border rounded px-2 py-1 flex-1 min-w-[10rem]"
-            />
-            <label className="flex items-center gap-1 text-sm">
-              <input
-                type="checkbox"
-                name="es_cuotable"
-                defaultChecked={p.es_cuotable}
-              />
-              Cuotable
-            </label>
-            <input
-              name="cantidad_cuotas"
-              type="number"
-              min="1"
-              defaultValue={p.cantidad_cuotas ?? ""}
-              placeholder="Cuotas"
-              className="border rounded px-2 py-1 w-20"
-            />
-            <label className="flex items-center gap-1 text-sm">
-              <input
-                type="checkbox"
-                name="aplica_descuento_hermanos"
-                defaultChecked={p.aplica_descuento_hermanos}
-              />
-              Desc. hermanos
-            </label>
-            <label className="flex items-center gap-1 text-sm">
-              <input type="checkbox" name="activo" defaultChecked={p.activo} />
-              Activo
-            </label>
-            <button type="submit" className="text-sm text-blue-600 underline">
-              Guardar
-            </button>
-            <button
-              formAction={eliminarProducto}
-              className="text-sm text-red-600 underline"
+    <div className="max-w-4xl">
+      <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
+        <h1 className="text-2xl font-bold">Productos</h1>
+        <div className="flex items-center gap-3">
+          {hayFiltros && (
+            <Link
+              href="/admin/productos"
+              className="text-sm text-gray-600 underline"
             >
-              Eliminar
-            </button>
-          </form>
-        ))}
+              Limpiar filtros
+            </Link>
+          )}
+          <Link
+            href="/admin/productos/nuevo"
+            className="bg-blue-600 text-white rounded px-4 py-2 text-sm font-medium"
+          >
+            + Nuevo producto
+          </Link>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto bg-white rounded shadow">
+        <table className="min-w-full text-sm">
+          <thead>
+            <tr className="text-left text-gray-500 border-b">
+              <th className="p-3 font-medium">Nombre</th>
+              <th className="p-3 font-medium">Importe</th>
+              <th className="p-3 font-medium">Cuotable</th>
+              <th className="p-3 font-medium">Desc. hermanos</th>
+              <th className="p-3 font-medium">Estado</th>
+              <th className="p-3"></th>
+            </tr>
+            <FiltrosProductos valores={valores} />
+          </thead>
+          <tbody>
+            {(productos ?? []).map((p) => (
+              <tr key={p.id} className="border-b last:border-0 hover:bg-gray-50">
+                <td className="p-3">
+                  <Link
+                    href={`/admin/productos/${p.id}`}
+                    className="font-medium text-gray-900 hover:underline"
+                  >
+                    {p.nombre}
+                  </Link>
+                </td>
+                <td className="p-3 font-semibold">{formatoMoneda(p.importe)}</td>
+                <td className="p-3 text-gray-600">
+                  {p.es_cuotable ? `${p.cantidad_cuotas} cuotas` : "—"}
+                </td>
+                <td className="p-3 text-gray-600">
+                  {p.aplica_descuento_hermanos ? "Sí" : "—"}
+                </td>
+                <td className="p-3">
+                  <span
+                    className={`text-xs px-2 py-1 rounded-full ${
+                      p.activo
+                        ? "bg-green-100 text-green-800"
+                        : "bg-gray-200 text-gray-600"
+                    }`}
+                  >
+                    {p.activo ? "Activo" : "Inactivo"}
+                  </span>
+                </td>
+                <td className="p-3 text-right">
+                  <Link
+                    href={`/admin/productos/${p.id}`}
+                    className="text-blue-600 hover:underline text-sm"
+                  >
+                    Ver
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
         {(productos ?? []).length === 0 && (
-          <p className="text-gray-500 text-sm">
-            Todavía no hay productos cargados.
+          <p className="text-gray-500 text-sm p-4">
+            No hay productos para este filtro.
           </p>
         )}
       </div>

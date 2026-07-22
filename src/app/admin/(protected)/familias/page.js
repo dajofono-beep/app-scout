@@ -1,16 +1,44 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { crearFamilia, actualizarFamilia, eliminarFamilia } from "./actions";
+import FiltrosFamilias from "./filtros";
 
-export default async function FamiliasPage() {
+export default async function FamiliasPage({ searchParams }) {
+  const params = await searchParams;
+  const valores = { nombre: params?.nombre ?? "" };
+  const hayFiltros = Object.values(valores).some(Boolean);
+
   const supabase = await createClient();
-  const { data: familias } = await supabase
+
+  let query = supabase
     .from("familias")
-    .select("*, miembros(id, nombre, apellido, orden_familia)")
+    .select("*, miembros(count)")
     .order("nombre");
+
+  if (valores.nombre) query = query.ilike("nombre", `%${valores.nombre}%`);
+
+  const { data: familias } = await query;
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-2xl font-bold mb-6">Familias</h1>
+      <div className="flex items-center justify-between mb-2 gap-3 flex-wrap">
+        <h1 className="text-2xl font-bold">Familias</h1>
+        <div className="flex items-center gap-3">
+          {hayFiltros && (
+            <Link
+              href="/admin/familias"
+              className="text-sm text-gray-600 underline"
+            >
+              Limpiar filtros
+            </Link>
+          )}
+          <Link
+            href="/admin/familias/nueva"
+            className="bg-blue-600 text-white rounded px-4 py-2 text-sm font-medium"
+          >
+            + Nueva familia
+          </Link>
+        </div>
+      </div>
       <p className="text-sm text-gray-500 mb-6">
         Agrupá miembros en una familia para que, al ingresar como cualquiera
         de ellos, puedan verse y pagar entre sí. El orden (1º, 2º, 3º hijo)
@@ -18,71 +46,51 @@ export default async function FamiliasPage() {
         hermanos.
       </p>
 
-      <form
-        action={crearFamilia}
-        className="bg-white rounded shadow p-4 flex gap-2 mb-6"
-      >
-        <input
-          name="nombre"
-          required
-          placeholder="Nombre de la familia (ej. Familia Pérez)"
-          className="flex-1 border rounded px-3 py-2"
-        />
-        <button
-          type="submit"
-          className="bg-blue-600 text-white rounded px-4 py-2 font-medium"
-        >
-          Agregar
-        </button>
-      </form>
-
-      <ul className="space-y-2">
-        {(familias ?? []).map((familia) => (
-          <li key={familia.id} className="bg-white rounded shadow p-3">
-            <div className="flex items-center gap-2 mb-2">
-              <form action={actualizarFamilia} className="flex-1 flex gap-2">
-                <input type="hidden" name="id" value={familia.id} />
-                <input
-                  name="nombre"
-                  defaultValue={familia.nombre}
-                  className="flex-1 border rounded px-2 py-1"
-                />
-                <button
-                  type="submit"
-                  className="text-sm text-blue-600 underline"
-                >
-                  Guardar
-                </button>
-              </form>
-              <form action={eliminarFamilia}>
-                <input type="hidden" name="id" value={familia.id} />
-                <button
-                  type="submit"
-                  className="text-sm text-red-600 underline"
-                >
-                  Eliminar
-                </button>
-              </form>
-            </div>
-            <p className="text-xs text-gray-500">
-              {(familia.miembros ?? []).length === 0
-                ? "Sin miembros asignados todavía."
-                : familia.miembros
-                    .sort((a, b) => (a.orden_familia ?? 99) - (b.orden_familia ?? 99))
-                    .map(
-                      (m) =>
-                        `${m.orden_familia ? `${m.orden_familia}º ` : ""}${m.apellido}, ${m.nombre}`
-                    )
-                    .join(" · ")}
-            </p>
-          </li>
-        ))}
+      <div className="overflow-x-auto bg-white rounded shadow">
+        <table className="min-w-full text-sm">
+          <thead>
+            <tr className="text-left text-gray-500 border-b">
+              <th className="p-3 font-medium">Nombre</th>
+              <th className="p-3 font-medium">Miembros</th>
+              <th className="p-3"></th>
+            </tr>
+            <FiltrosFamilias valores={valores} />
+          </thead>
+          <tbody>
+            {(familias ?? []).map((familia) => (
+              <tr
+                key={familia.id}
+                className="border-b last:border-0 hover:bg-gray-50"
+              >
+                <td className="p-3">
+                  <Link
+                    href={`/admin/familias/${familia.id}`}
+                    className="font-medium text-gray-900 hover:underline"
+                  >
+                    {familia.nombre}
+                  </Link>
+                </td>
+                <td className="p-3 text-gray-600">
+                  {familia.miembros?.[0]?.count ?? 0}
+                </td>
+                <td className="p-3 text-right">
+                  <Link
+                    href={`/admin/familias/${familia.id}`}
+                    className="text-blue-600 hover:underline text-sm"
+                  >
+                    Ver
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
         {(familias ?? []).length === 0 && (
-          <p className="text-gray-500 text-sm">
-            Todavía no hay familias cargadas.
+          <p className="text-gray-500 text-sm p-4">
+            No hay familias para este filtro.
           </p>
         )}
-      </ul>
+      </div>
     </div>
   );
 }
