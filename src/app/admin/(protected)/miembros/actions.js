@@ -2,6 +2,7 @@
 
 import ExcelJS from "exceljs";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -91,6 +92,7 @@ export async function crearMiembro(formData) {
   });
 
   revalidatePath("/admin/miembros");
+  redirect("/admin/miembros");
 }
 
 export async function actualizarMiembro(formData) {
@@ -125,6 +127,7 @@ export async function actualizarMiembro(formData) {
   if (error) throw new Error(error.message);
 
   revalidatePath("/admin/miembros");
+  revalidatePath(`/admin/miembros/${id}`);
 }
 
 function celda(valor) {

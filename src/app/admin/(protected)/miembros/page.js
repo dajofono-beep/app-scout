@@ -1,13 +1,19 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { crearMiembro, actualizarMiembro } from "./actions";
 import ImportarMiembrosForm from "./importar-form";
+import FiltrosMiembros from "./filtros";
+import { iniciales, colorPara } from "./avatar";
 
 export default async function MiembrosPage({ searchParams }) {
   const params = await searchParams;
-  const filtroNombre = params?.nombre ?? "";
-  const filtroRama = params?.rama_id ?? "";
-  const filtroFamilia = params?.familia_id ?? "";
-  const filtroActivo = params?.activo ?? "";
+  const valores = {
+    nombre: params?.nombre ?? "",
+    dni: params?.dni ?? "",
+    rama_id: params?.rama_id ?? "",
+    familia_id: params?.familia_id ?? "",
+    activo: params?.activo ?? "",
+  };
+  const hayFiltros = Object.values(valores).some(Boolean);
 
   const supabase = await createClient();
 
@@ -15,7 +21,6 @@ export default async function MiembrosPage({ searchParams }) {
     .from("ramas")
     .select("*")
     .order("nombre");
-
   const { data: familias } = await supabase
     .from("familias")
     .select("*")
@@ -26,283 +31,115 @@ export default async function MiembrosPage({ searchParams }) {
     .select("*, ramas(nombre), familias(nombre)")
     .order("apellido");
 
-  if (filtroNombre) {
+  if (valores.nombre) {
     query = query.or(
-      `nombre.ilike.%${filtroNombre}%,apellido.ilike.%${filtroNombre}%`
+      `nombre.ilike.%${valores.nombre}%,apellido.ilike.%${valores.nombre}%`
     );
   }
-  if (filtroRama) query = query.eq("rama_id", filtroRama);
-  if (filtroFamilia) query = query.eq("familia_id", filtroFamilia);
-  if (filtroActivo === "activos") query = query.eq("activo", true);
-  if (filtroActivo === "inactivos") query = query.eq("activo", false);
+  if (valores.dni) query = query.ilike("dni", `%${valores.dni}%`);
+  if (valores.rama_id) query = query.eq("rama_id", valores.rama_id);
+  if (valores.familia_id) query = query.eq("familia_id", valores.familia_id);
+  if (valores.activo === "activos") query = query.eq("activo", true);
+  if (valores.activo === "inactivos") query = query.eq("activo", false);
 
   const { data: miembros } = await query;
 
   return (
     <div className="max-w-6xl">
-      <h1 className="text-2xl font-bold mb-6">Miembros</h1>
+      <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
+        <h1 className="text-2xl font-bold">Miembros</h1>
+        <div className="flex items-center gap-3">
+          {hayFiltros && (
+            <Link
+              href="/admin/miembros"
+              className="text-sm text-gray-600 underline"
+            >
+              Limpiar filtros
+            </Link>
+          )}
+          <Link
+            href="/admin/miembros/nuevo"
+            className="bg-blue-600 text-white rounded px-4 py-2 text-sm font-medium"
+          >
+            + Nuevo miembro
+          </Link>
+        </div>
+      </div>
 
-      <ImportarMiembrosForm />
-
-      {(ramas ?? []).length === 0 ? (
-        <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded p-3 mb-6">
-          Primero tenés que crear al menos una rama en la sección{" "}
-          <strong>Ramas</strong>.
-        </p>
-      ) : (
-        <form
-          action={crearMiembro}
-          className="bg-white rounded shadow p-4 mb-6 grid grid-cols-1 sm:grid-cols-3 gap-3"
-        >
-          <input
-            name="nombre"
-            placeholder="Nombre"
-            required
-            className="border rounded px-3 py-2"
-          />
-          <input
-            name="apellido"
-            placeholder="Apellido"
-            required
-            className="border rounded px-3 py-2"
-          />
-          <input
-            name="dni"
-            placeholder="DNI (será la contraseña inicial)"
-            required
-            className="border rounded px-3 py-2"
-          />
-          <select
-            name="rama_id"
-            required
-            defaultValue=""
-            className="border rounded px-3 py-2"
-          >
-            <option value="" disabled>
-              Rama...
-            </option>
-            {ramas.map((r) => (
-              <option key={r.id} value={r.id}>
-                {r.nombre}
-              </option>
-            ))}
-          </select>
-          <select
-            name="familia_id"
-            defaultValue=""
-            className="border rounded px-3 py-2"
-          >
-            <option value="">Sin familia</option>
-            {(familias ?? []).map((f) => (
-              <option key={f.id} value={f.id}>
-                {f.nombre}
-              </option>
-            ))}
-          </select>
-          <input
-            name="orden_familia"
-            type="number"
-            min="1"
-            placeholder="Orden en la familia (1º, 2º...)"
-            className="border rounded px-3 py-2"
-          />
-          <div>
-            <label className="block text-xs text-gray-500 mb-1">
-              Fecha de nacimiento
-            </label>
-            <input
-              name="fecha_nacimiento"
-              type="date"
-              className="border rounded px-3 py-2 w-full"
-            />
-          </div>
-          <button
-            type="submit"
-            className="sm:col-span-3 bg-blue-600 text-white rounded py-2 font-medium"
-          >
-            Crear miembro
-          </button>
-        </form>
-      )}
-
-      <form
-        method="GET"
-        className="bg-white rounded shadow p-3 mb-4 flex flex-wrap items-end gap-2"
-      >
-        <div>
-          <label className="block text-xs text-gray-500 mb-1">
-            Nombre / Apellido
-          </label>
-          <input
-            name="nombre"
-            defaultValue={filtroNombre}
-            placeholder="Buscar..."
-            className="border rounded px-2 py-1"
-          />
+      <details className="bg-white rounded shadow mb-4">
+        <summary className="cursor-pointer select-none p-4 font-semibold text-sm">
+          Importar desde Excel
+        </summary>
+        <div className="px-4 pb-4">
+          <ImportarMiembrosForm />
         </div>
-        <div>
-          <label className="block text-xs text-gray-500 mb-1">Rama</label>
-          <select
-            name="rama_id"
-            defaultValue={filtroRama}
-            className="border rounded px-2 py-1"
-          >
-            <option value="">Todas</option>
-            {(ramas ?? []).map((r) => (
-              <option key={r.id} value={r.id}>
-                {r.nombre}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-xs text-gray-500 mb-1">Familia</label>
-          <select
-            name="familia_id"
-            defaultValue={filtroFamilia}
-            className="border rounded px-2 py-1"
-          >
-            <option value="">Todas</option>
-            {(familias ?? []).map((f) => (
-              <option key={f.id} value={f.id}>
-                {f.nombre}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-xs text-gray-500 mb-1">Estado</label>
-          <select
-            name="activo"
-            defaultValue={filtroActivo}
-            className="border rounded px-2 py-1"
-          >
-            <option value="">Todos</option>
-            <option value="activos">Activos</option>
-            <option value="inactivos">Inactivos</option>
-          </select>
-        </div>
-        <button
-          type="submit"
-          className="bg-blue-600 text-white rounded px-4 py-2 text-sm font-medium"
-        >
-          Filtrar
-        </button>
-        <a
-          href="/admin/miembros"
-          className="text-sm text-gray-600 underline mb-2"
-        >
-          Limpiar
-        </a>
-      </form>
+      </details>
 
       <div className="overflow-x-auto bg-white rounded shadow">
         <table className="min-w-full text-sm">
           <thead>
             <tr className="text-left text-gray-500 border-b">
-              <th className="p-2 font-medium">Nombre</th>
-              <th className="p-2 font-medium">Apellido</th>
-              <th className="p-2 font-medium">DNI</th>
-              <th className="p-2 font-medium">Rama</th>
-              <th className="p-2 font-medium">Familia</th>
-              <th className="p-2 font-medium">Orden</th>
-              <th className="p-2 font-medium">Fecha nac.</th>
-              <th className="p-2 font-medium">Activo</th>
-              <th className="p-2"></th>
+              <th className="p-3 font-medium">Miembro</th>
+              <th className="p-3 font-medium">Documento</th>
+              <th className="p-3 font-medium">Rama</th>
+              <th className="p-3 font-medium">Familia</th>
+              <th className="p-3 font-medium">Estado</th>
+              <th className="p-3"></th>
             </tr>
+            <FiltrosMiembros
+              ramas={ramas ?? []}
+              familias={familias ?? []}
+              valores={valores}
+            />
           </thead>
           <tbody>
-            {(miembros ?? []).map((m) => {
-              const formId = `miembro-${m.id}`;
-              return (
-                <tr key={m.id} className="border-b last:border-0">
-                  <td className="p-2">
-                    <form id={formId} action={actualizarMiembro} />
-                    <input type="hidden" name="id" value={m.id} form={formId} />
-                    <input
-                      name="nombre"
-                      defaultValue={m.nombre}
-                      form={formId}
-                      className="border rounded px-2 py-1 w-24"
-                    />
-                  </td>
-                  <td className="p-2">
-                    <input
-                      name="apellido"
-                      defaultValue={m.apellido}
-                      form={formId}
-                      className="border rounded px-2 py-1 w-24"
-                    />
-                  </td>
-                  <td className="p-2 text-gray-500">{m.dni}</td>
-                  <td className="p-2">
-                    <select
-                      name="rama_id"
-                      defaultValue={m.rama_id}
-                      form={formId}
-                      className="border rounded px-2 py-1"
+            {(miembros ?? []).map((m) => (
+              <tr key={m.id} className="border-b last:border-0 hover:bg-gray-50">
+                <td className="p-3">
+                  <Link
+                    href={`/admin/miembros/${m.id}`}
+                    className="flex items-center gap-3"
+                  >
+                    <span
+                      className={`w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0 ${colorPara(m.rama_id)}`}
                     >
-                      {(ramas ?? []).map((r) => (
-                        <option key={r.id} value={r.id}>
-                          {r.nombre}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td className="p-2">
-                    <select
-                      name="familia_id"
-                      defaultValue={m.familia_id ?? ""}
-                      form={formId}
-                      className="border rounded px-2 py-1"
-                    >
-                      <option value="">Sin familia</option>
-                      {(familias ?? []).map((f) => (
-                        <option key={f.id} value={f.id}>
-                          {f.nombre}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td className="p-2">
-                    <input
-                      name="orden_familia"
-                      type="number"
-                      min="1"
-                      defaultValue={m.orden_familia ?? ""}
-                      form={formId}
-                      className="border rounded px-2 py-1 w-16"
-                    />
-                  </td>
-                  <td className="p-2">
-                    <input
-                      name="fecha_nacimiento"
-                      type="date"
-                      defaultValue={m.fecha_nacimiento ?? ""}
-                      form={formId}
-                      className="border rounded px-2 py-1"
-                    />
-                  </td>
-                  <td className="p-2 text-center">
-                    <input
-                      type="checkbox"
-                      name="activo"
-                      defaultChecked={m.activo}
-                      form={formId}
-                    />
-                  </td>
-                  <td className="p-2">
-                    <button
-                      type="submit"
-                      form={formId}
-                      className="text-sm text-blue-600 underline"
-                    >
-                      Guardar
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
+                      {iniciales(m.nombre, m.apellido)}
+                    </span>
+                    <span className="font-medium text-gray-900">
+                      {m.apellido}, {m.nombre}
+                    </span>
+                  </Link>
+                </td>
+                <td className="p-3 text-gray-600">{m.dni}</td>
+                <td className="p-3">
+                  <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700">
+                    {m.ramas?.nombre ?? "—"}
+                  </span>
+                </td>
+                <td className="p-3 text-gray-600">
+                  {m.familias?.nombre ?? "—"}
+                </td>
+                <td className="p-3">
+                  <span
+                    className={`text-xs px-2 py-1 rounded-full ${
+                      m.activo
+                        ? "bg-green-100 text-green-800"
+                        : "bg-gray-200 text-gray-600"
+                    }`}
+                  >
+                    {m.activo ? "Activo" : "Inactivo"}
+                  </span>
+                </td>
+                <td className="p-3 text-right">
+                  <Link
+                    href={`/admin/miembros/${m.id}`}
+                    className="text-blue-600 hover:underline text-sm"
+                  >
+                    Ver
+                  </Link>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
         {(miembros ?? []).length === 0 && (
