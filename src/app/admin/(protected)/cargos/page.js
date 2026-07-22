@@ -1,16 +1,24 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import {
   crearCargoIndividual,
   crearCargoPorRama,
   crearCargoPorFamilia,
   crearCargoManual,
-  cancelarCargo,
-  reactivarCargo,
 } from "./actions";
+import FiltrosCargos from "./filtros";
+import { iniciales, colorPara } from "../miembros/avatar";
 
 const hoy = () => new Date().toISOString().slice(0, 10);
 
-export default async function CargosPage() {
+export default async function CargosPage({ searchParams }) {
+  const params = await searchParams;
+  const valoresFiltro = {
+    miembro: params?.miembro ?? "",
+    estado: params?.estado ?? "",
+  };
+  const hayFiltros = Object.values(valoresFiltro).some(Boolean);
+
   const supabase = await createClient();
 
   const { data: ramas } = await supabase.from("ramas").select("*").order("nombre");
@@ -29,11 +37,28 @@ export default async function CargosPage() {
     .eq("activo", true)
     .order("apellido");
 
-  const { data: cargos } = await supabase
+  let miembroIds = null;
+  if (valoresFiltro.miembro) {
+    const { data: coincidencias } = await supabase
+      .from("miembros")
+      .select("id")
+      .or(
+        `nombre.ilike.%${valoresFiltro.miembro}%,apellido.ilike.%${valoresFiltro.miembro}%`
+      );
+    miembroIds = (coincidencias ?? []).map((m) => m.id);
+    if (miembroIds.length === 0) miembroIds = ["00000000-0000-0000-0000-000000000000"];
+  }
+
+  let cargosQuery = supabase
     .from("cargos")
-    .select("*, miembros(nombre, apellido)")
+    .select("*, miembros(id, nombre, apellido, rama_id)")
     .order("created_at", { ascending: false })
-    .limit(50);
+    .limit(100);
+
+  if (miembroIds) cargosQuery = cargosQuery.in("miembro_id", miembroIds);
+  if (valoresFiltro.estado) cargosQuery = cargosQuery.eq("estado", valoresFiltro.estado);
+
+  const { data: cargos } = await cargosQuery;
 
   const formatoMoneda = (n) =>
     Number(n).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
@@ -176,53 +201,86 @@ export default async function CargosPage() {
       </section>
 
       <section>
-        <h2 className="font-semibold mb-3">Últimos cargos</h2>
-        <div className="space-y-1">
-          {(cargos ?? []).map((c) => (
-            <form
-              key={c.id}
-              className="bg-white rounded shadow p-3 flex flex-wrap items-center justify-between gap-2 text-sm"
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-semibold">Cargos</h2>
+          {hayFiltros && (
+            <Link
+              href="/admin/cargos"
+              className="text-sm text-gray-600 underline"
             >
-              <input type="hidden" name="id" value={c.id} />
-              <span className="font-medium">
-                {c.miembros?.apellido}, {c.miembros?.nombre}
-              </span>
-              <span className="text-gray-600">{c.concepto}</span>
-              <span className="text-gray-500">{c.fecha}</span>
-              {c.porcentaje_aplicado != null && (
-                <span className="text-xs text-amber-700">
-                  {c.porcentaje_aplicado}% aplicado
-                </span>
-              )}
-              <span className="font-semibold">{formatoMoneda(c.importe)}</span>
-              {c.estado === "cancelado" ? (
-                <span className="text-xs px-2 py-1 rounded-full bg-gray-200 text-gray-600">
-                  Cancelado
-                </span>
-              ) : (
-                <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-800">
-                  Activo
-                </span>
-              )}
-              {c.estado === "activo" ? (
-                <button
-                  formAction={cancelarCargo}
-                  className="text-sm text-red-600 underline"
-                >
-                  Cancelar
-                </button>
-              ) : (
-                <button
-                  formAction={reactivarCargo}
-                  className="text-sm text-green-700 underline"
-                >
-                  Reactivar
-                </button>
-              )}
-            </form>
-          ))}
+              Limpiar filtros
+            </Link>
+          )}
+        </div>
+
+        <div className="overflow-x-auto bg-white rounded shadow">
+          <table className="min-w-full text-sm">
+            <thead>
+              <tr className="text-left text-gray-500 border-b">
+                <th className="p-3 font-medium">Miembro</th>
+                <th className="p-3 font-medium">Concepto</th>
+                <th className="p-3 font-medium">Importe</th>
+                <th className="p-3 font-medium">Fecha</th>
+                <th className="p-3 font-medium">Estado</th>
+                <th className="p-3"></th>
+              </tr>
+              <FiltrosCargos valores={valoresFiltro} />
+            </thead>
+            <tbody>
+              {(cargos ?? []).map((c) => (
+                <tr key={c.id} className="border-b last:border-0 hover:bg-gray-50">
+                  <td className="p-3">
+                    <Link
+                      href={`/admin/cargos/${c.id}`}
+                      className="flex items-center gap-3"
+                    >
+                      <span
+                        className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0 ${colorPara(c.miembros?.rama_id)}`}
+                      >
+                        {iniciales(c.miembros?.nombre, c.miembros?.apellido)}
+                      </span>
+                      <span className="font-medium text-gray-900">
+                        {c.miembros?.apellido}, {c.miembros?.nombre}
+                      </span>
+                    </Link>
+                  </td>
+                  <td className="p-3 text-gray-600">
+                    {c.concepto}
+                    {c.porcentaje_aplicado != null && (
+                      <span className="block text-xs text-amber-700">
+                        {c.porcentaje_aplicado}% aplicado
+                      </span>
+                    )}
+                  </td>
+                  <td className="p-3 font-semibold">{formatoMoneda(c.importe)}</td>
+                  <td className="p-3 text-gray-600">{c.fecha}</td>
+                  <td className="p-3">
+                    <span
+                      className={`text-xs px-2 py-1 rounded-full ${
+                        c.estado === "cancelado"
+                          ? "bg-gray-200 text-gray-600"
+                          : "bg-green-100 text-green-800"
+                      }`}
+                    >
+                      {c.estado === "cancelado" ? "Cancelado" : "Activo"}
+                    </span>
+                  </td>
+                  <td className="p-3 text-right">
+                    <Link
+                      href={`/admin/cargos/${c.id}`}
+                      className="text-blue-600 hover:underline text-sm"
+                    >
+                      Ver
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
           {(cargos ?? []).length === 0 && (
-            <p className="text-gray-500 text-sm">Todavía no hay cargos cargados.</p>
+            <p className="text-gray-500 text-sm p-4">
+              No hay cargos para este filtro.
+            </p>
           )}
         </div>
       </section>

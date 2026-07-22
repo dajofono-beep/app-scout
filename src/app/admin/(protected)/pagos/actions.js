@@ -31,6 +31,7 @@ export async function actualizarPago(formData) {
   if (error) throw new Error(error.message);
 
   revalidatePath("/admin/pagos");
+  revalidatePath(`/admin/pagos/${id}`);
   revalidatePath("/admin");
 }
 
@@ -45,6 +46,7 @@ export async function cancelarPago(formData) {
   if (error) throw new Error(error.message);
 
   revalidatePath("/admin/pagos");
+  revalidatePath(`/admin/pagos/${id}`);
   revalidatePath("/admin");
 }
 
@@ -59,6 +61,7 @@ export async function reactivarPago(formData) {
   if (error) throw new Error(error.message);
 
   revalidatePath("/admin/pagos");
+  revalidatePath(`/admin/pagos/${id}`);
   revalidatePath("/admin");
 }
 
@@ -76,5 +79,6 @@ export async function reasignarPago(formData) {
   if (error) throw new Error(error.message);
 
   revalidatePath("/admin/pagos");
+  revalidatePath(`/admin/pagos/${id}`);
   revalidatePath("/admin");
 }

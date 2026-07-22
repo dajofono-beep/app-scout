@@ -241,6 +241,28 @@ export async function crearCargoManual(formData) {
   revalidatePath("/admin");
 }
 
+export async function actualizarCargo(formData) {
+  const { supabase } = await requireSession();
+
+  const id = formData.get("id");
+  const concepto = formData.get("concepto")?.toString().trim();
+  const importe = Number(formData.get("importe"));
+  const fecha = formData.get("fecha")?.toString();
+
+  if (!concepto || !fecha) throw new Error("Concepto y fecha son obligatorios");
+  if (!importe || importe <= 0) throw new Error("El importe debe ser mayor a 0");
+
+  const { error } = await supabase
+    .from("cargos")
+    .update({ concepto, importe, fecha })
+    .eq("id", id);
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/admin/cargos");
+  revalidatePath(`/admin/cargos/${id}`);
+  revalidatePath("/admin");
+}
+
 export async function cancelarCargo(formData) {
   const { supabase } = await requireSession();
   const id = formData.get("id");
@@ -252,6 +274,7 @@ export async function cancelarCargo(formData) {
   if (error) throw new Error(error.message);
 
   revalidatePath("/admin/cargos");
+  revalidatePath(`/admin/cargos/${id}`);
   revalidatePath("/admin");
 }
 
@@ -266,5 +289,6 @@ export async function reactivarCargo(formData) {
   if (error) throw new Error(error.message);
 
   revalidatePath("/admin/cargos");
+  revalidatePath(`/admin/cargos/${id}`);
   revalidatePath("/admin");
 }

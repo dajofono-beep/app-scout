@@ -1,11 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import {
-  actualizarPago,
-  cancelarPago,
-  reactivarPago,
-  reasignarPago,
-} from "./actions";
+import FiltrosPagos from "./filtros";
+import { iniciales, colorPara } from "../miembros/avatar";
 
 const ETIQUETA_ESTADO = {
   pendiente: { texto: "Pendiente", clase: "bg-amber-100 text-amber-800" },
@@ -13,150 +9,108 @@ const ETIQUETA_ESTADO = {
   cancelado: { texto: "Cancelado", clase: "bg-gray-200 text-gray-600" },
 };
 
-const FILTROS = [
-  { valor: "", etiqueta: "Todos" },
-  { valor: "pendiente", etiqueta: "Pendientes" },
-  { valor: "acreditado", etiqueta: "Acreditados" },
-  { valor: "cancelado", etiqueta: "Cancelados" },
-];
-
 const formatoMoneda = (n) =>
   Number(n).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
 
 export default async function PagosPage({ searchParams }) {
   const params = await searchParams;
-  const filtro = params?.estado ?? "";
+  const valores = {
+    miembro: params?.miembro ?? "",
+    estado: params?.estado ?? "",
+  };
+  const hayFiltros = Object.values(valores).some(Boolean);
 
   const supabase = await createClient();
 
+  let miembroIds = null;
+  if (valores.miembro) {
+    const { data: coincidencias } = await supabase
+      .from("miembros")
+      .select("id")
+      .or(`nombre.ilike.%${valores.miembro}%,apellido.ilike.%${valores.miembro}%`);
+    miembroIds = (coincidencias ?? []).map((m) => m.id);
+    if (miembroIds.length === 0) miembroIds = ["00000000-0000-0000-0000-000000000000"];
+  }
+
   let query = supabase
     .from("estado_pagos")
-    .select("*, miembros(nombre, apellido)")
+    .select("*, miembros(id, nombre, apellido, rama_id)")
     .order("fecha_pago", { ascending: false })
     .limit(100);
 
-  if (filtro) {
-    query = query.eq("estado_efectivo", filtro);
-  }
+  if (miembroIds) query = query.in("miembro_id", miembroIds);
+  if (valores.estado) query = query.eq("estado_efectivo", valores.estado);
 
   const { data: pagos } = await query;
 
-  const { data: miembros } = await supabase
-    .from("miembros")
-    .select("id, nombre, apellido")
-    .order("apellido");
-
   return (
-    <div className="max-w-4xl">
-      <h1 className="text-2xl font-bold mb-4">Pagos</h1>
-
-      <div className="flex gap-2 mb-6">
-        {FILTROS.map((f) => (
-          <Link
-            key={f.valor}
-            href={f.valor ? `/admin/pagos?estado=${f.valor}` : "/admin/pagos"}
-            className={`text-sm px-3 py-1 rounded-full border ${
-              filtro === f.valor
-                ? "bg-blue-600 text-white border-blue-600"
-                : "bg-white text-gray-700"
-            }`}
-          >
-            {f.etiqueta}
+    <div className="max-w-5xl">
+      <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
+        <h1 className="text-2xl font-bold">Pagos</h1>
+        {hayFiltros && (
+          <Link href="/admin/pagos" className="text-sm text-gray-600 underline">
+            Limpiar filtros
           </Link>
-        ))}
+        )}
       </div>
 
-      <div className="space-y-2">
-        {(pagos ?? []).map((p) => (
-          <div key={p.id} className="bg-white rounded shadow p-3">
-            <div className="flex flex-wrap items-center gap-2 mb-2">
-              <span className="font-medium">
-                {p.miembros?.apellido}, {p.miembros?.nombre}
-              </span>
-              <span
-                className={`text-xs px-2 py-1 rounded-full ${ETIQUETA_ESTADO[p.estado_efectivo].clase}`}
-              >
-                {ETIQUETA_ESTADO[p.estado_efectivo].texto}
-              </span>
-              <span className="text-sm text-gray-500 ml-auto">
-                {formatoMoneda(p.importe)}
-              </span>
-            </div>
-            <form
-              action={actualizarPago}
-              className="flex flex-wrap items-center gap-2"
-            >
-              <input type="hidden" name="id" value={p.id} />
-              <input
-                name="importe"
-                type="number"
-                step="0.01"
-                min="0"
-                defaultValue={p.importe}
-                className="border rounded px-2 py-1 w-28"
-              />
-              <input
-                name="fecha_pago"
-                type="date"
-                defaultValue={p.fecha_pago}
-                className="border rounded px-2 py-1"
-              />
-              <input
-                name="medio_pago"
-                defaultValue={p.medio_pago ?? ""}
-                placeholder="Medio de pago"
-                className="border rounded px-2 py-1 w-36"
-              />
-              <input
-                name="nota_admin"
-                defaultValue={p.nota_admin ?? ""}
-                placeholder="Nota interna"
-                className="border rounded px-2 py-1 flex-1 min-w-[8rem]"
-              />
-              <button type="submit" className="text-sm text-blue-600 underline">
-                Guardar
-              </button>
-              {p.estado === "activo" ? (
-                <button
-                  formAction={cancelarPago}
-                  className="text-sm text-red-600 underline"
-                >
-                  Cancelar
-                </button>
-              ) : (
-                <button
-                  formAction={reactivarPago}
-                  className="text-sm text-green-700 underline"
-                >
-                  Reactivar
-                </button>
-              )}
-            </form>
-            <form
-              action={reasignarPago}
-              className="flex flex-wrap items-center gap-2 mt-2 pt-2 border-t"
-            >
-              <input type="hidden" name="id" value={p.id} />
-              <label className="text-xs text-gray-500">Reasignar a:</label>
-              <select
-                name="nuevo_miembro_id"
-                defaultValue={p.miembro_id}
-                className="border rounded px-2 py-1 text-sm"
-              >
-                {(miembros ?? []).map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.apellido}, {m.nombre}
-                  </option>
-                ))}
-              </select>
-              <button type="submit" className="text-sm text-blue-600 underline">
-                Reasignar
-              </button>
-            </form>
-          </div>
-        ))}
+      <div className="overflow-x-auto bg-white rounded shadow">
+        <table className="min-w-full text-sm">
+          <thead>
+            <tr className="text-left text-gray-500 border-b">
+              <th className="p-3 font-medium">Miembro</th>
+              <th className="p-3 font-medium">Importe</th>
+              <th className="p-3 font-medium">Fecha</th>
+              <th className="p-3 font-medium">Medio</th>
+              <th className="p-3 font-medium">Estado</th>
+              <th className="p-3"></th>
+            </tr>
+            <FiltrosPagos valores={valores} />
+          </thead>
+          <tbody>
+            {(pagos ?? []).map((p) => (
+              <tr key={p.id} className="border-b last:border-0 hover:bg-gray-50">
+                <td className="p-3">
+                  <Link
+                    href={`/admin/pagos/${p.id}`}
+                    className="flex items-center gap-3"
+                  >
+                    <span
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0 ${colorPara(p.miembros?.rama_id)}`}
+                    >
+                      {iniciales(p.miembros?.nombre, p.miembros?.apellido)}
+                    </span>
+                    <span className="font-medium text-gray-900">
+                      {p.miembros?.apellido}, {p.miembros?.nombre}
+                    </span>
+                  </Link>
+                </td>
+                <td className="p-3 font-semibold">{formatoMoneda(p.importe)}</td>
+                <td className="p-3 text-gray-600">{p.fecha_pago}</td>
+                <td className="p-3 text-gray-600">{p.medio_pago || "—"}</td>
+                <td className="p-3">
+                  <span
+                    className={`text-xs px-2 py-1 rounded-full ${ETIQUETA_ESTADO[p.estado_efectivo].clase}`}
+                  >
+                    {ETIQUETA_ESTADO[p.estado_efectivo].texto}
+                  </span>
+                </td>
+                <td className="p-3 text-right">
+                  <Link
+                    href={`/admin/pagos/${p.id}`}
+                    className="text-blue-600 hover:underline text-sm"
+                  >
+                    Ver
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
         {(pagos ?? []).length === 0 && (
-          <p className="text-gray-500 text-sm">No hay pagos para este filtro.</p>
+          <p className="text-gray-500 text-sm p-4">
+            No hay pagos para este filtro.
+          </p>
         )}
       </div>
     </div>
