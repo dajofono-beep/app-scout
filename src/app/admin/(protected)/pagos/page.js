@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { actualizarPago, cancelarPago, reactivarPago } from "./actions";
+import {
+  actualizarPago,
+  cancelarPago,
+  reactivarPago,
+  reasignarPago,
+} from "./actions";
 
 const ETIQUETA_ESTADO = {
   pendiente: { texto: "Pendiente", clase: "bg-amber-100 text-amber-800" },
@@ -35,6 +40,11 @@ export default async function PagosPage({ searchParams }) {
   }
 
   const { data: pagos } = await query;
+
+  const { data: miembros } = await supabase
+    .from("miembros")
+    .select("id, nombre, apellido")
+    .order("apellido");
 
   return (
     <div className="max-w-4xl">
@@ -121,6 +131,27 @@ export default async function PagosPage({ searchParams }) {
                   Reactivar
                 </button>
               )}
+            </form>
+            <form
+              action={reasignarPago}
+              className="flex flex-wrap items-center gap-2 mt-2 pt-2 border-t"
+            >
+              <input type="hidden" name="id" value={p.id} />
+              <label className="text-xs text-gray-500">Reasignar a:</label>
+              <select
+                name="nuevo_miembro_id"
+                defaultValue={p.miembro_id}
+                className="border rounded px-2 py-1 text-sm"
+              >
+                {(miembros ?? []).map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.apellido}, {m.nombre}
+                  </option>
+                ))}
+              </select>
+              <button type="submit" className="text-sm text-blue-600 underline">
+                Reasignar
+              </button>
             </form>
           </div>
         ))}

@@ -207,7 +207,9 @@ export default async function MiCuentaPage() {
             {(cargos ?? []).map((c) => (
               <div
                 key={c.id}
-                className="bg-white rounded-lg shadow p-3 flex items-center justify-between gap-2 text-sm"
+                className={`bg-white rounded-lg shadow p-3 flex items-center justify-between gap-2 text-sm ${
+                  c.estado === "cancelado" ? "opacity-60" : ""
+                }`}
               >
                 {esFamiliaConVarios && (
                   <span className="text-gray-500 w-32 truncate">
@@ -217,6 +219,11 @@ export default async function MiCuentaPage() {
                 <span>{c.fecha}</span>
                 <span className="text-gray-600">{c.concepto}</span>
                 <span className="font-semibold">{formatoMoneda(c.importe)}</span>
+                {c.estado === "cancelado" && (
+                  <span className="text-xs px-2 py-1 rounded-full bg-gray-200 text-gray-600">
+                    Cancelado
+                  </span>
+                )}
               </div>
             ))}
             {(cargos ?? []).length === 0 && (

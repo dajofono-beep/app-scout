@@ -240,3 +240,31 @@ export async function crearCargoManual(formData) {
   revalidatePath("/admin/cargos");
   revalidatePath("/admin");
 }
+
+export async function cancelarCargo(formData) {
+  const { supabase } = await requireSession();
+  const id = formData.get("id");
+
+  const { error } = await supabase
+    .from("cargos")
+    .update({ estado: "cancelado" })
+    .eq("id", id);
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/admin/cargos");
+  revalidatePath("/admin");
+}
+
+export async function reactivarCargo(formData) {
+  const { supabase } = await requireSession();
+  const id = formData.get("id");
+
+  const { error } = await supabase
+    .from("cargos")
+    .update({ estado: "activo" })
+    .eq("id", id);
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/admin/cargos");
+  revalidatePath("/admin");
+}

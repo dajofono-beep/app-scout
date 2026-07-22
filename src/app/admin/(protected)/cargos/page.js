@@ -4,6 +4,8 @@ import {
   crearCargoPorRama,
   crearCargoPorFamilia,
   crearCargoManual,
+  cancelarCargo,
+  reactivarCargo,
 } from "./actions";
 
 const hoy = () => new Date().toISOString().slice(0, 10);
@@ -177,7 +179,11 @@ export default async function CargosPage() {
         <h2 className="font-semibold mb-3">Últimos cargos</h2>
         <div className="space-y-1">
           {(cargos ?? []).map((c) => (
-            <div key={c.id} className="bg-white rounded shadow p-3 flex flex-wrap justify-between gap-2 text-sm">
+            <form
+              key={c.id}
+              className="bg-white rounded shadow p-3 flex flex-wrap items-center justify-between gap-2 text-sm"
+            >
+              <input type="hidden" name="id" value={c.id} />
               <span className="font-medium">
                 {c.miembros?.apellido}, {c.miembros?.nombre}
               </span>
@@ -189,7 +195,31 @@ export default async function CargosPage() {
                 </span>
               )}
               <span className="font-semibold">{formatoMoneda(c.importe)}</span>
-            </div>
+              {c.estado === "cancelado" ? (
+                <span className="text-xs px-2 py-1 rounded-full bg-gray-200 text-gray-600">
+                  Cancelado
+                </span>
+              ) : (
+                <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-800">
+                  Activo
+                </span>
+              )}
+              {c.estado === "activo" ? (
+                <button
+                  formAction={cancelarCargo}
+                  className="text-sm text-red-600 underline"
+                >
+                  Cancelar
+                </button>
+              ) : (
+                <button
+                  formAction={reactivarCargo}
+                  className="text-sm text-green-700 underline"
+                >
+                  Reactivar
+                </button>
+              )}
+            </form>
           ))}
           {(cargos ?? []).length === 0 && (
             <p className="text-gray-500 text-sm">Todavía no hay cargos cargados.</p>

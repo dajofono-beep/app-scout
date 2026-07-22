@@ -61,3 +61,20 @@ export async function reactivarPago(formData) {
   revalidatePath("/admin/pagos");
   revalidatePath("/admin");
 }
+
+export async function reasignarPago(formData) {
+  const supabase = await requireSession();
+  const id = formData.get("id");
+  const nuevo_miembro_id = formData.get("nuevo_miembro_id")?.toString();
+
+  if (!nuevo_miembro_id) throw new Error("Elegí a quién reasignar el pago");
+
+  const { error } = await supabase
+    .from("pagos")
+    .update({ miembro_id: nuevo_miembro_id })
+    .eq("id", id);
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/admin/pagos");
+  revalidatePath("/admin");
+}
