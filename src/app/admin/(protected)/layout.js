@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import LogoutButton from "./logout-button";
+import NavAdminGroup from "./nav-admin-group";
 
 const NAV_ITEMS = [
   { href: "/admin", label: "Resumen" },
@@ -9,12 +10,6 @@ const NAV_ITEMS = [
   { href: "/admin/pagos", label: "Pagos" },
   { href: "/admin/cargos", label: "Cargos" },
   { href: "/admin/productos", label: "Productos" },
-];
-
-const NAV_GRUPO_ADMINISTRACION = [
-  { href: "/admin/familias", label: "Familias" },
-  { href: "/admin/descuentos", label: "Descuentos" },
-  { href: "/admin/ramas", label: "Ramas" },
 ];
 
 export default async function AdminLayout({ children }) {
@@ -53,22 +48,7 @@ export default async function AdminLayout({ children }) {
             </Link>
           ))}
 
-          <div className="w-full md:mt-2 md:pt-2 md:border-t">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
-              Administración
-            </p>
-            <div className="flex flex-col gap-1 md:pl-2">
-              {NAV_GRUPO_ADMINISTRACION.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="text-sm font-medium text-gray-700 hover:text-blue-600 hover:underline"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </div>
-          </div>
+          <NavAdminGroup />
         </div>
         <LogoutButton />
       </nav>
