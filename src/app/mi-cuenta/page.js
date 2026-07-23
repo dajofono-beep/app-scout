@@ -6,7 +6,23 @@ import { urlFirmadaComprobante } from "@/lib/supabase/comprobantes";
 import { MEDIOS_PAGO } from "@/lib/medios-pago";
 import LogoutButton from "./logout-button";
 import CuentaTabs from "./cuenta-tabs";
+import MovimientosTabs from "./movimientos-tabs";
+import Torta3D from "./torta3d";
 import { crearPago } from "./actions";
+
+const PALETA_CATEGORICA = [
+  "#0f9b8e",
+  "#ef6461",
+  "#f2a541",
+  "#5b5f97",
+  "#2ec4b6",
+  "#d64550",
+  "#7c9885",
+  "#e0a458",
+];
+
+const quitarSufijoCuota = (concepto) =>
+  concepto.replace(/\s*\(cuota \d+\/\d+\)$/, "");
 
 const hoy = () => new Date().toISOString().slice(0, 10);
 
@@ -251,7 +267,34 @@ export default async function MiCuentaPage() {
     </section>
   );
 
-  const panelMovimientos = (
+  const cargosActivos = (cargos ?? []).filter((c) => c.estado === "activo");
+  const totalCargos = cargosActivos.reduce((acc, c) => acc + Number(c.importe), 0);
+  const pagadoTotal = (pagos ?? [])
+    .filter((p) => p.estado_efectivo === "acreditado")
+    .reduce((acc, p) => acc + Number(p.importe), 0);
+  const adeudadoTotal = Math.max(totalCargos - pagadoTotal - pendienteTotal, 0);
+
+  const datosCobertura = {
+    titulo: `Sobre el total de cargos generados (${formatoMoneda(totalCargos)})`,
+    labels: ["Pagado", "Pendiente de acreditar", "Adeudado"],
+    valores: [pagadoTotal, pendienteTotal, adeudadoTotal],
+    colores: ["#22c55e", "#fbbf24", "#ef4444"],
+  };
+
+  const porConcepto = new Map();
+  for (const c of cargosActivos) {
+    const label = quitarSufijoCuota(c.concepto);
+    porConcepto.set(label, (porConcepto.get(label) ?? 0) + Number(c.importe));
+  }
+  const entradasConcepto = [...porConcepto.entries()];
+  const datosDetalle = {
+    titulo: "Composición de los cargos por concepto",
+    labels: entradasConcepto.map(([label]) => label),
+    valores: entradasConcepto.map(([, importe]) => importe),
+    colores: entradasConcepto.map((_, i) => PALETA_CATEGORICA[i % PALETA_CATEGORICA.length]),
+  };
+
+  const panelListado = (
     <section className="space-y-2">
       {movimientos.map((m) => {
         const estilo = estiloMovimiento(m);
@@ -314,6 +357,14 @@ export default async function MiCuentaPage() {
         <p className="text-gray-500 text-sm">Todavía no hay movimientos.</p>
       )}
     </section>
+  );
+
+  const panelMovimientos = (
+    <MovimientosTabs
+      panelListado={panelListado}
+      panelCobertura={<Torta3D {...datosCobertura} />}
+      panelDetalle={<Torta3D {...datosDetalle} />}
+    />
   );
 
   return (
