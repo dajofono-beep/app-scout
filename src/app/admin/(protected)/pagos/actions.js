@@ -65,6 +65,21 @@ export async function reactivarPago(formData) {
   revalidatePath("/admin");
 }
 
+export async function confirmarPago(formData) {
+  const supabase = await requireSession();
+  const id = formData.get("id");
+
+  const { error } = await supabase
+    .from("pagos")
+    .update({ confirmado_at: new Date().toISOString() })
+    .eq("id", id);
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/admin/pagos");
+  revalidatePath(`/admin/pagos/${id}`);
+  revalidatePath("/admin");
+}
+
 export async function reasignarPago(formData) {
   const supabase = await requireSession();
   const id = formData.get("id");

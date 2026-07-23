@@ -5,6 +5,7 @@ import {
   actualizarPago,
   cancelarPago,
   reactivarPago,
+  confirmarPago,
   reasignarPago,
 } from "../actions";
 import { iniciales, colorPara } from "../../miembros/avatar";
@@ -55,6 +56,12 @@ export default async function FichaPagoPage({ params }) {
           {ETIQUETA_ESTADO[pago.estado_efectivo].texto}
         </span>
       </div>
+
+      {pago.confirmado_at && (
+        <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded p-3 mb-4">
+          Confirmado manualmente por el admin (no esperó los 4 días).
+        </p>
+      )}
 
       <form
         action={actualizarPago}
@@ -112,6 +119,14 @@ export default async function FichaPagoPage({ params }) {
           >
             Guardar cambios
           </button>
+          {pago.estado_efectivo === "pendiente" && (
+            <button
+              formAction={confirmarPago}
+              className="flex-1 border border-green-300 text-green-700 rounded py-2 font-medium"
+            >
+              Confirmar ahora
+            </button>
+          )}
           {pago.estado === "activo" ? (
             <button
               formAction={cancelarPago}

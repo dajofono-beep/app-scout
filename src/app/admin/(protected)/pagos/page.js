@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { confirmarPago } from "./actions";
 import FiltrosPagos from "./filtros";
 import { iniciales, colorPara } from "../miembros/avatar";
 
@@ -95,7 +96,18 @@ export default async function PagosPage({ searchParams }) {
                     {ETIQUETA_ESTADO[p.estado_efectivo].texto}
                   </span>
                 </td>
-                <td className="p-3 text-right">
+                <td className="p-3 text-right whitespace-nowrap">
+                  {p.estado_efectivo === "pendiente" && (
+                    <form action={confirmarPago} className="inline">
+                      <input type="hidden" name="id" value={p.id} />
+                      <button
+                        type="submit"
+                        className="text-green-700 hover:underline text-sm mr-3"
+                      >
+                        Confirmar
+                      </button>
+                    </form>
+                  )}
                   <Link
                     href={`/admin/pagos/${p.id}`}
                     className="text-blue-600 hover:underline text-sm"
