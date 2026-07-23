@@ -1,12 +1,10 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import {
-  crearCargoIndividual,
-  crearCargoPorRama,
-  crearCargoPorFamilia,
-  crearCargoManual,
-} from "./actions";
+import { crearCargoIndividual, crearCargoManual } from "./actions";
 import FiltrosCargos from "./filtros";
+import AsignarCargoRamaForm from "./asignar-rama-form";
+import AsignarCargoFamiliaForm from "./asignar-familia-form";
+import { formatoMoneda, etiquetaProducto } from "./utils";
 import { iniciales, colorPara } from "../miembros/avatar";
 
 const hoy = () => new Date().toISOString().slice(0, 10);
@@ -60,17 +58,6 @@ export default async function CargosPage({ searchParams }) {
 
   const { data: cargos } = await cargosQuery;
 
-  const formatoMoneda = (n) =>
-    Number(n).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
-
-  const etiquetaProducto = (p) => {
-    const notas = [];
-    if (p.es_cuotable) notas.push(`en ${p.cantidad_cuotas} cuotas`);
-    if (p.aplica_descuento_hermanos) notas.push("con desc. hermanos");
-    const sufijo = notas.length > 0 ? `, ${notas.join(", ")}` : "";
-    return `${p.nombre} (${formatoMoneda(p.importe)}${sufijo})`;
-  };
-
   const sinDatos = (ramas ?? []).length === 0 || (productos ?? []).length === 0;
 
   return (
@@ -118,63 +105,13 @@ export default async function CargosPage({ searchParams }) {
             </form>
           </section>
 
-          <section className="bg-white rounded shadow p-4">
-            <h2 className="font-semibold mb-3">Asignar a toda una rama</h2>
-            <form
-              action={crearCargoPorRama}
-              className="grid grid-cols-1 sm:grid-cols-4 gap-3"
-            >
-              <select name="rama_id" required defaultValue="" className="border rounded px-3 py-2 sm:col-span-2">
-                <option value="" disabled>Rama...</option>
-                {(ramas ?? []).map((r) => (
-                  <option key={r.id} value={r.id}>{r.nombre}</option>
-                ))}
-              </select>
-              <select name="producto_id" required defaultValue="" className="border rounded px-3 py-2">
-                <option value="" disabled>Producto...</option>
-                {(productos ?? []).map((p) => (
-                  <option key={p.id} value={p.id}>{etiquetaProducto(p)}</option>
-                ))}
-              </select>
-              <input type="date" name="fecha" required defaultValue={hoy()} className="border rounded px-3 py-2" />
-              <button type="submit" className="sm:col-span-4 bg-blue-600 text-white rounded py-2 font-medium">
-                Asignar a toda la rama
-              </button>
-            </form>
-          </section>
+          <AsignarCargoRamaForm ramas={ramas ?? []} productos={productos ?? []} />
 
           {(familias ?? []).length > 0 && (
-            <section className="bg-white rounded shadow p-4">
-              <h2 className="font-semibold mb-3">Asignar a toda una familia</h2>
-              <form
-                action={crearCargoPorFamilia}
-                className="grid grid-cols-1 sm:grid-cols-4 gap-3"
-              >
-                <select name="familia_id" required defaultValue="" className="border rounded px-3 py-2 sm:col-span-2">
-                  <option value="" disabled>Familia...</option>
-                  {familias.map((f) => (
-                    <option key={f.id} value={f.id}>{f.nombre}</option>
-                  ))}
-                </select>
-                <select name="producto_id" required defaultValue="" className="border rounded px-3 py-2">
-                  <option value="" disabled>Producto...</option>
-                  {(productos ?? []).map((p) => (
-                    <option key={p.id} value={p.id}>{etiquetaProducto(p)}</option>
-                  ))}
-                </select>
-                <input type="date" name="fecha" required defaultValue={hoy()} className="border rounded px-3 py-2" />
-                <button type="submit" className="sm:col-span-4 bg-blue-600 text-white rounded py-2 font-medium">
-                  Asignar a toda la familia
-                </button>
-              </form>
-              <p className="text-xs text-gray-500 mt-2">
-                Si el producto tiene activado &quot;descuento por hermanos&quot;,
-                el importe de cada integrante se calcula según su orden dentro
-                de la familia (ver sección Descuentos). Si es cuotable, la
-                fecha elegida es la de la primera cuota; las siguientes se
-                generan una por mes.
-              </p>
-            </section>
+            <AsignarCargoFamiliaForm
+              familias={familias ?? []}
+              productos={productos ?? []}
+            />
           )}
         </>
       )}

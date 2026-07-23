@@ -62,6 +62,20 @@ function generarFilasCargo({ producto, miembro_id, fecha, porcentaje, creado_por
   }));
 }
 
+// Devuelve true si el miembro ya tiene un cargo ACTIVO de ese producto
+// (uno cancelado no cuenta, se puede volver a asignar).
+async function tieneProductoActivo(supabase, miembro_id, producto_id) {
+  const { data, error } = await supabase
+    .from("cargos")
+    .select("id")
+    .eq("miembro_id", miembro_id)
+    .eq("producto_id", producto_id)
+    .eq("estado", "activo")
+    .limit(1);
+  if (error) throw new Error(error.message);
+  return (data ?? []).length > 0;
+}
+
 export async function crearCargoIndividual(formData) {
   const { supabase, user } = await requireSession();
 
@@ -71,6 +85,12 @@ export async function crearCargoIndividual(formData) {
 
   if (!miembro_id || !producto_id || !fecha) {
     throw new Error("Miembro, producto y fecha son obligatorios");
+  }
+
+  if (await tieneProductoActivo(supabase, miembro_id, producto_id)) {
+    throw new Error(
+      "Este miembro ya tiene un cargo activo de ese producto. Cancelalo primero si querés volver a asignarlo."
+    );
   }
 
   const { data: producto, error: productoError } = await supabase
@@ -115,7 +135,7 @@ export async function crearCargoPorRama(formData) {
 
   const { data: miembros, error: miembrosError } = await supabase
     .from("miembros")
-    .select("id")
+    .select("id, nombre, apellido")
     .eq("rama_id", rama_id)
     .eq("activo", true);
   if (miembrosError) throw new Error(miembrosError.message);
@@ -124,21 +144,44 @@ export async function crearCargoPorRama(formData) {
     throw new Error("Esa rama no tiene miembros activos");
   }
 
-  const filas = miembros.flatMap((m) =>
-    generarFilasCargo({
-      producto,
-      miembro_id: m.id,
-      fecha,
-      porcentaje: null,
-      creado_por: user.id,
-    })
-  );
+  const { data: existentes, error: existentesError } = await supabase
+    .from("cargos")
+    .select("miembro_id")
+    .eq("producto_id", producto_id)
+    .eq("estado", "activo")
+    .in(
+      "miembro_id",
+      miembros.map((m) => m.id)
+    );
+  if (existentesError) throw new Error(existentesError.message);
+  const idsConProducto = new Set((existentes ?? []).map((e) => e.miembro_id));
 
-  const { error } = await supabase.from("cargos").insert(filas);
-  if (error) throw new Error(error.message);
+  const aCargar = miembros.filter((m) => !idsConProducto.has(m.id));
+  const salteados = miembros
+    .filter((m) => idsConProducto.has(m.id))
+    .map((m) => `${m.apellido}, ${m.nombre}`);
+
+  let creados = 0;
+  if (aCargar.length > 0) {
+    const filas = aCargar.flatMap((m) =>
+      generarFilasCargo({
+        producto,
+        miembro_id: m.id,
+        fecha,
+        porcentaje: null,
+        creado_por: user.id,
+      })
+    );
+
+    const { error } = await supabase.from("cargos").insert(filas);
+    if (error) throw new Error(error.message);
+    creados = aCargar.length;
+  }
 
   revalidatePath("/admin/cargos");
   revalidatePath("/admin");
+
+  return { creados, salteados };
 }
 
 function porcentajeParaOrden(orden, escala) {
@@ -173,7 +216,7 @@ export async function crearCargoPorFamilia(formData) {
 
   const { data: miembros, error: miembrosError } = await supabase
     .from("miembros")
-    .select("id, orden_familia")
+    .select("id, nombre, apellido, orden_familia")
     .eq("familia_id", familia_id)
     .eq("activo", true);
   if (miembrosError) throw new Error(miembrosError.message);
@@ -181,6 +224,23 @@ export async function crearCargoPorFamilia(formData) {
   if (!miembros || miembros.length === 0) {
     throw new Error("Esa familia no tiene miembros activos");
   }
+
+  const { data: existentes, error: existentesError } = await supabase
+    .from("cargos")
+    .select("miembro_id")
+    .eq("producto_id", producto_id)
+    .eq("estado", "activo")
+    .in(
+      "miembro_id",
+      miembros.map((m) => m.id)
+    );
+  if (existentesError) throw new Error(existentesError.message);
+  const idsConProducto = new Set((existentes ?? []).map((e) => e.miembro_id));
+
+  const aCargar = miembros.filter((m) => !idsConProducto.has(m.id));
+  const salteados = miembros
+    .filter((m) => idsConProducto.has(m.id))
+    .map((m) => `${m.apellido}, ${m.nombre}`);
 
   let escala = [];
   if (producto.aplica_descuento_hermanos) {
@@ -192,25 +252,31 @@ export async function crearCargoPorFamilia(formData) {
     escala = escalaData ?? [];
   }
 
-  const filas = miembros.flatMap((m) => {
-    const porcentaje = producto.aplica_descuento_hermanos
-      ? porcentajeParaOrden(m.orden_familia, escala)
-      : null;
+  let creados = 0;
+  if (aCargar.length > 0) {
+    const filas = aCargar.flatMap((m) => {
+      const porcentaje = producto.aplica_descuento_hermanos
+        ? porcentajeParaOrden(m.orden_familia, escala)
+        : null;
 
-    return generarFilasCargo({
-      producto,
-      miembro_id: m.id,
-      fecha,
-      porcentaje,
-      creado_por: user.id,
+      return generarFilasCargo({
+        producto,
+        miembro_id: m.id,
+        fecha,
+        porcentaje,
+        creado_por: user.id,
+      });
     });
-  });
 
-  const { error } = await supabase.from("cargos").insert(filas);
-  if (error) throw new Error(error.message);
+    const { error } = await supabase.from("cargos").insert(filas);
+    if (error) throw new Error(error.message);
+    creados = aCargar.length;
+  }
 
   revalidatePath("/admin/cargos");
   revalidatePath("/admin");
+
+  return { creados, salteados };
 }
 
 export async function crearCargoManual(formData) {
