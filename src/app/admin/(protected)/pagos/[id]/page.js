@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { urlFirmadaComprobante } from "@/lib/supabase/comprobantes";
+import { MEDIOS_PAGO } from "@/lib/medios-pago";
 import {
   actualizarPago,
   cancelarPago,
@@ -32,6 +35,10 @@ export default async function FichaPagoPage({ params }) {
     .select("id, nombre, apellido")
     .order("apellido");
 
+  const comprobanteHref = pago.comprobante_url
+    ? await urlFirmadaComprobante(createAdminClient(), pago.comprobante_url)
+    : null;
+
   return (
     <div className="max-w-lg">
       <Link href="/admin/pagos" className="text-sm text-blue-600 underline">
@@ -61,6 +68,17 @@ export default async function FichaPagoPage({ params }) {
         <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded p-3 mb-4">
           Confirmado manualmente por el admin (no esperó los 4 días).
         </p>
+      )}
+
+      {comprobanteHref && (
+        <a
+          href={comprobanteHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block text-sm text-blue-600 underline mb-4"
+        >
+          Ver comprobante subido por la familia
+        </a>
       )}
 
       <form
@@ -96,11 +114,18 @@ export default async function FichaPagoPage({ params }) {
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Medio de pago
           </label>
-          <input
+          <select
             name="medio_pago"
             defaultValue={pago.medio_pago ?? ""}
             className="w-full border rounded px-3 py-2"
-          />
+          >
+            <option value="">Sin especificar</option>
+            {MEDIOS_PAGO.map((medio) => (
+              <option key={medio} value={medio}>
+                {medio}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">

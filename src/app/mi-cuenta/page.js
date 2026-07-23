@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { urlFirmadaComprobante } from "@/lib/supabase/comprobantes";
+import { MEDIOS_PAGO } from "@/lib/medios-pago";
 import LogoutButton from "./logout-button";
 import { crearPago } from "./actions";
 
@@ -61,6 +64,16 @@ export default async function MiCuentaPage() {
     .select("*")
     .in("miembro_id", idsFamiliares)
     .order("fecha_pago", { ascending: false });
+
+  const admin = createAdminClient();
+  const pagosConComprobante = await Promise.all(
+    (pagos ?? []).map(async (p) => ({
+      ...p,
+      comprobante_href: p.comprobante_url
+        ? await urlFirmadaComprobante(admin, p.comprobante_url)
+        : null,
+    }))
+  );
 
   const saldoTotal = (saldos ?? []).reduce((acc, s) => acc + Number(s.saldo), 0);
   const pendienteTotal = (saldos ?? []).reduce(
@@ -154,11 +167,29 @@ export default async function MiCuentaPage() {
               max={hoy()}
               className="border rounded px-3 py-2"
             />
-            <input
+            <select
               name="medio_pago"
-              placeholder="Medio de pago (opcional)"
+              defaultValue=""
               className="border rounded px-3 py-2"
-            />
+            >
+              <option value="">Medio de pago...</option>
+              {MEDIOS_PAGO.map((medio) => (
+                <option key={medio} value={medio}>
+                  {medio}
+                </option>
+              ))}
+            </select>
+            <div className="sm:col-span-3">
+              <label className="block text-xs text-gray-500 mb-1">
+                Comprobante de la transferencia (opcional)
+              </label>
+              <input
+                type="file"
+                name="comprobante"
+                accept="image/*"
+                className="text-sm w-full"
+              />
+            </div>
             <button
               type="submit"
               className="sm:col-span-3 bg-blue-600 text-white rounded py-2 font-medium"
@@ -175,7 +206,7 @@ export default async function MiCuentaPage() {
         <section>
           <h2 className="font-semibold mb-3">Pagos</h2>
           <div className="space-y-2">
-            {(pagos ?? []).map((p) => (
+            {pagosConComprobante.map((p) => (
               <div
                 key={p.id}
                 className="bg-white rounded-lg shadow p-3 flex items-center justify-between gap-2 text-sm"
@@ -188,6 +219,16 @@ export default async function MiCuentaPage() {
                 <span>{p.fecha_pago}</span>
                 <span className="text-gray-500">{p.medio_pago || "—"}</span>
                 <span className="font-semibold">{formatoMoneda(p.importe)}</span>
+                {p.comprobante_href && (
+                  <a
+                    href={p.comprobante_href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline text-xs"
+                  >
+                    Ver comprobante
+                  </a>
+                )}
                 <span
                   className={`text-xs px-2 py-1 rounded-full ${ETIQUETA_ESTADO[p.estado_efectivo].clase}`}
                 >
@@ -195,7 +236,7 @@ export default async function MiCuentaPage() {
                 </span>
               </div>
             ))}
-            {(pagos ?? []).length === 0 && (
+            {pagosConComprobante.length === 0 && (
               <p className="text-gray-500 text-sm">Todavía no cargaron pagos.</p>
             )}
           </div>

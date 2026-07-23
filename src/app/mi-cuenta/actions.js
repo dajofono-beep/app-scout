@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { subirComprobante } from "@/lib/supabase/comprobantes";
 
 export async function crearPago(formData) {
   const supabase = await createClient();
@@ -14,6 +16,7 @@ export async function crearPago(formData) {
   const importe = Number(formData.get("importe"));
   const fecha_pago = formData.get("fecha_pago")?.toString();
   const medio_pago = formData.get("medio_pago")?.toString().trim() || null;
+  const comprobante = formData.get("comprobante");
 
   if (!miembro_id) throw new Error("Elegí para quién es el pago");
   if (!importe || importe <= 0) throw new Error("El importe debe ser mayor a 0");
@@ -21,15 +24,30 @@ export async function crearPago(formData) {
 
   // La política de RLS ("pagos_insertan_su_familia") valida que miembro_id
   // pertenezca a la misma familia que el usuario logueado.
-  const { error } = await supabase.from("pagos").insert({
-    miembro_id,
-    importe,
-    fecha_pago,
-    medio_pago,
-    estado: "activo",
-    creado_por: user.id,
-  });
+  const { data: pago, error } = await supabase
+    .from("pagos")
+    .insert({
+      miembro_id,
+      importe,
+      fecha_pago,
+      medio_pago,
+      estado: "activo",
+      creado_por: user.id,
+    })
+    .select()
+    .single();
   if (error) throw new Error(error.message);
+
+  if (comprobante && typeof comprobante !== "string" && comprobante.size > 0) {
+    const admin = createAdminClient();
+    const ruta = await subirComprobante(admin, pago.id, comprobante);
+
+    const { error: updateError } = await admin
+      .from("pagos")
+      .update({ comprobante_url: ruta })
+      .eq("id", pago.id);
+    if (updateError) throw new Error(updateError.message);
+  }
 
   revalidatePath("/mi-cuenta");
 }
