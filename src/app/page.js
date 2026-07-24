@@ -2,7 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Quicksand } from "next/font/google";
 import { createClient } from "@/lib/supabase/client";
+
+const quicksand = Quicksand({
+  variable: "--font-quicksand",
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+});
 
 export default function FamilyLoginPage() {
   const router = useRouter();
@@ -70,26 +77,29 @@ export default function FamilyLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-10">
+    <div
+      className={`${quicksand.variable} min-h-screen flex items-center justify-center bg-sky-50 px-4 py-10`}
+      style={{ fontFamily: "var(--font-quicksand)" }}
+    >
       <div className="w-full max-w-sm">
-        <h1 className="text-xl font-bold text-center mb-6">
+        <h1 className="text-xl font-bold text-center text-slate-800 mb-6">
           Cuentas corrientes del grupo
         </h1>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-3xl shadow-sm p-6">
           {cargando ? (
-            <p className="text-sm text-gray-500 text-center">Cargando...</p>
+            <p className="text-sm text-slate-400 text-center">Cargando...</p>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-semibold text-slate-600 mb-1">
                   Rama
                 </label>
                 <select
                   required
                   value={ramaId}
                   onChange={handleRamaChange}
-                  className="w-full border rounded px-3 py-2"
+                  className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
                 >
                   <option value="" disabled>
                     Elegí tu rama...
@@ -103,7 +113,7 @@ export default function FamilyLoginPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-semibold text-slate-600 mb-1">
                   Nombre
                 </label>
                 <select
@@ -111,7 +121,7 @@ export default function FamilyLoginPage() {
                   disabled={!ramaId}
                   value={miembroId}
                   onChange={(e) => setMiembroId(e.target.value)}
-                  className="w-full border rounded px-3 py-2 disabled:bg-gray-100 disabled:text-gray-400"
+                  className="w-full border border-slate-200 rounded-xl px-4 py-2.5 disabled:bg-slate-50 disabled:text-slate-300"
                 >
                   <option value="" disabled>
                     {ramaId ? "Elegí tu nombre..." : "Elegí primero tu rama"}
@@ -123,14 +133,14 @@ export default function FamilyLoginPage() {
                   ))}
                 </select>
                 {ramaId && miembros.length === 0 && (
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-slate-400 mt-1">
                     No hay miembros cargados en esta rama.
                   </p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-semibold text-slate-600 mb-1">
                   DNI
                 </label>
                 <input
@@ -140,16 +150,16 @@ export default function FamilyLoginPage() {
                   disabled={!miembroId}
                   value={dni}
                   onChange={(e) => setDni(e.target.value)}
-                  className="w-full border rounded px-3 py-2 disabled:bg-gray-100"
+                  className="w-full border border-slate-200 rounded-xl px-4 py-2.5 disabled:bg-slate-50"
                 />
               </div>
 
-              {error && <p className="text-sm text-red-600">{error}</p>}
+              {error && <p className="text-sm text-red-500 font-semibold">{error}</p>}
 
               <button
                 type="submit"
                 disabled={loading || !miembroId}
-                className="w-full bg-blue-600 text-white rounded py-2 font-medium disabled:opacity-50"
+                className="w-full bg-sky-600 text-white rounded-full py-2.5 font-bold disabled:opacity-50"
               >
                 {loading ? "Ingresando..." : "Ingresar"}
               </button>
