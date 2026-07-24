@@ -42,7 +42,7 @@ export default function AdminLoginPage() {
         <img
           src="/logo-azimut.png"
           alt="Azimut - Grupo Scout Libertador San Martín"
-          className="w-full max-w-[240px] mx-auto"
+          className="w-full max-w-[300px] mx-auto"
         />
         <h1 className="text-base font-semibold text-center text-slate-500">
           Ingreso administrador
