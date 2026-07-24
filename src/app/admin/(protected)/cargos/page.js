@@ -81,7 +81,7 @@ export default async function CargosPage({ searchParams }) {
       {!sinDatos && (
         <>
           <section className="bg-white rounded-2xl shadow-sm p-5">
-            <h2 className="font-semibold mb-3">Asignar a un miembro</h2>
+            <h2 className="font-bold mb-3">Asignar a un miembro</h2>
             <form
               action={crearCargoIndividual}
               className="grid grid-cols-1 sm:grid-cols-4 gap-3"
@@ -117,7 +117,7 @@ export default async function CargosPage({ searchParams }) {
       )}
 
       <section className="bg-white rounded-2xl shadow-sm p-5">
-        <h2 className="font-semibold mb-3">Cargo manual (concepto libre)</h2>
+        <h2 className="font-bold mb-3">Cargo manual (concepto libre)</h2>
         <form
           action={crearCargoManual}
           className="grid grid-cols-1 sm:grid-cols-4 gap-3"
@@ -139,7 +139,7 @@ export default async function CargosPage({ searchParams }) {
 
       <section>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-semibold">Cargos</h2>
+          <h2 className="font-bold">Cargos</h2>
           {hayFiltros && (
             <Link
               href="/admin/cargos"
@@ -154,11 +154,11 @@ export default async function CargosPage({ searchParams }) {
           <table className="min-w-full text-sm">
             <thead>
               <tr className="text-left text-slate-500 border-b">
-                <th className="p-3 font-medium">Miembro</th>
-                <th className="p-3 font-medium">Concepto</th>
-                <th className="p-3 font-medium">Importe</th>
-                <th className="p-3 font-medium">Fecha</th>
-                <th className="p-3 font-medium">Estado</th>
+                <th className="p-3 font-bold">Miembro</th>
+                <th className="p-3 font-bold">Concepto</th>
+                <th className="p-3 font-bold">Importe</th>
+                <th className="p-3 font-bold">Fecha</th>
+                <th className="p-3 font-bold">Estado</th>
                 <th className="p-3"></th>
               </tr>
               <FiltrosCargos valores={valoresFiltro} />

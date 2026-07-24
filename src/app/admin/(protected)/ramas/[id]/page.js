@@ -72,7 +72,7 @@ export default async function FichaRamaPage({ params }) {
       </form>
 
       <div className="bg-white rounded-2xl shadow-sm p-5 mt-4">
-        <h2 className="font-semibold mb-3">
+        <h2 className="font-bold mb-3">
           Miembros ({(miembros ?? []).length})
         </h2>
         <div className="space-y-2">

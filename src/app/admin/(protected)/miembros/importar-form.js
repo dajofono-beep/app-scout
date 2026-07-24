@@ -35,7 +35,7 @@ export default function ImportarMiembrosForm() {
 
   return (
     <div className="bg-white rounded-2xl shadow-sm p-5 mb-6">
-      <h2 className="font-semibold mb-1">Importar desde Excel</h2>
+      <h2 className="font-bold mb-1">Importar desde Excel</h2>
       <p className="text-xs text-slate-500 mb-3">
         Sube el archivo .xlsx exportado con las columnas Dni, Nombre
         (&quot;Apellido, Nombre&quot;), Función y Fecha de Nacimiento. Los DNI

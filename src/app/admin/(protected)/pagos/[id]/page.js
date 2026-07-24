@@ -171,7 +171,7 @@ export default async function FichaPagoPage({ params }) {
       </form>
 
       <div className="bg-white rounded-2xl shadow-sm p-5 mt-4">
-        <h2 className="font-semibold mb-3">Reasignar a otro miembro</h2>
+        <h2 className="font-bold mb-3">Reasignar a otro miembro</h2>
         <form action={reasignarPago} className="flex flex-wrap items-center gap-2">
           <input type="hidden" name="id" value={pago.id} />
           <select

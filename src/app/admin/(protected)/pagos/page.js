@@ -59,11 +59,11 @@ export default async function PagosPage({ searchParams }) {
         <table className="min-w-full text-sm">
           <thead>
             <tr className="text-left text-slate-500 border-b">
-              <th className="p-3 font-medium">Miembro</th>
-              <th className="p-3 font-medium">Importe</th>
-              <th className="p-3 font-medium">Fecha</th>
-              <th className="p-3 font-medium">Medio</th>
-              <th className="p-3 font-medium">Estado</th>
+              <th className="p-3 font-bold">Miembro</th>
+              <th className="p-3 font-bold">Importe</th>
+              <th className="p-3 font-bold">Fecha</th>
+              <th className="p-3 font-bold">Medio</th>
+              <th className="p-3 font-bold">Estado</th>
               <th className="p-3"></th>
             </tr>
             <FiltrosPagos valores={valores} />

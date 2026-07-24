@@ -30,7 +30,7 @@ export default function AsignarCargoFamiliaForm({ familias, productos }) {
 
   return (
     <section className="bg-white rounded-2xl shadow-sm p-5">
-      <h2 className="font-semibold mb-3">Asignar a toda una familia</h2>
+      <h2 className="font-bold mb-3">Asignar a toda una familia</h2>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-4 gap-3">
         <select
           name="familia_id"

@@ -52,11 +52,11 @@ export default async function ProductosPage({ searchParams }) {
         <table className="min-w-full text-sm">
           <thead>
             <tr className="text-left text-slate-500 border-b">
-              <th className="p-3 font-medium">Nombre</th>
-              <th className="p-3 font-medium">Importe</th>
-              <th className="p-3 font-medium">Cuotable</th>
-              <th className="p-3 font-medium">Desc. hermanos</th>
-              <th className="p-3 font-medium">Estado</th>
+              <th className="p-3 font-bold">Nombre</th>
+              <th className="p-3 font-bold">Importe</th>
+              <th className="p-3 font-bold">Cuotable</th>
+              <th className="p-3 font-bold">Desc. hermanos</th>
+              <th className="p-3 font-bold">Estado</th>
               <th className="p-3"></th>
             </tr>
             <FiltrosProductos valores={valores} />

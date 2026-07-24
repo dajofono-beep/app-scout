@@ -79,11 +79,11 @@ export default async function MiembrosPage({ searchParams }) {
         <table className="min-w-full text-sm">
           <thead>
             <tr className="text-left text-slate-500 border-b">
-              <th className="p-3 font-medium">Miembro</th>
-              <th className="p-3 font-medium">Documento</th>
-              <th className="p-3 font-medium">Rama</th>
-              <th className="p-3 font-medium">Familia</th>
-              <th className="p-3 font-medium">Estado</th>
+              <th className="p-3 font-bold">Miembro</th>
+              <th className="p-3 font-bold">Documento</th>
+              <th className="p-3 font-bold">Rama</th>
+              <th className="p-3 font-bold">Familia</th>
+              <th className="p-3 font-bold">Estado</th>
               <th className="p-3"></th>
             </tr>
             <FiltrosMiembros

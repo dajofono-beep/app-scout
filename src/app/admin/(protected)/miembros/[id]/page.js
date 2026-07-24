@@ -55,7 +55,7 @@ export default async function FichaMiembroPage({ params }) {
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm p-5 mb-4">
-        <p className="text-sm text-slate-500">Saldo actual</p>
+        <p className="text-sm font-bold text-slate-500">Saldo actual</p>
         <p className="text-2xl font-bold">
           {formatoMoneda(saldo?.saldo ?? 0)}
         </p>
