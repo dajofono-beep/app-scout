@@ -65,13 +65,13 @@ export default async function CargosPage({ searchParams }) {
       <h1 className="text-2xl font-bold">Cargos</h1>
 
       {sinDatos && (
-        <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded p-3">
+        <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-xl p-3">
           Necesitás al menos una rama y un producto activo para poder cargar cobros.
         </p>
       )}
 
       {!sinDatos && (
-        <p className="text-sm text-gray-500 -mt-4">
+        <p className="text-sm text-slate-500 -mt-4">
           Si elegís un producto marcado &quot;en N cuotas&quot;, se generan N
           cargos automáticamente (uno por mes, empezando en la fecha que
           indiques) en vez de un solo cargo.
@@ -80,26 +80,26 @@ export default async function CargosPage({ searchParams }) {
 
       {!sinDatos && (
         <>
-          <section className="bg-white rounded shadow p-4">
+          <section className="bg-white rounded-2xl shadow-sm p-5">
             <h2 className="font-semibold mb-3">Asignar a un miembro</h2>
             <form
               action={crearCargoIndividual}
               className="grid grid-cols-1 sm:grid-cols-4 gap-3"
             >
-              <select name="miembro_id" required defaultValue="" className="border rounded px-3 py-2 sm:col-span-2">
+              <select name="miembro_id" required defaultValue="" className="border border-slate-200 rounded-xl px-4 py-2.5 sm:col-span-2">
                 <option value="" disabled>Miembro...</option>
                 {(miembros ?? []).map((m) => (
                   <option key={m.id} value={m.id}>{m.apellido}, {m.nombre}</option>
                 ))}
               </select>
-              <select name="producto_id" required defaultValue="" className="border rounded px-3 py-2">
+              <select name="producto_id" required defaultValue="" className="border border-slate-200 rounded-xl px-4 py-2.5">
                 <option value="" disabled>Producto...</option>
                 {(productos ?? []).map((p) => (
                   <option key={p.id} value={p.id}>{etiquetaProducto(p)}</option>
                 ))}
               </select>
-              <input type="date" name="fecha" required defaultValue={hoy()} className="border rounded px-3 py-2" />
-              <button type="submit" className="sm:col-span-4 bg-blue-600 text-white rounded py-2 font-medium">
+              <input type="date" name="fecha" required defaultValue={hoy()} className="border border-slate-200 rounded-xl px-4 py-2.5" />
+              <button type="submit" className="sm:col-span-4 bg-sky-600 text-white rounded-full py-2.5 font-bold">
                 Asignar cargo
               </button>
             </form>
@@ -116,22 +116,22 @@ export default async function CargosPage({ searchParams }) {
         </>
       )}
 
-      <section className="bg-white rounded shadow p-4">
+      <section className="bg-white rounded-2xl shadow-sm p-5">
         <h2 className="font-semibold mb-3">Cargo manual (concepto libre)</h2>
         <form
           action={crearCargoManual}
           className="grid grid-cols-1 sm:grid-cols-4 gap-3"
         >
-          <select name="miembro_id" required defaultValue="" className="border rounded px-3 py-2 sm:col-span-2">
+          <select name="miembro_id" required defaultValue="" className="border border-slate-200 rounded-xl px-4 py-2.5 sm:col-span-2">
             <option value="" disabled>Miembro...</option>
             {(miembros ?? []).map((m) => (
               <option key={m.id} value={m.id}>{m.apellido}, {m.nombre}</option>
             ))}
           </select>
-          <input name="concepto" required placeholder="Concepto" className="border rounded px-3 py-2" />
-          <input name="importe" type="number" step="0.01" min="0" required placeholder="Importe" className="border rounded px-3 py-2" />
-          <input type="date" name="fecha" required defaultValue={hoy()} className="border rounded px-3 py-2 sm:col-span-2" />
-          <button type="submit" className="sm:col-span-2 bg-blue-600 text-white rounded py-2 font-medium">
+          <input name="concepto" required placeholder="Concepto" className="border border-slate-200 rounded-xl px-4 py-2.5" />
+          <input name="importe" type="number" step="0.01" min="0" required placeholder="Importe" className="border border-slate-200 rounded-xl px-4 py-2.5" />
+          <input type="date" name="fecha" required defaultValue={hoy()} className="border border-slate-200 rounded-xl px-4 py-2.5 sm:col-span-2" />
+          <button type="submit" className="sm:col-span-2 bg-sky-600 text-white rounded-full py-2.5 font-bold">
             Cargar
           </button>
         </form>
@@ -143,17 +143,17 @@ export default async function CargosPage({ searchParams }) {
           {hayFiltros && (
             <Link
               href="/admin/cargos"
-              className="text-sm text-gray-600 underline"
+              className="text-sm text-slate-500 font-semibold"
             >
               Limpiar filtros
             </Link>
           )}
         </div>
 
-        <div className="overflow-x-auto bg-white rounded shadow">
+        <div className="overflow-x-auto bg-white rounded-2xl shadow-sm">
           <table className="min-w-full text-sm">
             <thead>
-              <tr className="text-left text-gray-500 border-b">
+              <tr className="text-left text-slate-500 border-b">
                 <th className="p-3 font-medium">Miembro</th>
                 <th className="p-3 font-medium">Concepto</th>
                 <th className="p-3 font-medium">Importe</th>
@@ -165,7 +165,7 @@ export default async function CargosPage({ searchParams }) {
             </thead>
             <tbody>
               {(cargos ?? []).map((c) => (
-                <tr key={c.id} className="border-b last:border-0 hover:bg-gray-50">
+                <tr key={c.id} className="border-b last:border-0 hover:bg-slate-50">
                   <td className="p-3">
                     <Link
                       href={`/admin/cargos/${c.id}`}
@@ -176,12 +176,12 @@ export default async function CargosPage({ searchParams }) {
                       >
                         {iniciales(c.miembros?.nombre, c.miembros?.apellido)}
                       </span>
-                      <span className="font-medium text-gray-900">
+                      <span className="font-medium text-slate-900">
                         {c.miembros?.apellido}, {c.miembros?.nombre}
                       </span>
                     </Link>
                   </td>
-                  <td className="p-3 text-gray-600">
+                  <td className="p-3 text-slate-600">
                     {c.concepto}
                     {c.porcentaje_aplicado != null && (
                       <span className="block text-xs text-amber-700">
@@ -190,12 +190,12 @@ export default async function CargosPage({ searchParams }) {
                     )}
                   </td>
                   <td className="p-3 font-semibold">{formatoMoneda(c.importe)}</td>
-                  <td className="p-3 text-gray-600">{c.fecha}</td>
+                  <td className="p-3 text-slate-600">{c.fecha}</td>
                   <td className="p-3">
                     <span
                       className={`text-xs px-2 py-1 rounded-full ${
                         c.estado === "cancelado"
-                          ? "bg-gray-200 text-gray-600"
+                          ? "bg-slate-200 text-slate-600"
                           : "bg-green-100 text-green-800"
                       }`}
                     >
@@ -205,7 +205,7 @@ export default async function CargosPage({ searchParams }) {
                   <td className="p-3 text-right">
                     <Link
                       href={`/admin/cargos/${c.id}`}
-                      className="text-blue-600 hover:underline text-sm"
+                      className="text-sky-600 hover:underline text-sm"
                     >
                       Ver
                     </Link>
@@ -215,7 +215,7 @@ export default async function CargosPage({ searchParams }) {
             </tbody>
           </table>
           {(cargos ?? []).length === 0 && (
-            <p className="text-gray-500 text-sm p-4">
+            <p className="text-slate-500 text-sm p-4">
               No hay cargos para este filtro.
             </p>
           )}

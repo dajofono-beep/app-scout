@@ -16,11 +16,11 @@ export default function NavAdminGroup() {
   const [abierto, setAbierto] = useState(activo);
 
   return (
-    <div className="w-full md:mt-2 md:pt-2 md:border-t">
+    <div className="w-full md:mt-2 md:pt-2 md:border-t md:border-sky-100">
       <button
         type="button"
         onClick={() => setAbierto((v) => !v)}
-        className="flex items-center justify-between w-full text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1"
+        className="flex items-center justify-between w-full text-xs font-bold text-slate-400 uppercase tracking-wide mb-1"
       >
         <span>Administración</span>
         <span
@@ -35,7 +35,7 @@ export default function NavAdminGroup() {
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm font-medium text-gray-700 hover:text-blue-600 hover:underline"
+              className="text-sm font-semibold text-slate-600 hover:text-sky-600"
             >
               {item.label}
             </Link>

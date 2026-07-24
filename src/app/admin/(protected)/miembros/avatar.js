@@ -12,7 +12,7 @@ const PALETA = [
 // Color determinístico según el id de la rama, para que cada rama se vea
 // siempre con el mismo color de avatar/chip.
 export function colorPara(id) {
-  if (!id) return "bg-gray-400";
+  if (!id) return "bg-slate-400";
   let hash = 0;
   for (const ch of id) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
   return PALETA[hash % PALETA.length];

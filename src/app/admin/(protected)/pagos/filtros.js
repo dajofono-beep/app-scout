@@ -16,7 +16,7 @@ export default function FiltrosPagos({ valores }) {
   }
 
   return (
-    <tr className="border-b bg-gray-50">
+    <tr className="border-b bg-slate-50">
       <th className="p-2 font-normal">
         <input
           defaultValue={valores.miembro}
@@ -25,7 +25,7 @@ export default function FiltrosPagos({ valores }) {
           }}
           onBlur={(e) => actualizar({ miembro: e.currentTarget.value })}
           placeholder="Buscar miembro..."
-          className="border rounded px-2 py-1 text-sm w-full"
+          className="border border-slate-200 rounded-lg px-3 py-1.5 text-sm w-full"
         />
       </th>
       <th className="p-2"></th>
@@ -35,7 +35,7 @@ export default function FiltrosPagos({ valores }) {
         <select
           defaultValue={valores.estado}
           onChange={(e) => actualizar({ estado: e.target.value })}
-          className="border rounded px-2 py-1 text-sm w-full"
+          className="border border-slate-200 rounded-lg px-3 py-1.5 text-sm w-full"
         >
           <option value="">Todos</option>
           <option value="pendiente">Pendientes</option>

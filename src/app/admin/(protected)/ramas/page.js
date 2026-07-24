@@ -25,23 +25,23 @@ export default async function RamasPage({ searchParams }) {
         <h1 className="text-2xl font-bold">Ramas</h1>
         <div className="flex items-center gap-3">
           {hayFiltros && (
-            <Link href="/admin/ramas" className="text-sm text-gray-600 underline">
+            <Link href="/admin/ramas" className="text-sm text-slate-500 font-semibold">
               Limpiar filtros
             </Link>
           )}
           <Link
             href="/admin/ramas/nueva"
-            className="bg-blue-600 text-white rounded px-4 py-2 text-sm font-medium"
+            className="bg-sky-600 text-white rounded-full px-4 py-2 text-sm font-bold"
           >
             + Nueva rama
           </Link>
         </div>
       </div>
 
-      <div className="overflow-x-auto bg-white rounded shadow">
+      <div className="overflow-x-auto bg-white rounded-2xl shadow-sm">
         <table className="min-w-full text-sm">
           <thead>
-            <tr className="text-left text-gray-500 border-b">
+            <tr className="text-left text-slate-500 border-b">
               <th className="p-3 font-medium">Nombre</th>
               <th className="p-3 font-medium">Orden</th>
               <th className="p-3 font-medium">Miembros</th>
@@ -51,23 +51,23 @@ export default async function RamasPage({ searchParams }) {
           </thead>
           <tbody>
             {(ramas ?? []).map((rama) => (
-              <tr key={rama.id} className="border-b last:border-0 hover:bg-gray-50">
+              <tr key={rama.id} className="border-b last:border-0 hover:bg-slate-50">
                 <td className="p-3">
                   <Link
                     href={`/admin/ramas/${rama.id}`}
-                    className="font-medium text-gray-900 hover:underline"
+                    className="font-semibold text-slate-800 hover:underline"
                   >
                     {rama.nombre}
                   </Link>
                 </td>
-                <td className="p-3 text-gray-600">{rama.orden}</td>
-                <td className="p-3 text-gray-600">
+                <td className="p-3 text-slate-600">{rama.orden}</td>
+                <td className="p-3 text-slate-600">
                   {rama.miembros?.[0]?.count ?? 0}
                 </td>
                 <td className="p-3 text-right">
                   <Link
                     href={`/admin/ramas/${rama.id}`}
-                    className="text-blue-600 hover:underline text-sm"
+                    className="text-sky-600 hover:underline text-sm"
                   >
                     Ver
                   </Link>
@@ -77,7 +77,7 @@ export default async function RamasPage({ searchParams }) {
           </tbody>
         </table>
         {(ramas ?? []).length === 0 && (
-          <p className="text-gray-500 text-sm p-4">
+          <p className="text-slate-500 text-sm p-4">
             No hay ramas para este filtro.
           </p>
         )}

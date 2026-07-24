@@ -7,7 +7,7 @@ import { iniciales, colorPara } from "../miembros/avatar";
 const ETIQUETA_ESTADO = {
   pendiente: { texto: "Pendiente", clase: "bg-amber-100 text-amber-800" },
   acreditado: { texto: "Acreditado", clase: "bg-green-100 text-green-800" },
-  cancelado: { texto: "Cancelado", clase: "bg-gray-200 text-gray-600" },
+  cancelado: { texto: "Cancelado", clase: "bg-slate-200 text-slate-600" },
 };
 
 const formatoMoneda = (n) =>
@@ -49,16 +49,16 @@ export default async function PagosPage({ searchParams }) {
       <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
         <h1 className="text-2xl font-bold">Pagos</h1>
         {hayFiltros && (
-          <Link href="/admin/pagos" className="text-sm text-gray-600 underline">
+          <Link href="/admin/pagos" className="text-sm text-slate-500 font-semibold">
             Limpiar filtros
           </Link>
         )}
       </div>
 
-      <div className="overflow-x-auto bg-white rounded shadow">
+      <div className="overflow-x-auto bg-white rounded-2xl shadow-sm">
         <table className="min-w-full text-sm">
           <thead>
-            <tr className="text-left text-gray-500 border-b">
+            <tr className="text-left text-slate-500 border-b">
               <th className="p-3 font-medium">Miembro</th>
               <th className="p-3 font-medium">Importe</th>
               <th className="p-3 font-medium">Fecha</th>
@@ -70,7 +70,7 @@ export default async function PagosPage({ searchParams }) {
           </thead>
           <tbody>
             {(pagos ?? []).map((p) => (
-              <tr key={p.id} className="border-b last:border-0 hover:bg-gray-50">
+              <tr key={p.id} className="border-b last:border-0 hover:bg-slate-50">
                 <td className="p-3">
                   <Link
                     href={`/admin/pagos/${p.id}`}
@@ -81,14 +81,14 @@ export default async function PagosPage({ searchParams }) {
                     >
                       {iniciales(p.miembros?.nombre, p.miembros?.apellido)}
                     </span>
-                    <span className="font-medium text-gray-900">
+                    <span className="font-medium text-slate-900">
                       {p.miembros?.apellido}, {p.miembros?.nombre}
                     </span>
                   </Link>
                 </td>
                 <td className="p-3 font-semibold">{formatoMoneda(p.importe)}</td>
-                <td className="p-3 text-gray-600">{p.fecha_pago}</td>
-                <td className="p-3 text-gray-600">{p.medio_pago || "—"}</td>
+                <td className="p-3 text-slate-600">{p.fecha_pago}</td>
+                <td className="p-3 text-slate-600">{p.medio_pago || "—"}</td>
                 <td className="p-3">
                   <span
                     className={`text-xs px-2 py-1 rounded-full ${ETIQUETA_ESTADO[p.estado_efectivo].clase}`}
@@ -110,7 +110,7 @@ export default async function PagosPage({ searchParams }) {
                   )}
                   <Link
                     href={`/admin/pagos/${p.id}`}
-                    className="text-blue-600 hover:underline text-sm"
+                    className="text-sky-600 hover:underline text-sm"
                   >
                     Ver
                   </Link>
@@ -120,7 +120,7 @@ export default async function PagosPage({ searchParams }) {
           </tbody>
         </table>
         {(pagos ?? []).length === 0 && (
-          <p className="text-gray-500 text-sm p-4">
+          <p className="text-slate-500 text-sm p-4">
             No hay pagos para este filtro.
           </p>
         )}

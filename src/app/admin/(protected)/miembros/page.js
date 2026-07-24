@@ -52,21 +52,21 @@ export default async function MiembrosPage({ searchParams }) {
           {hayFiltros && (
             <Link
               href="/admin/miembros"
-              className="text-sm text-gray-600 underline"
+              className="text-sm text-slate-500 font-semibold"
             >
               Limpiar filtros
             </Link>
           )}
           <Link
             href="/admin/miembros/nuevo"
-            className="bg-blue-600 text-white rounded px-4 py-2 text-sm font-medium"
+            className="bg-sky-600 text-white rounded-full px-4 py-2 text-sm font-bold"
           >
             + Nuevo miembro
           </Link>
         </div>
       </div>
 
-      <details className="bg-white rounded shadow mb-4">
+      <details className="bg-white rounded-2xl shadow-sm mb-4">
         <summary className="cursor-pointer select-none p-4 font-semibold text-sm">
           Importar desde Excel
         </summary>
@@ -75,10 +75,10 @@ export default async function MiembrosPage({ searchParams }) {
         </div>
       </details>
 
-      <div className="overflow-x-auto bg-white rounded shadow">
+      <div className="overflow-x-auto bg-white rounded-2xl shadow-sm">
         <table className="min-w-full text-sm">
           <thead>
-            <tr className="text-left text-gray-500 border-b">
+            <tr className="text-left text-slate-500 border-b">
               <th className="p-3 font-medium">Miembro</th>
               <th className="p-3 font-medium">Documento</th>
               <th className="p-3 font-medium">Rama</th>
@@ -94,7 +94,7 @@ export default async function MiembrosPage({ searchParams }) {
           </thead>
           <tbody>
             {(miembros ?? []).map((m) => (
-              <tr key={m.id} className="border-b last:border-0 hover:bg-gray-50">
+              <tr key={m.id} className="border-b last:border-0 hover:bg-slate-50">
                 <td className="p-3">
                   <Link
                     href={`/admin/miembros/${m.id}`}
@@ -105,18 +105,18 @@ export default async function MiembrosPage({ searchParams }) {
                     >
                       {iniciales(m.nombre, m.apellido)}
                     </span>
-                    <span className="font-medium text-gray-900">
+                    <span className="font-medium text-slate-900">
                       {m.apellido}, {m.nombre}
                     </span>
                   </Link>
                 </td>
-                <td className="p-3 text-gray-600">{m.dni}</td>
+                <td className="p-3 text-slate-600">{m.dni}</td>
                 <td className="p-3">
-                  <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700">
+                  <span className="text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-700">
                     {m.ramas?.nombre ?? "—"}
                   </span>
                 </td>
-                <td className="p-3 text-gray-600">
+                <td className="p-3 text-slate-600">
                   {m.familias?.nombre ?? "—"}
                 </td>
                 <td className="p-3">
@@ -124,7 +124,7 @@ export default async function MiembrosPage({ searchParams }) {
                     className={`text-xs px-2 py-1 rounded-full ${
                       m.activo
                         ? "bg-green-100 text-green-800"
-                        : "bg-gray-200 text-gray-600"
+                        : "bg-slate-200 text-slate-600"
                     }`}
                   >
                     {m.activo ? "Activo" : "Inactivo"}
@@ -133,7 +133,7 @@ export default async function MiembrosPage({ searchParams }) {
                 <td className="p-3 text-right">
                   <Link
                     href={`/admin/miembros/${m.id}`}
-                    className="text-blue-600 hover:underline text-sm"
+                    className="text-sky-600 hover:underline text-sm"
                   >
                     Ver
                   </Link>
@@ -143,7 +143,7 @@ export default async function MiembrosPage({ searchParams }) {
           </tbody>
         </table>
         {(miembros ?? []).length === 0 && (
-          <p className="text-gray-500 text-sm p-4">
+          <p className="text-slate-500 text-sm p-4">
             No hay miembros para este filtro.
           </p>
         )}

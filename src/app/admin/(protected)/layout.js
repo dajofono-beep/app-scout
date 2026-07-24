@@ -34,15 +34,15 @@ export default async function AdminLayout({ children }) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-gray-50">
-      <nav className="md:w-56 shrink-0 bg-white border-b md:border-b-0 md:border-r p-4 flex md:flex-col gap-3">
-        <p className="text-sm text-gray-500 md:mb-2">Hola, {admin.nombre}</p>
+    <div className="min-h-screen flex flex-col md:flex-row bg-sky-50">
+      <nav className="md:w-56 shrink-0 bg-white border-b md:border-b-0 md:border-r border-sky-100 p-4 flex md:flex-col gap-3">
+        <p className="text-sm text-slate-400 md:mb-2">Hola, {admin.nombre}</p>
         <div className="flex flex-wrap md:flex-col gap-2 md:gap-1 flex-1">
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm font-medium text-gray-700 hover:text-blue-600 hover:underline"
+              className="text-sm font-semibold text-slate-600 hover:text-sky-600"
             >
               {item.label}
             </Link>

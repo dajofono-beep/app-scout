@@ -34,24 +34,24 @@ export default async function ProductosPage({ searchParams }) {
           {hayFiltros && (
             <Link
               href="/admin/productos"
-              className="text-sm text-gray-600 underline"
+              className="text-sm text-slate-500 font-semibold"
             >
               Limpiar filtros
             </Link>
           )}
           <Link
             href="/admin/productos/nuevo"
-            className="bg-blue-600 text-white rounded px-4 py-2 text-sm font-medium"
+            className="bg-sky-600 text-white rounded-full px-4 py-2 text-sm font-bold"
           >
             + Nuevo producto
           </Link>
         </div>
       </div>
 
-      <div className="overflow-x-auto bg-white rounded shadow">
+      <div className="overflow-x-auto bg-white rounded-2xl shadow-sm">
         <table className="min-w-full text-sm">
           <thead>
-            <tr className="text-left text-gray-500 border-b">
+            <tr className="text-left text-slate-500 border-b">
               <th className="p-3 font-medium">Nombre</th>
               <th className="p-3 font-medium">Importe</th>
               <th className="p-3 font-medium">Cuotable</th>
@@ -63,20 +63,20 @@ export default async function ProductosPage({ searchParams }) {
           </thead>
           <tbody>
             {(productos ?? []).map((p) => (
-              <tr key={p.id} className="border-b last:border-0 hover:bg-gray-50">
+              <tr key={p.id} className="border-b last:border-0 hover:bg-slate-50">
                 <td className="p-3">
                   <Link
                     href={`/admin/productos/${p.id}`}
-                    className="font-medium text-gray-900 hover:underline"
+                    className="font-semibold text-slate-800 hover:underline"
                   >
                     {p.nombre}
                   </Link>
                 </td>
                 <td className="p-3 font-semibold">{formatoMoneda(p.importe)}</td>
-                <td className="p-3 text-gray-600">
+                <td className="p-3 text-slate-600">
                   {p.es_cuotable ? `${p.cantidad_cuotas} cuotas` : "—"}
                 </td>
-                <td className="p-3 text-gray-600">
+                <td className="p-3 text-slate-600">
                   {p.aplica_descuento_hermanos ? "Sí" : "—"}
                 </td>
                 <td className="p-3">
@@ -84,7 +84,7 @@ export default async function ProductosPage({ searchParams }) {
                     className={`text-xs px-2 py-1 rounded-full ${
                       p.activo
                         ? "bg-green-100 text-green-800"
-                        : "bg-gray-200 text-gray-600"
+                        : "bg-slate-200 text-slate-600"
                     }`}
                   >
                     {p.activo ? "Activo" : "Inactivo"}
@@ -93,7 +93,7 @@ export default async function ProductosPage({ searchParams }) {
                 <td className="p-3 text-right">
                   <Link
                     href={`/admin/productos/${p.id}`}
-                    className="text-blue-600 hover:underline text-sm"
+                    className="text-sky-600 hover:underline text-sm"
                   >
                     Ver
                   </Link>
@@ -103,7 +103,7 @@ export default async function ProductosPage({ searchParams }) {
           </tbody>
         </table>
         {(productos ?? []).length === 0 && (
-          <p className="text-gray-500 text-sm p-4">
+          <p className="text-slate-500 text-sm p-4">
             No hay productos para este filtro.
           </p>
         )}

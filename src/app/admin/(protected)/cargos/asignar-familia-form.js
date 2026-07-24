@@ -29,14 +29,14 @@ export default function AsignarCargoFamiliaForm({ familias, productos }) {
   }
 
   return (
-    <section className="bg-white rounded shadow p-4">
+    <section className="bg-white rounded-2xl shadow-sm p-5">
       <h2 className="font-semibold mb-3">Asignar a toda una familia</h2>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-4 gap-3">
         <select
           name="familia_id"
           required
           defaultValue=""
-          className="border rounded px-3 py-2 sm:col-span-2"
+          className="border border-slate-200 rounded-xl px-4 py-2.5 sm:col-span-2"
         >
           <option value="" disabled>
             Familia...
@@ -47,7 +47,7 @@ export default function AsignarCargoFamiliaForm({ familias, productos }) {
             </option>
           ))}
         </select>
-        <select name="producto_id" required defaultValue="" className="border rounded px-3 py-2">
+        <select name="producto_id" required defaultValue="" className="border border-slate-200 rounded-xl px-4 py-2.5">
           <option value="" disabled>
             Producto...
           </option>
@@ -62,25 +62,25 @@ export default function AsignarCargoFamiliaForm({ familias, productos }) {
           name="fecha"
           required
           defaultValue={hoy()}
-          className="border rounded px-3 py-2"
+          className="border border-slate-200 rounded-xl px-4 py-2.5"
         />
         <button
           type="submit"
           disabled={loading}
-          className="sm:col-span-4 bg-blue-600 text-white rounded py-2 font-medium disabled:opacity-50"
+          className="sm:col-span-4 bg-sky-600 text-white rounded-full py-2.5 font-bold disabled:opacity-50"
         >
           {loading ? "Asignando..." : "Asignar a toda la familia"}
         </button>
       </form>
 
-      <p className="text-xs text-gray-500 mt-2">
+      <p className="text-xs text-slate-500 mt-2">
         Si el producto tiene activado &quot;descuento por hermanos&quot;, el
         importe de cada integrante se calcula según su orden dentro de la
         familia (ver sección Descuentos). Si es cuotable, la fecha elegida es
         la de la primera cuota; las siguientes se generan una por mes.
       </p>
 
-      {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
+      {error && <p className="text-sm text-red-500 font-semibold mt-2">{error}</p>}
       {resultado && (
         <div className="text-sm mt-3 space-y-1">
           <p className="text-green-700">{resultado.creados} cargo(s) asignado(s).</p>

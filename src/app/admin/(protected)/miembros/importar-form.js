@@ -34,9 +34,9 @@ export default function ImportarMiembrosForm() {
   }
 
   return (
-    <div className="bg-white rounded shadow p-4 mb-6">
+    <div className="bg-white rounded-2xl shadow-sm p-5 mb-6">
       <h2 className="font-semibold mb-1">Importar desde Excel</h2>
-      <p className="text-xs text-gray-500 mb-3">
+      <p className="text-xs text-slate-500 mb-3">
         Sube el archivo .xlsx exportado con las columnas Dni, Nombre
         (&quot;Apellido, Nombre&quot;), Función y Fecha de Nacimiento. Los DNI
         que ya existen se saltean.
@@ -56,13 +56,13 @@ export default function ImportarMiembrosForm() {
         <button
           type="submit"
           disabled={loading}
-          className="bg-blue-600 text-white rounded px-4 py-2 text-sm font-medium disabled:opacity-50"
+          className="bg-sky-600 text-white rounded-full px-4 py-2 text-sm font-bold disabled:opacity-50"
         >
           {loading ? "Importando..." : "Importar"}
         </button>
       </form>
 
-      {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
+      {error && <p className="text-sm text-red-500 font-semibold mt-2">{error}</p>}
 
       {resultado && (
         <div className="mt-3 text-sm space-y-1">
@@ -70,13 +70,13 @@ export default function ImportarMiembrosForm() {
             {resultado.creados} miembro(s) creado(s).
           </p>
           {resultado.duplicados > 0 && (
-            <p className="text-gray-500">
+            <p className="text-slate-500">
               {resultado.duplicados} ya existían (DNI repetido) y se
               saltearon.
             </p>
           )}
           {resultado.errores.length > 0 && (
-            <div className="text-red-600">
+            <div className="text-red-500 font-semibold">
               <p>{resultado.errores.length} fila(s) con error:</p>
               <ul className="list-disc list-inside max-h-48 overflow-y-auto">
                 {resultado.errores.map((e, i) => (

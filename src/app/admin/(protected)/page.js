@@ -26,19 +26,19 @@ export default async function AdminDashboardPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Resumen</h1>
+      <h1 className="text-2xl font-bold text-slate-800 mb-6">Resumen</h1>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white rounded-lg shadow p-4">
-          <p className="text-sm text-gray-500">Miembros activos</p>
-          <p className="text-3xl font-bold">{totalMiembros ?? 0}</p>
+        <div className="bg-white rounded-2xl shadow-sm p-5">
+          <p className="text-sm text-slate-400">Miembros activos</p>
+          <p className="text-3xl font-bold text-slate-800">{totalMiembros ?? 0}</p>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <p className="text-sm text-gray-500">Saldo total del grupo</p>
-          <p className="text-3xl font-bold">{formatoMoneda(totalSaldo)}</p>
+        <div className="bg-white rounded-2xl shadow-sm p-5">
+          <p className="text-sm text-slate-400">Saldo total del grupo</p>
+          <p className="text-3xl font-bold text-slate-800">{formatoMoneda(totalSaldo)}</p>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <p className="text-sm text-gray-500">Pagos pendientes</p>
-          <p className="text-3xl font-bold">{formatoMoneda(totalPendiente)}</p>
+        <div className="bg-white rounded-2xl shadow-sm p-5">
+          <p className="text-sm text-slate-400">Pagos pendientes</p>
+          <p className="text-3xl font-bold text-slate-800">{formatoMoneda(totalPendiente)}</p>
         </div>
       </div>
     </div>

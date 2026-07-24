@@ -16,7 +16,7 @@ export default function FiltrosMiembros({ ramas, familias, valores }) {
   }
 
   return (
-    <tr className="border-b bg-gray-50">
+    <tr className="border-b bg-slate-50">
       <th className="p-2 font-normal">
         <input
           defaultValue={valores.nombre}
@@ -25,7 +25,7 @@ export default function FiltrosMiembros({ ramas, familias, valores }) {
           }}
           onBlur={(e) => actualizar({ nombre: e.currentTarget.value })}
           placeholder="Buscar por nombre..."
-          className="border rounded px-2 py-1 text-sm w-full"
+          className="border border-slate-200 rounded-lg px-3 py-1.5 text-sm w-full"
         />
       </th>
       <th className="p-2 font-normal">
@@ -36,14 +36,14 @@ export default function FiltrosMiembros({ ramas, familias, valores }) {
           }}
           onBlur={(e) => actualizar({ dni: e.currentTarget.value })}
           placeholder="Buscar DNI..."
-          className="border rounded px-2 py-1 text-sm w-full"
+          className="border border-slate-200 rounded-lg px-3 py-1.5 text-sm w-full"
         />
       </th>
       <th className="p-2 font-normal">
         <select
           defaultValue={valores.rama_id}
           onChange={(e) => actualizar({ rama_id: e.target.value })}
-          className="border rounded px-2 py-1 text-sm w-full"
+          className="border border-slate-200 rounded-lg px-3 py-1.5 text-sm w-full"
         >
           <option value="">Todas</option>
           {ramas.map((r) => (
@@ -57,7 +57,7 @@ export default function FiltrosMiembros({ ramas, familias, valores }) {
         <select
           defaultValue={valores.familia_id}
           onChange={(e) => actualizar({ familia_id: e.target.value })}
-          className="border rounded px-2 py-1 text-sm w-full"
+          className="border border-slate-200 rounded-lg px-3 py-1.5 text-sm w-full"
         >
           <option value="">Todas</option>
           {familias.map((f) => (
@@ -71,7 +71,7 @@ export default function FiltrosMiembros({ ramas, familias, valores }) {
         <select
           defaultValue={valores.activo}
           onChange={(e) => actualizar({ activo: e.target.value })}
-          className="border rounded px-2 py-1 text-sm w-full"
+          className="border border-slate-200 rounded-lg px-3 py-1.5 text-sm w-full"
         >
           <option value="">Todos</option>
           <option value="activos">Activos</option>

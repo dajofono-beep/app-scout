@@ -16,7 +16,7 @@ import { iniciales, colorPara } from "../../miembros/avatar";
 const ETIQUETA_ESTADO = {
   pendiente: { texto: "Pendiente", clase: "bg-amber-100 text-amber-800" },
   acreditado: { texto: "Acreditado", clase: "bg-green-100 text-green-800" },
-  cancelado: { texto: "Cancelado", clase: "bg-gray-200 text-gray-600" },
+  cancelado: { texto: "Cancelado", clase: "bg-slate-200 text-slate-600" },
 };
 
 export default async function FichaPagoPage({ params }) {
@@ -41,7 +41,7 @@ export default async function FichaPagoPage({ params }) {
 
   return (
     <div className="max-w-lg">
-      <Link href="/admin/pagos" className="text-sm text-blue-600 underline">
+      <Link href="/admin/pagos" className="text-sm text-sky-600 font-semibold">
         ← Volver
       </Link>
 
@@ -55,7 +55,7 @@ export default async function FichaPagoPage({ params }) {
           <h1 className="text-xl font-bold">
             {pago.miembros?.apellido}, {pago.miembros?.nombre}
           </h1>
-          <p className="text-sm text-gray-500">{pago.miembros?.ramas?.nombre}</p>
+          <p className="text-sm text-slate-500">{pago.miembros?.ramas?.nombre}</p>
         </div>
         <span
           className={`text-xs px-2 py-1 rounded-full ml-auto ${ETIQUETA_ESTADO[pago.estado_efectivo].clase}`}
@@ -65,7 +65,7 @@ export default async function FichaPagoPage({ params }) {
       </div>
 
       {pago.confirmado_at && (
-        <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded p-3 mb-4">
+        <p className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-xl p-3 mb-4">
           Confirmado manualmente por el admin (no esperó los 4 días).
         </p>
       )}
@@ -75,7 +75,7 @@ export default async function FichaPagoPage({ params }) {
           href={comprobanteHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="block text-sm text-blue-600 underline mb-4"
+          className="block text-sm text-sky-600 font-semibold mb-4"
         >
           Ver comprobante subido por la familia
         </a>
@@ -83,11 +83,11 @@ export default async function FichaPagoPage({ params }) {
 
       <form
         action={actualizarPago}
-        className="bg-white rounded shadow p-4 space-y-3"
+        className="bg-white rounded-2xl shadow-sm p-5 space-y-3"
       >
         <input type="hidden" name="id" value={pago.id} />
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-slate-600 mb-1">
             Importe
           </label>
           <input
@@ -96,28 +96,28 @@ export default async function FichaPagoPage({ params }) {
             step="0.01"
             min="0"
             defaultValue={pago.importe}
-            className="w-full border rounded px-3 py-2"
+            className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-slate-600 mb-1">
             Fecha de pago
           </label>
           <input
             name="fecha_pago"
             type="date"
             defaultValue={pago.fecha_pago}
-            className="w-full border rounded px-3 py-2"
+            className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-slate-600 mb-1">
             Medio de pago
           </label>
           <select
             name="medio_pago"
             defaultValue={pago.medio_pago ?? ""}
-            className="w-full border rounded px-3 py-2"
+            className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
           >
             <option value="">Sin especificar</option>
             {MEDIOS_PAGO.map((medio) => (
@@ -128,26 +128,26 @@ export default async function FichaPagoPage({ params }) {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-slate-600 mb-1">
             Nota interna
           </label>
           <input
             name="nota_admin"
             defaultValue={pago.nota_admin ?? ""}
-            className="w-full border rounded px-3 py-2"
+            className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
           />
         </div>
         <div className="flex gap-3">
           <button
             type="submit"
-            className="flex-1 bg-blue-600 text-white rounded py-2 font-medium"
+            className="flex-1 bg-sky-600 text-white rounded-full py-2.5 font-bold"
           >
             Guardar cambios
           </button>
           {pago.estado_efectivo === "pendiente" && (
             <button
               formAction={confirmarPago}
-              className="flex-1 border border-green-300 text-green-700 rounded py-2 font-medium"
+              className="flex-1 border border-green-300 text-green-700 rounded-full py-2.5 font-bold"
             >
               Confirmar ahora
             </button>
@@ -155,14 +155,14 @@ export default async function FichaPagoPage({ params }) {
           {pago.estado === "activo" ? (
             <button
               formAction={cancelarPago}
-              className="flex-1 border border-red-300 text-red-600 rounded py-2 font-medium"
+              className="flex-1 border border-red-300 text-red-600 rounded-full py-2.5 font-bold"
             >
               Cancelar pago
             </button>
           ) : (
             <button
               formAction={reactivarPago}
-              className="flex-1 border border-green-300 text-green-700 rounded py-2 font-medium"
+              className="flex-1 border border-green-300 text-green-700 rounded-full py-2.5 font-bold"
             >
               Reactivar pago
             </button>
@@ -170,14 +170,14 @@ export default async function FichaPagoPage({ params }) {
         </div>
       </form>
 
-      <div className="bg-white rounded shadow p-4 mt-4">
+      <div className="bg-white rounded-2xl shadow-sm p-5 mt-4">
         <h2 className="font-semibold mb-3">Reasignar a otro miembro</h2>
         <form action={reasignarPago} className="flex flex-wrap items-center gap-2">
           <input type="hidden" name="id" value={pago.id} />
           <select
             name="nuevo_miembro_id"
             defaultValue={pago.miembro_id}
-            className="border rounded px-3 py-2 text-sm flex-1 min-w-[10rem]"
+            className="border border-slate-200 rounded-xl px-4 py-2.5 text-sm flex-1 min-w-[10rem]"
           >
             {(miembros ?? []).map((m) => (
               <option key={m.id} value={m.id}>
@@ -187,7 +187,7 @@ export default async function FichaPagoPage({ params }) {
           </select>
           <button
             type="submit"
-            className="bg-blue-600 text-white rounded px-4 py-2 text-sm font-medium"
+            className="bg-sky-600 text-white rounded-full px-4 py-2 text-sm font-bold"
           >
             Reasignar
           </button>

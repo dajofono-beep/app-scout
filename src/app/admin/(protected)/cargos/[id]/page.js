@@ -17,7 +17,7 @@ export default async function FichaCargoPage({ params }) {
 
   return (
     <div className="max-w-lg">
-      <Link href="/admin/cargos" className="text-sm text-blue-600 underline">
+      <Link href="/admin/cargos" className="text-sm text-sky-600 font-semibold">
         ← Volver
       </Link>
 
@@ -31,12 +31,12 @@ export default async function FichaCargoPage({ params }) {
           <h1 className="text-xl font-bold">
             {cargo.miembros?.apellido}, {cargo.miembros?.nombre}
           </h1>
-          <p className="text-sm text-gray-500">{cargo.miembros?.ramas?.nombre}</p>
+          <p className="text-sm text-slate-500">{cargo.miembros?.ramas?.nombre}</p>
         </div>
         <span
           className={`text-xs px-2 py-1 rounded-full ml-auto ${
             cargo.estado === "cancelado"
-              ? "bg-gray-200 text-gray-600"
+              ? "bg-slate-200 text-slate-600"
               : "bg-green-100 text-green-800"
           }`}
         >
@@ -45,7 +45,7 @@ export default async function FichaCargoPage({ params }) {
       </div>
 
       {cargo.porcentaje_aplicado != null && (
-        <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded p-3 mb-4">
+        <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-xl p-3 mb-4">
           Se aplicó un {cargo.porcentaje_aplicado}% (descuento por hermanos)
           sobre el importe del producto.
         </p>
@@ -53,22 +53,22 @@ export default async function FichaCargoPage({ params }) {
 
       <form
         action={actualizarCargo}
-        className="bg-white rounded shadow p-4 space-y-3"
+        className="bg-white rounded-2xl shadow-sm p-5 space-y-3"
       >
         <input type="hidden" name="id" value={cargo.id} />
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-slate-600 mb-1">
             Concepto
           </label>
           <input
             name="concepto"
             defaultValue={cargo.concepto}
             required
-            className="w-full border rounded px-3 py-2"
+            className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-slate-600 mb-1">
             Importe
           </label>
           <input
@@ -78,11 +78,11 @@ export default async function FichaCargoPage({ params }) {
             min="0"
             defaultValue={cargo.importe}
             required
-            className="w-full border rounded px-3 py-2"
+            className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-slate-600 mb-1">
             Fecha
           </label>
           <input
@@ -90,27 +90,27 @@ export default async function FichaCargoPage({ params }) {
             type="date"
             defaultValue={cargo.fecha}
             required
-            className="w-full border rounded px-3 py-2"
+            className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
           />
         </div>
         <div className="flex gap-3">
           <button
             type="submit"
-            className="flex-1 bg-blue-600 text-white rounded py-2 font-medium"
+            className="flex-1 bg-sky-600 text-white rounded-full py-2.5 font-bold"
           >
             Guardar cambios
           </button>
           {cargo.estado === "activo" ? (
             <button
               formAction={cancelarCargo}
-              className="flex-1 border border-red-300 text-red-600 rounded py-2 font-medium"
+              className="flex-1 border border-red-300 text-red-600 rounded-full py-2.5 font-bold"
             >
               Cancelar cargo
             </button>
           ) : (
             <button
               formAction={reactivarCargo}
-              className="flex-1 border border-green-300 text-green-700 rounded py-2 font-medium"
+              className="flex-1 border border-green-300 text-green-700 rounded-full py-2.5 font-bold"
             >
               Reactivar cargo
             </button>
