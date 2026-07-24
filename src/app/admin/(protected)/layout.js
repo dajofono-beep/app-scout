@@ -36,7 +36,14 @@ export default async function AdminLayout({ children }) {
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-sky-50">
       <nav className="md:w-56 shrink-0 bg-white border-b md:border-b-0 md:border-r border-sky-100 p-4 flex md:flex-col gap-3">
-        <p className="text-sm text-slate-400 md:mb-2">Hola, {admin.nombre}</p>
+        <div className="flex items-center gap-2 md:mb-2">
+          <img
+            src="/icono-azimut.png"
+            alt="Azimut"
+            className="w-9 h-9 rounded-lg shrink-0"
+          />
+          <p className="text-sm text-slate-400">Hola, {admin.nombre}</p>
+        </div>
         <div className="flex flex-wrap md:flex-col gap-2 md:gap-1 flex-1">
           {NAV_ITEMS.map((item) => (
             <Link

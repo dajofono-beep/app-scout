@@ -374,11 +374,18 @@ export default async function MiCuentaPage() {
   return (
     <div className="min-h-screen bg-sky-50">
       <header className="bg-white border-b border-sky-100 p-4 flex items-center justify-between">
-        <div>
-          <p className="font-bold text-slate-800">
-            {miembro.apellido}, {miembro.nombre}
-          </p>
-          <p className="text-sm text-slate-400">{miembro.ramas?.nombre}</p>
+        <div className="flex items-center gap-3">
+          <img
+            src="/icono-azimut.png"
+            alt="Azimut"
+            className="w-10 h-10 rounded-xl shrink-0"
+          />
+          <div>
+            <p className="font-bold text-slate-800">
+              {miembro.apellido}, {miembro.nombre}
+            </p>
+            <p className="text-sm text-slate-400">{miembro.ramas?.nombre}</p>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <Link

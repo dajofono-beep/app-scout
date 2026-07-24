@@ -39,7 +39,12 @@ export default function AdminLoginPage() {
         onSubmit={handleSubmit}
         className="w-full max-w-sm bg-white rounded-3xl shadow-sm p-6 space-y-4"
       >
-        <h1 className="text-xl font-bold text-center text-slate-800">
+        <img
+          src="/logo-azimut.png"
+          alt="Azimut - Grupo Scout Libertador San Martín"
+          className="w-full max-w-[240px] mx-auto"
+        />
+        <h1 className="text-base font-semibold text-center text-slate-500">
           Ingreso administrador
         </h1>
 
