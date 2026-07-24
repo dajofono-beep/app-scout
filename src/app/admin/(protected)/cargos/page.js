@@ -50,7 +50,7 @@ export default async function CargosPage({ searchParams }) {
   let cargosQuery = supabase
     .from("cargos")
     .select("*, miembros(id, nombre, apellido, rama_id)")
-    .order("created_at", { ascending: false })
+    .order("fecha", { ascending: false })
     .limit(100);
 
   if (miembroIds) cargosQuery = cargosQuery.in("miembro_id", miembroIds);
