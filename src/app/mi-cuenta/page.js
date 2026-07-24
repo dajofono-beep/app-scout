@@ -3,12 +3,11 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { urlFirmadaComprobante } from "@/lib/supabase/comprobantes";
-import { MEDIOS_PAGO } from "@/lib/medios-pago";
 import LogoutButton from "./logout-button";
 import CuentaTabs from "./cuenta-tabs";
 import MovimientosTabs from "./movimientos-tabs";
 import Torta3D from "./torta3d";
-import { crearPago } from "./actions";
+import PagoForm from "./pago-form";
 
 const PALETA_CATEGORICA = [
   "#2f80b8",
@@ -23,8 +22,6 @@ const PALETA_CATEGORICA = [
 
 const quitarSufijoCuota = (concepto) =>
   concepto.replace(/\s*\(cuota \d+\/\d+\)$/, "");
-
-const hoy = () => new Date().toISOString().slice(0, 10);
 
 const formatoMoneda = (n) =>
   Number(n).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
@@ -197,78 +194,11 @@ export default async function MiCuentaPage() {
   ].sort((a, b) => (a.fecha < b.fecha ? 1 : a.fecha > b.fecha ? -1 : 0));
 
   const panelPago = (
-    <section className="bg-white rounded-2xl shadow-sm p-5">
-      <h2 className="font-bold mb-3">Cargar un pago</h2>
-      <form action={crearPago} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        {esFamiliaConVarios && (
-          <select
-            name="miembro_id"
-            required
-            defaultValue={miembro.id}
-            className="border border-slate-200 rounded-xl px-4 py-2.5 sm:col-span-3"
-          >
-            {(familiares ?? []).map((f) => (
-              <option key={f.id} value={f.id}>
-                Para: {f.apellido}, {f.nombre}
-              </option>
-            ))}
-          </select>
-        )}
-        {!esFamiliaConVarios && (
-          <input type="hidden" name="miembro_id" value={miembro.id} />
-        )}
-        <input
-          name="importe"
-          type="number"
-          step="0.01"
-          min="0"
-          required
-          placeholder="Importe"
-          className="border border-slate-200 rounded-xl px-4 py-2.5"
-        />
-        <input
-          name="fecha_pago"
-          type="date"
-          required
-          defaultValue={hoy()}
-          max={hoy()}
-          className="border border-slate-200 rounded-xl px-4 py-2.5"
-        />
-        <select
-          name="medio_pago"
-          defaultValue=""
-          className="border border-slate-200 rounded-xl px-4 py-2.5"
-        >
-          <option value="">Medio de pago...</option>
-          {MEDIOS_PAGO.map((medio) => (
-            <option key={medio} value={medio}>
-              {medio}
-            </option>
-          ))}
-        </select>
-        <div className="sm:col-span-3">
-          <label className="block text-xs text-slate-500 mb-1">
-            Comprobante de la transferencia (opcional)
-          </label>
-          <input
-            type="file"
-            name="comprobante"
-            accept="image/*"
-            className="text-sm w-full"
-          />
-        </div>
-        <button
-          type="submit"
-          className="sm:col-span-3 bg-sky-600 text-white rounded-full py-2.5 font-bold"
-        >
-          Registrar pago
-        </button>
-      </form>
-      <p className="text-xs text-slate-500 mt-2">
-        El pago queda como &quot;Pendiente&quot; por 4 días, tiempo en el que
-        el administrador puede revisarlo. Luego se acredita solo.
-      </p>
-    </section>
+    <PagoForm
+      esFamiliaConVarios={esFamiliaConVarios}
+      familiares={familiares}
+      miembroId={miembro.id}
+    />
   );
 
   const cargosActivos = (cargos ?? []).filter((c) => c.estado === "activo");
