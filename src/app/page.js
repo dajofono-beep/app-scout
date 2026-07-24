@@ -78,19 +78,16 @@ export default function FamilyLoginPage() {
 
   return (
     <div
-      className={`${quicksand.variable} min-h-screen flex items-center justify-center bg-sky-50 px-4 py-10`}
+      className={`${quicksand.variable} min-h-screen flex items-start justify-center bg-sky-50 px-4 pt-12 pb-10`}
       style={{ fontFamily: "var(--font-quicksand)" }}
     >
       <div className="w-full max-w-sm">
-        <div className="bg-white rounded-3xl shadow-sm p-6">
+        <div className="bg-white rounded-3xl shadow-sm px-6 pt-4 pb-6">
           <img
             src="/logo-azimut.png"
             alt="Azimut - Grupo Scout Libertador San Martín"
-            className="w-full max-w-[240px] mx-auto"
+            className="w-full max-w-[340px] mx-auto mb-1"
           />
-          <h1 className="text-base font-semibold text-center text-slate-500 mb-6">
-            Cuentas corrientes del grupo
-          </h1>
 
           {cargando ? (
             <p className="text-sm text-slate-400 text-center">Cargando...</p>
