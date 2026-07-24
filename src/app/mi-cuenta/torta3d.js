@@ -30,23 +30,22 @@ export default function Torta3D({ titulo, labels, valores, colores }) {
   return (
     <div>
       {titulo && <p className="text-center text-sm text-gray-500 mb-3">{titulo}</p>}
-      <div className="relative w-[220px] h-[165px] mx-auto mb-4">
+      <div className="relative w-[200px] h-[212px] mx-auto mb-4">
         <div
-          className="absolute top-4 left-0 w-[220px] h-[140px] rounded-full"
-          style={{ background: gradiente, transform: "scaleY(0.62)", filter: "brightness(0.55)" }}
+          className="absolute top-3 left-0 w-[200px] h-[200px] rounded-full"
+          style={{ background: gradiente, filter: "brightness(0.55)" }}
         />
         <div
           role="img"
           aria-label={descripcion}
-          className="absolute top-0 left-0 w-[220px] h-[140px] rounded-full shadow-lg"
-          style={{ background: gradiente, transform: "scaleY(0.62)" }}
+          className="absolute top-0 left-0 w-[200px] h-[200px] rounded-full shadow-lg"
+          style={{ background: gradiente }}
         />
         <div
-          className="absolute top-0 left-0 w-[220px] h-[140px] rounded-full pointer-events-none"
+          className="absolute top-0 left-0 w-[200px] h-[200px] rounded-full pointer-events-none"
           style={{
-            transform: "scaleY(0.62)",
             background:
-              "radial-gradient(ellipse at 35% 25%, rgba(255,255,255,0.35), transparent 55%)",
+              "radial-gradient(circle at 35% 25%, rgba(255,255,255,0.35), transparent 55%)",
           }}
         />
       </div>

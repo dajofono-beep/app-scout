@@ -11,14 +11,14 @@ import Torta3D from "./torta3d";
 import { crearPago } from "./actions";
 
 const PALETA_CATEGORICA = [
-  "#0f9b8e",
-  "#ef6461",
-  "#f2a541",
+  "#2f80b8",
+  "#6ab6e6",
   "#5b5f97",
   "#2ec4b6",
-  "#d64550",
+  "#8ecae6",
+  "#3d5a80",
   "#7c9885",
-  "#e0a458",
+  "#f2a541",
 ];
 
 const quitarSufijoCuota = (concepto) =>
@@ -75,36 +75,36 @@ function estiloMovimiento(m) {
   if (m.tipo === "cargo") {
     if (m.estado === "cancelado") {
       return {
-        iconoClase: "bg-gray-300",
+        iconoClase: "bg-gray-100 text-gray-400",
         montoClase: "text-gray-400 line-through",
-        badge: { texto: "Cancelado", clase: "bg-gray-200 text-gray-600" },
+        badge: { texto: "Cancelado", clase: "bg-gray-100 text-gray-500" },
       };
     }
     return {
-      iconoClase: "bg-red-500",
-      montoClase: "text-red-600",
+      iconoClase: "bg-red-50 text-red-500",
+      montoClase: "text-red-500",
       badge: null,
     };
   }
 
   if (m.estado === "cancelado") {
     return {
-      iconoClase: "bg-gray-300",
+      iconoClase: "bg-gray-100 text-gray-400",
       montoClase: "text-gray-400 line-through",
-      badge: { texto: "Cancelado", clase: "bg-gray-200 text-gray-600" },
+      badge: { texto: "Cancelado", clase: "bg-gray-100 text-gray-500" },
     };
   }
   if (m.estado === "pendiente") {
     return {
-      iconoClase: "bg-amber-400",
-      montoClase: "text-amber-700",
-      badge: { texto: "Pendiente", clase: "bg-amber-100 text-amber-800" },
+      iconoClase: "bg-amber-50 text-amber-500",
+      montoClase: "text-amber-600",
+      badge: { texto: "Pendiente", clase: "bg-amber-50 text-amber-700" },
     };
   }
   return {
-    iconoClase: "bg-green-500",
-    montoClase: "text-green-700",
-    badge: { texto: "Acreditado", clase: "bg-green-100 text-green-800" },
+    iconoClase: "bg-emerald-50 text-emerald-500",
+    montoClase: "text-emerald-600",
+    badge: { texto: "Acreditado", clase: "bg-emerald-50 text-emerald-700" },
   };
 }
 
@@ -197,15 +197,15 @@ export default async function MiCuentaPage() {
   ].sort((a, b) => (a.fecha < b.fecha ? 1 : a.fecha > b.fecha ? -1 : 0));
 
   const panelPago = (
-    <section className="bg-white rounded-lg shadow p-4">
-      <h2 className="font-semibold mb-3">Cargar un pago</h2>
+    <section className="bg-white rounded-2xl shadow-sm p-5">
+      <h2 className="font-bold mb-3">Cargar un pago</h2>
       <form action={crearPago} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {esFamiliaConVarios && (
           <select
             name="miembro_id"
             required
             defaultValue={miembro.id}
-            className="border rounded px-3 py-2 sm:col-span-3"
+            className="border border-slate-200 rounded-xl px-4 py-2.5 sm:col-span-3"
           >
             {(familiares ?? []).map((f) => (
               <option key={f.id} value={f.id}>
@@ -224,7 +224,7 @@ export default async function MiCuentaPage() {
           min="0"
           required
           placeholder="Importe"
-          className="border rounded px-3 py-2"
+          className="border border-slate-200 rounded-xl px-4 py-2.5"
         />
         <input
           name="fecha_pago"
@@ -232,9 +232,13 @@ export default async function MiCuentaPage() {
           required
           defaultValue={hoy()}
           max={hoy()}
-          className="border rounded px-3 py-2"
+          className="border border-slate-200 rounded-xl px-4 py-2.5"
         />
-        <select name="medio_pago" defaultValue="" className="border rounded px-3 py-2">
+        <select
+          name="medio_pago"
+          defaultValue=""
+          className="border border-slate-200 rounded-xl px-4 py-2.5"
+        >
           <option value="">Medio de pago...</option>
           {MEDIOS_PAGO.map((medio) => (
             <option key={medio} value={medio}>
@@ -243,7 +247,7 @@ export default async function MiCuentaPage() {
           ))}
         </select>
         <div className="sm:col-span-3">
-          <label className="block text-xs text-gray-500 mb-1">
+          <label className="block text-xs text-slate-500 mb-1">
             Comprobante de la transferencia (opcional)
           </label>
           <input
@@ -255,12 +259,12 @@ export default async function MiCuentaPage() {
         </div>
         <button
           type="submit"
-          className="sm:col-span-3 bg-blue-600 text-white rounded py-2 font-medium"
+          className="sm:col-span-3 bg-sky-600 text-white rounded-full py-2.5 font-bold"
         >
           Registrar pago
         </button>
       </form>
-      <p className="text-xs text-gray-500 mt-2">
+      <p className="text-xs text-slate-500 mt-2">
         El pago queda como &quot;Pendiente&quot; por 4 días, tiempo en el que
         el administrador puede revisarlo. Luego se acredita solo.
       </p>
@@ -278,7 +282,7 @@ export default async function MiCuentaPage() {
     titulo: `Sobre el total de cargos generados (${formatoMoneda(totalCargos)})`,
     labels: ["Pagado", "Pendiente de acreditar", "Adeudado"],
     valores: [pagadoTotal, pendienteTotal, adeudadoTotal],
-    colores: ["#22c55e", "#fbbf24", "#ef4444"],
+    colores: ["#10b981", "#f59e0b", "#ef4444"],
   };
 
   const porConcepto = new Map();
@@ -295,16 +299,16 @@ export default async function MiCuentaPage() {
   };
 
   const panelListado = (
-    <section className="space-y-2">
+    <section className="space-y-2.5">
       {movimientos.map((m) => {
         const estilo = estiloMovimiento(m);
         return (
           <div
             key={m.id}
-            className="bg-white rounded-lg shadow p-3 flex items-center gap-3"
+            className="bg-white rounded-2xl shadow-sm p-4 flex items-center gap-3"
           >
             <span
-              className={`w-9 h-9 rounded-full flex items-center justify-center text-white shrink-0 ${estilo.iconoClase}`}
+              className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${estilo.iconoClase}`}
             >
               <IconoFlecha
                 direccion={m.tipo === "pago" ? "arriba" : "abajo"}
@@ -312,7 +316,7 @@ export default async function MiCuentaPage() {
               />
             </span>
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-gray-900 truncate">
+              <p className="font-bold text-slate-800 truncate">
                 {m.titulo}
                 {m.porcentaje_aplicado != null && (
                   <span className="text-xs text-amber-700 font-normal">
@@ -321,7 +325,7 @@ export default async function MiCuentaPage() {
                   </span>
                 )}
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-slate-400">
                 {m.fecha}
                 {esFamiliaConVarios && ` · ${nombrePorId[m.miembro_id]}`}
               </p>
@@ -332,19 +336,19 @@ export default async function MiCuentaPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Ver comprobante"
-                className="shrink-0 text-gray-400 hover:text-blue-600"
+                className="shrink-0 text-slate-400 hover:text-sky-600"
               >
                 <IconoComprobante className="w-5 h-5" />
               </a>
             )}
             <div className="text-right shrink-0">
-              <p className={`font-semibold ${estilo.montoClase}`}>
+              <p className={`font-bold ${estilo.montoClase}`}>
                 {m.tipo === "cargo" ? "-" : "+"}
                 {formatoMoneda(m.importe)}
               </p>
               {estilo.badge && (
                 <span
-                  className={`text-xs px-2 py-0.5 rounded-full ${estilo.badge.clase}`}
+                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${estilo.badge.clase}`}
                 >
                   {estilo.badge.texto}
                 </span>
@@ -354,7 +358,7 @@ export default async function MiCuentaPage() {
         );
       })}
       {movimientos.length === 0 && (
-        <p className="text-gray-500 text-sm">Todavía no hay movimientos.</p>
+        <p className="text-slate-500 text-sm">Todavía no hay movimientos.</p>
       )}
     </section>
   );
@@ -368,16 +372,19 @@ export default async function MiCuentaPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b p-4 flex items-center justify-between">
+    <div className="min-h-screen bg-sky-50">
+      <header className="bg-white border-b border-sky-100 p-4 flex items-center justify-between">
         <div>
-          <p className="font-medium">
+          <p className="font-bold text-slate-800">
             {miembro.apellido}, {miembro.nombre}
           </p>
-          <p className="text-sm text-gray-500">{miembro.ramas?.nombre}</p>
+          <p className="text-sm text-slate-400">{miembro.ramas?.nombre}</p>
         </div>
-        <div className="flex items-center gap-4">
-          <Link href="/cambiar-clave" className="text-sm text-blue-600 underline">
+        <div className="flex items-center gap-3">
+          <Link
+            href="/cambiar-clave"
+            className="text-xs font-semibold text-sky-600 hover:text-sky-700"
+          >
             Cambiar contraseña
           </Link>
           <LogoutButton />
@@ -385,24 +392,23 @@ export default async function MiCuentaPage() {
       </header>
 
       <main className="max-w-2xl mx-auto p-4 space-y-4">
-        <section className="bg-white rounded-lg shadow p-4">
-          <p className="text-sm text-gray-500">
+        <section className="bg-gradient-to-br from-sky-600 to-sky-400 text-white rounded-3xl shadow-md p-5">
+          <p className="text-sm text-white/90">
             {esFamiliaConVarios ? "Saldo total de la familia" : "Saldo actual"}
           </p>
           <p className="text-3xl font-bold">{formatoMoneda(saldoTotal)}</p>
           {pendienteTotal > 0 && (
-            <p className="text-sm text-amber-700 mt-1">
-              Hay {formatoMoneda(pendienteTotal)} en pagos pendientes de
-              acreditar.
+            <p className="text-xs bg-white/20 rounded-full px-3 py-1 inline-block mt-2">
+              {formatoMoneda(pendienteTotal)} en pagos pendientes de acreditar
             </p>
           )}
 
           {esFamiliaConVarios && (
-            <div className="mt-3 pt-3 border-t space-y-1">
+            <div className="mt-3 pt-3 border-t border-white/20 space-y-1">
               {(saldos ?? []).map((s) => (
                 <div key={s.miembro_id} className="flex justify-between text-sm">
-                  <span className="text-gray-600">{nombrePorId[s.miembro_id]}</span>
-                  <span className="font-medium">{formatoMoneda(s.saldo)}</span>
+                  <span className="text-white/85">{nombrePorId[s.miembro_id]}</span>
+                  <span className="font-bold">{formatoMoneda(s.saldo)}</span>
                 </div>
               ))}
             </div>

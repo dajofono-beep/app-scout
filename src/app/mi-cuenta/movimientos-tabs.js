@@ -4,7 +4,7 @@ import { useState } from "react";
 
 const BOTONES = [
   { id: "listado", texto: "Listado" },
-  { id: "cobertura", texto: "Pagos vs. Cargos" },
+  { id: "cobertura", texto: "Pagos/Cargos" },
   { id: "detalle", texto: "Detalle de cargos" },
 ];
 
@@ -13,14 +13,16 @@ export default function MovimientosTabs({ panelListado, panelCobertura, panelDet
 
   return (
     <div>
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-1.5 mb-4">
         {BOTONES.map((b) => (
           <button
             key={b.id}
             type="button"
             onClick={() => setVista(b.id)}
-            className={`flex-1 text-xs sm:text-sm font-medium rounded-lg py-2 px-1 ${
-              vista === b.id ? "bg-blue-600 text-white" : "bg-white text-gray-600 shadow"
+            className={`flex-1 text-xs sm:text-sm font-bold rounded-2xl py-2 px-1 border transition-colors ${
+              vista === b.id
+                ? "bg-sky-50 border-sky-600 text-sky-700"
+                : "bg-white border-slate-200 text-slate-500"
             }`}
           >
             {b.texto}
@@ -30,10 +32,10 @@ export default function MovimientosTabs({ panelListado, panelCobertura, panelDet
 
       <div className={vista === "listado" ? "" : "hidden"}>{panelListado}</div>
       <div className={vista === "cobertura" ? "" : "hidden"}>
-        <div className="bg-white rounded-lg shadow p-4">{panelCobertura}</div>
+        <div className="bg-white rounded-2xl shadow-sm p-5">{panelCobertura}</div>
       </div>
       <div className={vista === "detalle" ? "" : "hidden"}>
-        <div className="bg-white rounded-lg shadow p-4">{panelDetalle}</div>
+        <div className="bg-white rounded-2xl shadow-sm p-5">{panelDetalle}</div>
       </div>
     </div>
   );

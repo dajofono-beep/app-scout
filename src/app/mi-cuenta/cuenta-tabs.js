@@ -11,10 +11,10 @@ export default function CuentaTabs({ panelPago, panelMovimientos }) {
         <button
           type="button"
           onClick={() => setActiva("pago")}
-          className={`flex-1 text-sm font-medium rounded-lg py-2 ${
+          className={`flex-1 text-sm font-bold rounded-full py-2.5 transition-colors ${
             activa === "pago"
-              ? "bg-blue-600 text-white"
-              : "bg-white text-gray-600 shadow"
+              ? "bg-sky-600 text-white"
+              : "bg-white text-slate-500 shadow-sm"
           }`}
         >
           Cargar un pago
@@ -22,10 +22,10 @@ export default function CuentaTabs({ panelPago, panelMovimientos }) {
         <button
           type="button"
           onClick={() => setActiva("movimientos")}
-          className={`flex-1 text-sm font-medium rounded-lg py-2 ${
+          className={`flex-1 text-sm font-bold rounded-full py-2.5 transition-colors ${
             activa === "movimientos"
-              ? "bg-blue-600 text-white"
-              : "bg-white text-gray-600 shadow"
+              ? "bg-sky-600 text-white"
+              : "bg-white text-slate-500 shadow-sm"
           }`}
         >
           Movimientos
