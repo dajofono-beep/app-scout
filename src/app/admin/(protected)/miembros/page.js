@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import ImportarMiembrosForm from "./importar-form";
 import FiltrosMiembros from "./filtros";
-import { iniciales, colorPara } from "./avatar";
+import { iniciales, colorParaRama } from "./avatar";
 
 export default async function MiembrosPage({ searchParams }) {
   const params = await searchParams;
@@ -101,7 +101,7 @@ export default async function MiembrosPage({ searchParams }) {
                     className="flex items-center gap-3"
                   >
                     <span
-                      className={`w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0 ${colorPara(m.rama_id)}`}
+                      className={`w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0 ${colorParaRama(m.ramas?.nombre)}`}
                     >
                       {iniciales(m.nombre, m.apellido)}
                     </span>

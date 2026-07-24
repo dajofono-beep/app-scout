@@ -18,6 +18,19 @@ export function colorPara(id) {
   return PALETA[hash % PALETA.length];
 }
 
+const COLOR_POR_RAMA = {
+  Manada: "bg-yellow-500",
+  "Unidad Scout": "bg-green-500",
+  Caminantes: "bg-sky-500",
+  Rovers: "bg-red-500",
+  Adultos: "bg-violet-500",
+};
+
+// Color fijo según el nombre de la rama (usado en la sección Miembros).
+export function colorParaRama(nombreRama) {
+  return COLOR_POR_RAMA[nombreRama] ?? "bg-slate-400";
+}
+
 export function iniciales(nombre, apellido) {
   const a = (apellido ?? "").trim()[0] ?? "";
   const n = (nombre ?? "").trim()[0] ?? "";

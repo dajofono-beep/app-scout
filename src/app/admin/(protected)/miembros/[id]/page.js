@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { actualizarMiembro } from "../actions";
-import { iniciales, colorPara } from "../avatar";
+import { iniciales, colorParaRama } from "../avatar";
 
 const formatoMoneda = (n) =>
   Number(n).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
@@ -40,7 +40,7 @@ export default async function FichaMiembroPage({ params }) {
 
       <div className="flex items-center gap-3 mt-2 mb-6">
         <span
-          className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold shrink-0 ${colorPara(miembro.rama_id)}`}
+          className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold shrink-0 ${colorParaRama(miembro.ramas?.nombre)}`}
         >
           {iniciales(miembro.nombre, miembro.apellido)}
         </span>
