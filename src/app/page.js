@@ -88,6 +88,9 @@ export default function FamilyLoginPage() {
             alt="Azimut - Grupo Scout Libertador San Martín"
             className="w-full max-w-[340px] mx-auto mb-1"
           />
+          <h1 className="text-base font-semibold text-center text-slate-500 mb-6">
+            Ingreso Participantes Grupo
+          </h1>
 
           {cargando ? (
             <p className="text-sm text-slate-400 text-center">Cargando...</p>
