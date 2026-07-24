@@ -112,11 +112,11 @@ export default async function AdminDashboardPage({ searchParams }) {
             !ramaSeleccionada ? "ring-2 ring-sky-500" : ""
           }`}
         >
-          <p className="text-sm text-slate-400">Miembros activos</p>
+          <p className="text-sm font-bold text-slate-400">Miembros activos</p>
           <p className="text-3xl font-bold text-slate-800">{totalMiembros}</p>
         </Link>
         <div className="bg-white rounded-2xl shadow-sm p-5 flex-1">
-          <p className="text-sm text-slate-400 mb-3">Miembros por rama</p>
+          <p className="text-sm font-bold text-slate-400 mb-3">Miembros por rama</p>
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
             {porRama.map((r) => {
               const color = COLOR_RAMA[r.nombre] ?? COLOR_DEFAULT;
@@ -143,22 +143,22 @@ export default async function AdminDashboardPage({ searchParams }) {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
         <div className="bg-white rounded-2xl shadow-sm p-5">
-          <p className="text-sm text-slate-400">Saldo total</p>
+          <p className="text-sm font-bold text-slate-400">Saldo total</p>
           <p className="text-3xl font-bold text-slate-800">{formatoMoneda(totalSaldo)}</p>
         </div>
         <div className="bg-white rounded-2xl shadow-sm p-5">
-          <p className="text-sm text-slate-400">Pagos pendientes</p>
+          <p className="text-sm font-bold text-slate-400">Pagos pendientes</p>
           <p className="text-3xl font-bold text-amber-600">{formatoMoneda(totalPendiente)}</p>
         </div>
         <div className="bg-white rounded-2xl shadow-sm p-5">
-          <p className="text-sm text-slate-400">Pagos acreditados</p>
+          <p className="text-sm font-bold text-slate-400">Pagos acreditados</p>
           <p className="text-3xl font-bold text-emerald-600">{formatoMoneda(totalAcreditado)}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="bg-white rounded-2xl shadow-sm p-5">
-          <p className="text-sm font-semibold text-slate-600 mb-3">
+          <p className="text-sm font-bold text-slate-600 mb-3">
             Últimos 5 pagos realizados
           </p>
           <div className="space-y-3">
@@ -187,7 +187,7 @@ export default async function AdminDashboardPage({ searchParams }) {
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm p-5">
-          <p className="text-sm font-semibold text-slate-600 mb-3">
+          <p className="text-sm font-bold text-slate-600 mb-3">
             Los 5 miembros con menos deuda
           </p>
           <div className="space-y-2">
@@ -204,7 +204,7 @@ export default async function AdminDashboardPage({ searchParams }) {
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm p-5">
-          <p className="text-sm font-semibold text-slate-600 mb-3">
+          <p className="text-sm font-bold text-slate-600 mb-3">
             Los 5 miembros con más deuda
           </p>
           <div className="space-y-2">
