@@ -1,13 +1,13 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { urlFirmadaComprobante } from "@/lib/supabase/comprobantes";
-import LogoutButton from "./logout-button";
 import CuentaTabs from "./cuenta-tabs";
 import MovimientosTabs from "./movimientos-tabs";
 import Torta3D from "./torta3d";
 import PagoForm from "./pago-form";
+import Social from "./social";
+import CuentaNav from "./cuenta-nav";
 
 const PALETA_CATEGORICA = [
   "#2f80b8",
@@ -162,6 +162,28 @@ export default async function MiCuentaPage() {
     }))
   );
 
+  const hoy = new Date();
+  const anioActual = hoy.getFullYear();
+  const mesActual = hoy.getMonth();
+  const diaActual = hoy.getDate();
+
+  const { data: miembrosSocial } = await supabase
+    .from("miembros_social")
+    .select("id, nombre, apellido, fecha_nacimiento")
+    .not("fecha_nacimiento", "is", null);
+
+  const cumpleanosTodos = (miembrosSocial ?? []).map((m) => {
+    const [, mesNac, diaNac] = m.fecha_nacimiento.split("-").map(Number);
+    return { id: m.id, nombre: `${m.nombre} ${m.apellido}`, mes: mesNac, dia: diaNac };
+  });
+
+  const { data: efemeridesTodas } = await supabase
+    .from("efemerides")
+    .select("*")
+    .eq("activo", true)
+    .order("mes")
+    .order("dia");
+
   const saldoTotal = (saldos ?? []).reduce((acc, s) => acc + Number(s.saldo), 0);
   const pendienteTotal = (saldos ?? []).reduce(
     (acc, s) => acc + Number(s.total_pagos_pendientes),
@@ -301,59 +323,51 @@ export default async function MiCuentaPage() {
     />
   );
 
-  return (
-    <div className="min-h-screen bg-sky-50">
-      <header className="bg-white border-b border-sky-100 p-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <img
-            src="/icono-azimut.png"
-            alt="Azimut"
-            className="w-10 h-10 rounded-xl shrink-0"
-          />
-          <div>
-            <p className="font-bold text-slate-800">
-              {miembro.apellido}, {miembro.nombre}
-            </p>
-            <p className="text-sm text-slate-400">{miembro.ramas?.nombre}</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <Link
-            href="/cambiar-clave"
-            className="text-xs font-semibold text-sky-600 hover:text-sky-700"
-          >
-            Cambiar contraseña
-          </Link>
-          <LogoutButton />
-        </div>
-      </header>
+  const panelSocial = (
+    <Social
+      cumpleanosTodos={cumpleanosTodos}
+      efemeridesTodas={efemeridesTodas ?? []}
+      anio={anioActual}
+      mes={mesActual}
+      diaHoy={diaActual}
+    />
+  );
 
-      <main className="max-w-2xl mx-auto p-4 space-y-4">
-        <section className="bg-gradient-to-br from-sky-600 to-sky-400 text-white rounded-3xl shadow-md p-5">
-          <p className="text-sm text-white/90">
-            {esFamiliaConVarios ? "Saldo total de la familia" : "Saldo actual"}
+  const panelPrincipal = (
+    <div className="space-y-4">
+      <section className="bg-gradient-to-br from-sky-600 to-sky-400 text-white rounded-3xl shadow-md p-5">
+        <p className="text-sm text-white/90">
+          {esFamiliaConVarios ? "Saldo total de la familia" : "Saldo actual"}
+        </p>
+        <p className="text-3xl font-bold">{formatoMoneda(saldoTotal)}</p>
+        {pendienteTotal > 0 && (
+          <p className="text-xs bg-white/20 rounded-full px-3 py-1 inline-block mt-2">
+            {formatoMoneda(pendienteTotal)} en pagos pendientes de acreditar
           </p>
-          <p className="text-3xl font-bold">{formatoMoneda(saldoTotal)}</p>
-          {pendienteTotal > 0 && (
-            <p className="text-xs bg-white/20 rounded-full px-3 py-1 inline-block mt-2">
-              {formatoMoneda(pendienteTotal)} en pagos pendientes de acreditar
-            </p>
-          )}
+        )}
 
-          {esFamiliaConVarios && (
-            <div className="mt-3 pt-3 border-t border-white/20 space-y-1">
-              {(saldos ?? []).map((s) => (
-                <div key={s.miembro_id} className="flex justify-between text-sm">
-                  <span className="text-white/85">{nombrePorId[s.miembro_id]}</span>
-                  <span className="font-bold">{formatoMoneda(s.saldo)}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
+        {esFamiliaConVarios && (
+          <div className="mt-3 pt-3 border-t border-white/20 space-y-1">
+            {(saldos ?? []).map((s) => (
+              <div key={s.miembro_id} className="flex justify-between text-sm">
+                <span className="text-white/85">{nombrePorId[s.miembro_id]}</span>
+                <span className="font-bold">{formatoMoneda(s.saldo)}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
 
-        <CuentaTabs panelPago={panelPago} panelMovimientos={panelMovimientos} />
-      </main>
+      <CuentaTabs panelPago={panelPago} panelMovimientos={panelMovimientos} />
     </div>
+  );
+
+  return (
+    <CuentaNav
+      nombreCompleto={`${miembro.apellido}, ${miembro.nombre}`}
+      ramaNombre={miembro.ramas?.nombre}
+      panelPrincipal={panelPrincipal}
+      panelSocial={panelSocial}
+    />
   );
 }
