@@ -68,7 +68,7 @@ export default function FamilyLoginPage() {
     setLoading(false);
 
     if (error) {
-      setError("DNI incorrecto.");
+      setError("Contraseña incorrecta.");
       return;
     }
 
@@ -146,7 +146,7 @@ export default function FamilyLoginPage() {
 
               <div>
                 <label className="block text-sm font-semibold text-slate-600 mb-1">
-                  DNI
+                  Contraseña
                 </label>
                 <input
                   type="password"
