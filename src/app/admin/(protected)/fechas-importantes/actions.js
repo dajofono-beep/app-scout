@@ -15,13 +15,17 @@ async function requireSession() {
   return supabase;
 }
 
+const TIPOS_VALIDOS = ["efemeride", "fecha_scout"];
+
 function leerCampos(formData) {
   const nombre = formData.get("nombre")?.toString().trim();
+  const tipo = formData.get("tipo")?.toString();
   const fecha_inicio = formData.get("fecha_inicio")?.toString();
   const fecha_fin = formData.get("fecha_fin")?.toString();
   const mensaje = formData.get("mensaje")?.toString().trim() || null;
 
   if (!nombre) throw new Error("El nombre es obligatorio");
+  if (!TIPOS_VALIDOS.includes(tipo)) throw new Error("Elegí un tipo de fecha válido");
   if (!fecha_inicio || !fecha_fin) {
     throw new Error("La fecha de inicio y de finalización son obligatorias");
   }
@@ -29,7 +33,7 @@ function leerCampos(formData) {
     throw new Error("La fecha de finalización no puede ser anterior a la de inicio");
   }
 
-  return { nombre, fecha_inicio, fecha_fin, mensaje };
+  return { nombre, tipo, fecha_inicio, fecha_fin, mensaje };
 }
 
 export async function crearFechaImportante(formData) {

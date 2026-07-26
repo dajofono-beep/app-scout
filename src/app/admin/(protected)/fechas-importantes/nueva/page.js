@@ -29,6 +29,20 @@ export default function NuevaFechaImportantePage() {
             className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
           />
         </div>
+        <div>
+          <label className="block text-sm font-semibold text-slate-600 mb-1">
+            Tipo de fecha
+          </label>
+          <select
+            name="tipo"
+            required
+            defaultValue="efemeride"
+            className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
+          >
+            <option value="efemeride">Efeméride</option>
+            <option value="fecha_scout">Fecha scout</option>
+          </select>
+        </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-sm font-semibold text-slate-600 mb-1">

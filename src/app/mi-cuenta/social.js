@@ -140,9 +140,9 @@ export default function Social({
             ›
           </button>
         </div>
-        <div className="grid grid-cols-7 gap-1.5 text-center text-[11px] max-w-[280px] mx-auto">
+        <div className="grid grid-cols-7 gap-2 text-center text-sm">
           {DIAS_SEMANA.map((d, i) => (
-            <div key={`${d}-${i}`} className="text-slate-400 font-bold py-0.5">
+            <div key={`${d}-${i}`} className="text-slate-400 font-bold py-1">
               {d}
             </div>
           ))}
@@ -154,6 +154,8 @@ export default function Social({
             const fechasDelDia = fechasImportantesDelMes.filter(
               (f) => f.fecha_inicio <= diaStr && diaStr <= f.fecha_fin
             );
+            const hayEfemeride = fechasDelDia.some((f) => f.tipo === "efemeride");
+            const hayFechaScout = fechasDelDia.some((f) => f.tipo === "fecha_scout");
             const nombres = [
               ...cumplesDelDia.map((c) => c.nombre),
               ...fechasDelDia.map((f) => f.nombre),
@@ -162,18 +164,21 @@ export default function Social({
               <div
                 key={d}
                 title={nombres || undefined}
-                className={`aspect-square rounded-lg flex flex-col items-center justify-center gap-0.5 text-sm font-semibold ${
+                className={`aspect-square rounded-lg flex flex-col items-center justify-center gap-1 text-base font-semibold ${
                   esHoy ? "bg-sky-600 text-white font-bold" : "text-slate-700"
                 }`}
               >
                 <span>{d}</span>
-                {(cumplesDelDia.length > 0 || fechasDelDia.length > 0) && (
-                  <span className="flex gap-0.5">
+                {(cumplesDelDia.length > 0 || hayEfemeride || hayFechaScout) && (
+                  <span className="flex gap-1">
                     {cumplesDelDia.length > 0 && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-pink-400" />
+                      <img src="/Torta.png" alt="Cumpleaños" className="w-6 h-6 object-contain" />
                     )}
-                    {fechasDelDia.length > 0 && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+                    {hayEfemeride && (
+                      <img src="/Bandera.png" alt="Efeméride" className="w-6 h-6 object-contain" />
+                    )}
+                    {hayFechaScout && (
+                      <img src="/Brujula.png" alt="Fecha scout" className="w-6 h-6 object-contain" />
                     )}
                   </span>
                 )}
@@ -181,12 +186,15 @@ export default function Social({
             );
           })}
         </div>
-        <div className="flex gap-4 mt-3 text-xs text-slate-400">
+        <div className="flex flex-wrap gap-3 mt-3 text-xs text-slate-400">
           <span className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-pink-400" /> Cumpleaños
+            <img src="/Torta.png" alt="" className="w-5 h-5 object-contain" /> Cumpleaños
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-sky-400" /> Fecha importante
+            <img src="/Bandera.png" alt="" className="w-5 h-5 object-contain" /> Efeméride
+          </span>
+          <span className="flex items-center gap-1.5">
+            <img src="/Brujula.png" alt="" className="w-5 h-5 object-contain" /> Fecha scout
           </span>
         </div>
       </section>

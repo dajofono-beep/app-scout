@@ -33,6 +33,7 @@ export default function FiltrosFechasImportantes({ valores }) {
       <th className="p-2"></th>
       <th className="p-2"></th>
       <th className="p-2"></th>
+      <th className="p-2"></th>
     </tr>
   );
 }

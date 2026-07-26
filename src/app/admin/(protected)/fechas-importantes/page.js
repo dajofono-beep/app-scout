@@ -4,6 +4,11 @@ import FiltrosFechasImportantes from "./filtros";
 
 const formatoRango = (inicio, fin) => (inicio === fin ? inicio : `${inicio} al ${fin}`);
 
+const ETIQUETA_TIPO = {
+  efemeride: { texto: "Efeméride", clase: "bg-sky-50 text-sky-700" },
+  fecha_scout: { texto: "Fecha scout", clase: "bg-violet-50 text-violet-700" },
+};
+
 export default async function FechasImportantesPage({ searchParams }) {
   const params = await searchParams;
   const valores = { nombre: params?.nombre ?? "" };
@@ -46,6 +51,7 @@ export default async function FechasImportantesPage({ searchParams }) {
           <thead>
             <tr className="text-left text-slate-500 border-b">
               <th className="p-3 font-bold">Nombre</th>
+              <th className="p-3 font-bold">Tipo</th>
               <th className="p-3 font-bold">Fecha(s)</th>
               <th className="p-3 font-bold">Estado</th>
               <th className="p-3"></th>
@@ -62,6 +68,13 @@ export default async function FechasImportantesPage({ searchParams }) {
                   >
                     {f.nombre}
                   </Link>
+                </td>
+                <td className="p-3">
+                  <span
+                    className={`text-xs px-2 py-1 rounded-full ${ETIQUETA_TIPO[f.tipo]?.clase ?? "bg-slate-100 text-slate-500"}`}
+                  >
+                    {ETIQUETA_TIPO[f.tipo]?.texto ?? f.tipo}
+                  </span>
                 </td>
                 <td className="p-3 text-slate-600">
                   {formatoRango(f.fecha_inicio, f.fecha_fin)}
