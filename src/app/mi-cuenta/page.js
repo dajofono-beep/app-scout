@@ -177,12 +177,11 @@ export default async function MiCuentaPage() {
     return { id: m.id, nombre: `${m.nombre} ${m.apellido}`, mes: mesNac, dia: diaNac };
   });
 
-  const { data: efemeridesTodas } = await supabase
-    .from("efemerides")
+  const { data: fechasImportantesTodas } = await supabase
+    .from("fechas_importantes")
     .select("*")
     .eq("activo", true)
-    .order("mes")
-    .order("dia");
+    .order("fecha_inicio");
 
   const saldoTotal = (saldos ?? []).reduce((acc, s) => acc + Number(s.saldo), 0);
   const pendienteTotal = (saldos ?? []).reduce(
@@ -326,7 +325,7 @@ export default async function MiCuentaPage() {
   const panelSocial = (
     <Social
       cumpleanosTodos={cumpleanosTodos}
-      efemeridesTodas={efemeridesTodas ?? []}
+      fechasImportantesTodas={fechasImportantesTodas ?? []}
       anio={anioActual}
       mes={mesActual}
       diaHoy={diaActual}

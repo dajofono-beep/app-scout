@@ -1,61 +1,49 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { actualizarEfemeride, eliminarEfemeride } from "../actions";
+import { actualizarFechaImportante, eliminarFechaImportante } from "../actions";
 
-const MESES = [
-  "Enero",
-  "Febrero",
-  "Marzo",
-  "Abril",
-  "Mayo",
-  "Junio",
-  "Julio",
-  "Agosto",
-  "Septiembre",
-  "Octubre",
-  "Noviembre",
-  "Diciembre",
-];
-
-export default async function FichaEfemeridePage({ params }) {
+export default async function FichaFechaImportantePage({ params }) {
   const { id } = await params;
   const supabase = await createClient();
 
-  const { data: efemeride } = await supabase
-    .from("efemerides")
+  const { data: fechaImportante } = await supabase
+    .from("fechas_importantes")
     .select("*")
     .eq("id", id)
     .maybeSingle();
-  if (!efemeride) notFound();
+  if (!fechaImportante) notFound();
 
   return (
     <div className="max-w-md">
-      <Link href="/admin/efemerides" className="text-sm text-sky-600 font-semibold">
+      <Link
+        href="/admin/fechas-importantes"
+        className="text-sm text-sky-600 font-semibold"
+      >
         ← Volver
       </Link>
-      <h1 className="text-2xl font-bold mt-2 mb-6">{efemeride.nombre}</h1>
+      <h1 className="text-2xl font-bold mt-2 mb-6">{fechaImportante.nombre}</h1>
 
-      {efemeride.imagen_url && (
+      {fechaImportante.imagen_url && (
         <img
-          src={efemeride.imagen_url}
-          alt={efemeride.nombre}
+          src={fechaImportante.imagen_url}
+          alt={fechaImportante.nombre}
           className="w-full rounded-2xl shadow-sm mb-4"
         />
       )}
 
       <form
-        action={actualizarEfemeride}
+        action={actualizarFechaImportante}
         className="bg-white rounded-2xl shadow-sm p-5 space-y-3"
       >
-        <input type="hidden" name="id" value={efemeride.id} />
+        <input type="hidden" name="id" value={fechaImportante.id} />
         <div>
           <label className="block text-sm font-semibold text-slate-600 mb-1">
             Nombre
           </label>
           <input
             name="nombre"
-            defaultValue={efemeride.nombre}
+            defaultValue={fechaImportante.nombre}
             required
             className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
           />
@@ -63,31 +51,24 @@ export default async function FichaEfemeridePage({ params }) {
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-sm font-semibold text-slate-600 mb-1">
-              Mes
+              Fecha de inicio
             </label>
-            <select
-              name="mes"
+            <input
+              name="fecha_inicio"
+              type="date"
+              defaultValue={fechaImportante.fecha_inicio}
               required
-              defaultValue={efemeride.mes}
               className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
-            >
-              {MESES.map((mes, i) => (
-                <option key={mes} value={i + 1}>
-                  {mes}
-                </option>
-              ))}
-            </select>
+            />
           </div>
           <div>
             <label className="block text-sm font-semibold text-slate-600 mb-1">
-              Día
+              Fecha de fin
             </label>
             <input
-              name="dia"
-              type="number"
-              min="1"
-              max="31"
-              defaultValue={efemeride.dia}
+              name="fecha_fin"
+              type="date"
+              defaultValue={fechaImportante.fecha_fin}
               required
               className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
             />
@@ -100,18 +81,24 @@ export default async function FichaEfemeridePage({ params }) {
           <textarea
             name="mensaje"
             rows={3}
-            defaultValue={efemeride.mensaje ?? ""}
+            defaultValue={fechaImportante.mensaje ?? ""}
             className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
           />
         </div>
         <div>
           <label className="block text-sm font-semibold text-slate-600 mb-1">
-            {efemeride.imagen_url ? "Reemplazar imagen / placa" : "Imagen / placa alusiva (opcional)"}
+            {fechaImportante.imagen_url
+              ? "Reemplazar imagen / placa"
+              : "Imagen / placa alusiva (opcional)"}
           </label>
           <input type="file" name="imagen" accept="image/*" className="text-sm w-full" />
         </div>
         <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="activo" defaultChecked={efemeride.activo} />
+          <input
+            type="checkbox"
+            name="activo"
+            defaultChecked={fechaImportante.activo}
+          />
           Activa
         </label>
 
@@ -123,7 +110,7 @@ export default async function FichaEfemeridePage({ params }) {
             Guardar cambios
           </button>
           <button
-            formAction={eliminarEfemeride}
+            formAction={eliminarFechaImportante}
             className="flex-1 border border-red-300 text-red-600 rounded-full py-2.5 font-bold"
           >
             Eliminar

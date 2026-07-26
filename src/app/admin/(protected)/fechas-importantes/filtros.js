@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-export default function FiltrosEfemerides({ valores }) {
+export default function FiltrosFechasImportantes({ valores }) {
   const router = useRouter();
 
   function actualizar(cambios) {
@@ -12,7 +12,9 @@ export default function FiltrosEfemerides({ valores }) {
       if (valor) params.set(clave, valor);
     }
     const query = params.toString();
-    router.push(query ? `/admin/efemerides?${query}` : "/admin/efemerides");
+    router.push(
+      query ? `/admin/fechas-importantes?${query}` : "/admin/fechas-importantes"
+    );
   }
 
   return (

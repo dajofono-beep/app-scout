@@ -18,10 +18,27 @@ const MESES = [
   "diciembre",
 ];
 
-// cumpleanosTodos: [{ id, nombre, mes, dia }] (mes 1-12, todo el grupo)
-// efemeridesTodas: [{ id, nombre, mes, dia, mensaje, imagen_url }] (activas)
+const pad = (n) => String(n).padStart(2, "0");
+const fechaStr = (anio, mes1indexado, dia) => `${anio}-${pad(mes1indexado)}-${pad(dia)}`;
+
+function formatoRango(fechaInicio, fechaFin) {
+  const [aI, mI, dI] = fechaInicio.split("-").map(Number);
+  const [aF, mF, dF] = fechaFin.split("-").map(Number);
+  if (fechaInicio === fechaFin) return `${dI} de ${MESES[mI - 1]}`;
+  if (mI === mF && aI === aF) return `${dI} al ${dF} de ${MESES[mI - 1]}`;
+  return `${dI} de ${MESES[mI - 1]} al ${dF} de ${MESES[mF - 1]}`;
+}
+
+// cumpleanosTodos: [{ id, nombre, mes, dia }] (mes 1-12, recurrente, todo el grupo)
+// fechasImportantesTodas: [{ id, nombre, fecha_inicio, fecha_fin, mensaje, imagen_url }] (activas)
 // anio/mes (0-indexado)/diaHoy: fecha real de "hoy", provista por el servidor
-export default function Social({ cumpleanosTodos, efemeridesTodas, anio, mes, diaHoy }) {
+export default function Social({
+  cumpleanosTodos,
+  fechasImportantesTodas,
+  anio,
+  mes,
+  diaHoy,
+}) {
   const [anioVisto, setAnioVisto] = useState(anio);
   const [mesVisto, setMesVisto] = useState(mes);
 
@@ -43,30 +60,31 @@ export default function Social({ cumpleanosTodos, efemeridesTodas, anio, mes, di
     }
   }
 
+  const hoyStr = fechaStr(anio, mes + 1, diaHoy);
   const cumpleanosHoy = cumpleanosTodos.filter(
     (c) => c.mes === mes + 1 && c.dia === diaHoy
   );
-  const efemeridesHoy = efemeridesTodas.filter(
-    (e) => e.mes === mes + 1 && e.dia === diaHoy
+  const fechasImportantesHoy = fechasImportantesTodas.filter(
+    (f) => f.fecha_inicio <= hoyStr && hoyStr <= f.fecha_fin
   );
 
   const cumpleanosDelMes = cumpleanosTodos.filter((c) => c.mes === mesVisto + 1);
-  const efemeridesDelMes = efemeridesTodas.filter((e) => e.mes === mesVisto + 1);
 
   const esMesActual = anioVisto === anio && mesVisto === mes;
 
   const primerDiaSemana = (new Date(anioVisto, mesVisto, 1).getDay() + 6) % 7;
   const totalDias = new Date(anioVisto, mesVisto + 1, 0).getDate();
+  const inicioMesStr = fechaStr(anioVisto, mesVisto + 1, 1);
+  const finMesStr = fechaStr(anioVisto, mesVisto + 1, totalDias);
+
+  const fechasImportantesDelMes = fechasImportantesTodas.filter(
+    (f) => f.fecha_fin >= inicioMesStr && f.fecha_inicio <= finMesStr
+  );
 
   const porDiaCumple = new Map();
   for (const c of cumpleanosDelMes) {
     if (!porDiaCumple.has(c.dia)) porDiaCumple.set(c.dia, []);
     porDiaCumple.get(c.dia).push(c);
-  }
-  const porDiaEfeme = new Map();
-  for (const e of efemeridesDelMes) {
-    if (!porDiaEfeme.has(e.dia)) porDiaEfeme.set(e.dia, []);
-    porDiaEfeme.get(e.dia).push(e);
   }
 
   const celdas = [];
@@ -88,14 +106,14 @@ export default function Social({ cumpleanosTodos, efemeridesTodas, anio, mes, di
         </div>
       ))}
 
-      {efemeridesHoy.map((e) => (
-        <div key={e.id} className="bg-white rounded-2xl shadow-sm overflow-hidden">
-          {e.imagen_url && (
-            <img src={e.imagen_url} alt={e.nombre} className="w-full" />
+      {fechasImportantesHoy.map((f) => (
+        <div key={f.id} className="bg-white rounded-2xl shadow-sm overflow-hidden">
+          {f.imagen_url && (
+            <img src={f.imagen_url} alt={f.nombre} className="w-full" />
           )}
           <div className="p-5">
-            <p className="font-bold text-slate-800">{e.nombre}</p>
-            {e.mensaje && <p className="text-sm text-slate-600 mt-1">{e.mensaje}</p>}
+            <p className="font-bold text-slate-800">{f.nombre}</p>
+            {f.mensaje && <p className="text-sm text-slate-600 mt-1">{f.mensaje}</p>}
           </div>
         </div>
       ))}
@@ -131,11 +149,14 @@ export default function Social({ cumpleanosTodos, efemeridesTodas, anio, mes, di
           {celdas.map((d, i) => {
             if (d === null) return <div key={`vacio-${i}`} />;
             const esHoy = esMesActual && d === diaHoy;
-            const tieneCumple = porDiaCumple.has(d);
-            const tieneEfeme = porDiaEfeme.has(d);
+            const diaStr = fechaStr(anioVisto, mesVisto + 1, d);
+            const cumplesDelDia = porDiaCumple.get(d) ?? [];
+            const fechasDelDia = fechasImportantesDelMes.filter(
+              (f) => f.fecha_inicio <= diaStr && diaStr <= f.fecha_fin
+            );
             const nombres = [
-              ...(porDiaCumple.get(d) ?? []).map((c) => c.nombre),
-              ...(porDiaEfeme.get(d) ?? []).map((e) => e.nombre),
+              ...cumplesDelDia.map((c) => c.nombre),
+              ...fechasDelDia.map((f) => f.nombre),
             ].join(", ");
             return (
               <div
@@ -146,12 +167,12 @@ export default function Social({ cumpleanosTodos, efemeridesTodas, anio, mes, di
                 }`}
               >
                 <span>{d}</span>
-                {(tieneCumple || tieneEfeme) && (
+                {(cumplesDelDia.length > 0 || fechasDelDia.length > 0) && (
                   <span className="flex gap-0.5">
-                    {tieneCumple && (
+                    {cumplesDelDia.length > 0 && (
                       <span className="w-1.5 h-1.5 rounded-full bg-pink-400" />
                     )}
-                    {tieneEfeme && (
+                    {fechasDelDia.length > 0 && (
                       <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
                     )}
                   </span>
@@ -165,7 +186,7 @@ export default function Social({ cumpleanosTodos, efemeridesTodas, anio, mes, di
             <span className="w-2 h-2 rounded-full bg-pink-400" /> Cumpleaños
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-sky-400" /> Efeméride
+            <span className="w-2 h-2 rounded-full bg-sky-400" /> Fecha importante
           </span>
         </div>
       </section>
@@ -194,21 +215,21 @@ export default function Social({ cumpleanosTodos, efemeridesTodas, anio, mes, di
 
         <section className="bg-white rounded-2xl shadow-sm p-5">
           <p className="font-bold text-slate-800 mb-3 capitalize">
-            Efemérides en {MESES[mesVisto]}
+            Fechas importantes en {MESES[mesVisto]}
           </p>
           <div className="space-y-1.5">
-            {[...efemeridesDelMes]
-              .sort((a, b) => a.dia - b.dia)
-              .map((e) => (
-                <div key={e.id} className="flex items-center justify-between text-sm">
-                  <span className="text-slate-700">{e.nombre}</span>
-                  <span className="text-slate-400">
-                    {e.dia} de {MESES[mesVisto]}
+            {[...fechasImportantesDelMes]
+              .sort((a, b) => (a.fecha_inicio < b.fecha_inicio ? -1 : 1))
+              .map((f) => (
+                <div key={f.id} className="flex items-center justify-between text-sm gap-2">
+                  <span className="text-slate-700">{f.nombre}</span>
+                  <span className="text-slate-400 text-right shrink-0">
+                    {formatoRango(f.fecha_inicio, f.fecha_fin)}
                   </span>
                 </div>
               ))}
-            {efemeridesDelMes.length === 0 && (
-              <p className="text-sm text-slate-400">No hay efemérides este mes.</p>
+            {fechasImportantesDelMes.length === 0 && (
+              <p className="text-sm text-slate-400">No hay fechas importantes este mes.</p>
             )}
           </div>
         </section>

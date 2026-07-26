@@ -1,11 +1,12 @@
-// El bucket "efemerides" es público (a diferencia de "comprobantes"):
-// la imagen/placa de una efeméride no es información sensible, así
-// que se sirve directo por su URL pública, sin firmar.
+// El bucket "efemerides" (nombre interno, sin cambios) es público a
+// diferencia de "comprobantes": la imagen/placa de una fecha importante
+// no es información sensible, así que se sirve directo por su URL
+// pública, sin firmar.
 const BUCKET = "efemerides";
 const MAX_BYTES = 5 * 1024 * 1024;
 const TIPOS_PERMITIDOS = ["image/png", "image/jpeg", "image/webp"];
 
-export async function subirImagenEfemeride(admin, efemerideId, archivo) {
+export async function subirImagenFechaImportante(admin, fechaImportanteId, archivo) {
   if (archivo.size > MAX_BYTES) {
     throw new Error("La imagen no puede pesar más de 5 MB");
   }
@@ -14,7 +15,7 @@ export async function subirImagenEfemeride(admin, efemerideId, archivo) {
   }
 
   const extension = archivo.name.split(".").pop() || "jpg";
-  const ruta = `${efemerideId}/imagen.${extension}`;
+  const ruta = `${fechaImportanteId}/imagen.${extension}`;
 
   const { error } = await admin.storage
     .from(BUCKET)
