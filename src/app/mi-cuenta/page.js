@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { urlFirmadaComprobante } from "@/lib/supabase/comprobantes";
 import CuentaTabs from "./cuenta-tabs";
 import MovimientosTabs from "./movimientos-tabs";
+import BarraProgreso from "./barra-progreso";
 import Torta3D from "./torta3d";
 import PagoForm from "./pago-form";
 import Social from "./social";
@@ -233,7 +234,10 @@ export default async function MiCuentaPage() {
     titulo: `Sobre el total de cargos generados (${formatoMoneda(totalCargos)})`,
     labels: ["Pagado", "Pendiente de acreditar", "Adeudado"],
     valores: [pagadoTotal, pendienteTotal, adeudadoTotal],
-    colores: ["#10b981", "#f59e0b", "#ef4444"],
+    // "Adeudado" no se pinta en la barra: queda como el tramo vacío,
+    // así se ve literalmente cuánto falta pagar en vez de otro color.
+    colores: ["#10b981", "#f59e0b", null],
+    total: totalCargos,
   };
 
   const porConcepto = new Map();
@@ -314,10 +318,21 @@ export default async function MiCuentaPage() {
     </section>
   );
 
+  const panelCobertura = (
+    <div className="space-y-4">
+      <div className="bg-white rounded-2xl shadow-sm p-5">
+        <BarraProgreso {...datosDetalle} />
+      </div>
+      <div className="bg-white rounded-2xl shadow-sm p-5">
+        <BarraProgreso {...datosCobertura} />
+      </div>
+    </div>
+  );
+
   const panelMovimientos = (
     <MovimientosTabs
       panelListado={panelListado}
-      panelCobertura={<Torta3D {...datosCobertura} />}
+      panelCobertura={panelCobertura}
       panelDetalle={<Torta3D {...datosDetalle} />}
     />
   );

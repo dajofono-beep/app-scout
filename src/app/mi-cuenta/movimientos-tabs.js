@@ -31,9 +31,7 @@ export default function MovimientosTabs({ panelListado, panelCobertura, panelDet
       </div>
 
       <div className={vista === "listado" ? "" : "hidden"}>{panelListado}</div>
-      <div className={vista === "cobertura" ? "" : "hidden"}>
-        <div className="bg-white rounded-2xl shadow-sm p-5">{panelCobertura}</div>
-      </div>
+      <div className={vista === "cobertura" ? "" : "hidden"}>{panelCobertura}</div>
       <div className={vista === "detalle" ? "" : "hidden"}>
         <div className="bg-white rounded-2xl shadow-sm p-5">{panelDetalle}</div>
       </div>
