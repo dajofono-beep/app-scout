@@ -121,31 +121,32 @@ export default function Social({
         </div>
       ))}
 
-      <section className="bg-white rounded-2xl shadow-sm p-5">
-        <div className="flex items-center justify-between mb-3">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
+      <section className="bg-white rounded-2xl shadow-sm p-3">
+        <div className="flex items-center justify-between mb-2">
           <button
             type="button"
             onClick={mesAnterior}
             aria-label="Mes anterior"
-            className="w-8 h-8 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 font-bold"
+            className="w-7 h-7 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 font-bold"
           >
             ‹
           </button>
-          <p className="font-bold text-slate-800 capitalize">
+          <p className="font-bold text-slate-800 capitalize text-sm">
             {MESES[mesVisto]} {anioVisto}
           </p>
           <button
             type="button"
             onClick={mesSiguiente}
             aria-label="Mes siguiente"
-            className="w-8 h-8 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 font-bold"
+            className="w-7 h-7 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 font-bold"
           >
             ›
           </button>
         </div>
-        <div className="grid grid-cols-7 gap-2 text-center text-sm">
+        <div className="grid grid-cols-7 gap-1 text-center text-sm">
           {DIAS_SEMANA.map((d, i) => (
-            <div key={`${d}-${i}`} className="text-slate-400 font-bold py-1">
+            <div key={`${d}-${i}`} className="text-slate-400 font-bold py-0.5">
               {d}
             </div>
           ))}
@@ -189,7 +190,7 @@ export default function Social({
             );
           })}
         </div>
-        <div className="flex flex-wrap gap-3 mt-3 text-xs text-slate-400">
+        <div className="flex flex-wrap gap-2 mt-2 text-xs text-slate-400">
           <span className="flex items-center gap-1.5">
             <img src="/Torta.png" alt="" className="w-5 h-5 object-contain" /> Cumpleaños
           </span>
@@ -202,15 +203,15 @@ export default function Social({
         </div>
       </section>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <section className="bg-white rounded-2xl shadow-sm p-5">
-          <div className="flex items-center justify-between mb-3">
+      <div className="flex flex-col gap-4">
+        <section className="bg-white rounded-2xl shadow-sm p-5 h-48 lg:h-auto lg:flex-1 flex flex-col min-h-0">
+          <div className="flex items-center justify-between mb-3 shrink-0">
             <p className="font-bold text-slate-800 capitalize">
               Cumpleaños en {MESES[mesVisto]}
             </p>
             <BuscadorMiembros directorio={directorio} ramas={ramasDirectorio} />
           </div>
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 overflow-y-auto min-h-0 flex-1">
             {[...cumpleanosDelMes]
               .sort((a, b) => a.dia - b.dia)
               .map((c) => (
@@ -227,11 +228,11 @@ export default function Social({
           </div>
         </section>
 
-        <section className="bg-white rounded-2xl shadow-sm p-5">
-          <p className="font-bold text-slate-800 mb-3 capitalize">
+        <section className="bg-white rounded-2xl shadow-sm p-5 h-48 lg:h-auto lg:flex-1 flex flex-col min-h-0">
+          <p className="font-bold text-slate-800 mb-3 capitalize shrink-0">
             Fechas importantes en {MESES[mesVisto]}
           </p>
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 overflow-y-auto min-h-0 flex-1">
             {[...fechasImportantesDelMes]
               .sort((a, b) => (a.fecha_inicio < b.fecha_inicio ? -1 : 1))
               .map((f) => (
@@ -247,6 +248,7 @@ export default function Social({
             )}
           </div>
         </section>
+      </div>
       </div>
     </div>
   );
