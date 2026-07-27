@@ -430,7 +430,7 @@ export default async function MiCuentaPage() {
           {esFamiliaConVarios ? "Saldo total de la familia" : "Saldo actual"}
         </p>
         <p className="text-3xl font-bold">{formatoMoneda(saldoTotal)}</p>
-        <div className="flex gap-4 mt-1 text-xs text-white/80">
+        <div className="flex gap-4 mt-3 text-xs text-white/80">
           <span>
             Deuda total <span className="font-bold text-white">{formatoMoneda(totalCargos)}</span>
           </span>
