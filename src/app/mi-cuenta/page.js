@@ -121,6 +121,12 @@ export default async function MiCuentaPage() {
     .maybeSingle();
   if (!miembro) redirect("/");
 
+  const { data: perfil } = await supabase
+    .from("perfiles")
+    .select("foto_url")
+    .eq("miembro_id", miembro.id)
+    .maybeSingle();
+
   // RLS ya devuelve exactamente los miembros de mi misma familia (o solo yo,
   // si no tengo familia asignada).
   const { data: familiares } = await supabase
@@ -170,19 +176,50 @@ export default async function MiCuentaPage() {
 
   const { data: miembrosSocial } = await supabase
     .from("miembros_social")
-    .select("id, nombre, apellido, fecha_nacimiento")
-    .not("fecha_nacimiento", "is", null);
+    .select("id, nombre, apellido, rama_id, fecha_nacimiento");
 
-  const cumpleanosTodos = (miembrosSocial ?? []).map((m) => {
-    const [, mesNac, diaNac] = m.fecha_nacimiento.split("-").map(Number);
-    return { id: m.id, nombre: `${m.nombre} ${m.apellido}`, mes: mesNac, dia: diaNac };
-  });
+  const cumpleanosTodos = (miembrosSocial ?? [])
+    .filter((m) => m.fecha_nacimiento)
+    .map((m) => {
+      const [, mesNac, diaNac] = m.fecha_nacimiento.split("-").map(Number);
+      return { id: m.id, nombre: `${m.nombre} ${m.apellido}`, mes: mesNac, dia: diaNac };
+    });
 
   const { data: fechasImportantesTodas } = await supabase
     .from("fechas_importantes")
     .select("*")
     .eq("activo", true)
     .order("fecha_inicio");
+
+  const { data: ramasSocial } = await supabase.from("ramas").select("id, nombre");
+  const nombreRamaPorId = Object.fromEntries(
+    (ramasSocial ?? []).map((r) => [r.id, r.nombre])
+  );
+
+  const { data: perfilesSocial } = await supabase.from("perfiles").select("*");
+  const perfilPorMiembroId = Object.fromEntries(
+    (perfilesSocial ?? []).map((p) => [p.miembro_id, p])
+  );
+
+  const directorio = (miembrosSocial ?? []).map((m) => {
+    const perfilMiembro = perfilPorMiembroId[m.id];
+    const [, cumpleMes, cumpleDia] = m.fecha_nacimiento
+      ? m.fecha_nacimiento.split("-").map(Number)
+      : [null, null, null];
+    return {
+      id: m.id,
+      nombre: `${m.nombre} ${m.apellido}`,
+      ramaId: m.rama_id,
+      ramaNombre: nombreRamaPorId[m.rama_id] ?? "",
+      cumpleMes,
+      cumpleDia,
+      fotoUrl: perfilMiembro?.foto_url ?? null,
+      telefono: perfilMiembro?.telefono ?? null,
+      redSocial1: perfilMiembro?.red_social_1 ?? null,
+      redSocial2: perfilMiembro?.red_social_2 ?? null,
+      redSocial3: perfilMiembro?.red_social_3 ?? null,
+    };
+  });
 
   const saldoTotal = (saldos ?? []).reduce((acc, s) => acc + Number(s.saldo), 0);
   const pendienteTotal = (saldos ?? []).reduce(
@@ -344,6 +381,8 @@ export default async function MiCuentaPage() {
       anio={anioActual}
       mes={mesActual}
       diaHoy={diaActual}
+      directorio={directorio}
+      ramasDirectorio={ramasSocial ?? []}
     />
   );
 
@@ -380,6 +419,7 @@ export default async function MiCuentaPage() {
     <CuentaNav
       nombreCompleto={`${miembro.apellido}, ${miembro.nombre}`}
       ramaNombre={miembro.ramas?.nombre}
+      fotoUrl={perfil?.foto_url ?? null}
       panelPrincipal={panelPrincipal}
       panelSocial={panelSocial}
     />

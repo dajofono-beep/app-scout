@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import BuscadorMiembros from "./buscador-miembros";
 
 const DIAS_SEMANA = ["L", "M", "X", "J", "V", "S", "D"];
 const MESES = [
@@ -38,6 +39,8 @@ export default function Social({
   anio,
   mes,
   diaHoy,
+  directorio,
+  ramasDirectorio,
 }) {
   const [anioVisto, setAnioVisto] = useState(anio);
   const [mesVisto, setMesVisto] = useState(mes);
@@ -201,9 +204,12 @@ export default function Social({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <section className="bg-white rounded-2xl shadow-sm p-5">
-          <p className="font-bold text-slate-800 mb-3 capitalize">
-            Cumpleaños en {MESES[mesVisto]}
-          </p>
+          <div className="flex items-center justify-between mb-3">
+            <p className="font-bold text-slate-800 capitalize">
+              Cumpleaños en {MESES[mesVisto]}
+            </p>
+            <BuscadorMiembros directorio={directorio} ramas={ramasDirectorio} />
+          </div>
           <div className="space-y-1.5">
             {[...cumpleanosDelMes]
               .sort((a, b) => a.dia - b.dia)

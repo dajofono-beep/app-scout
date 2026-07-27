@@ -12,6 +12,7 @@ const ITEMS = [
 export default function CuentaNav({
   nombreCompleto,
   ramaNombre,
+  fotoUrl,
   panelPrincipal,
   panelSocial,
 }) {
@@ -22,9 +23,9 @@ export default function CuentaNav({
       <nav className="md:w-56 shrink-0 bg-white border-b md:border-b-0 md:border-r border-sky-100 p-4 flex md:flex-col gap-3">
         <div className="flex items-center gap-3 md:mb-2">
           <img
-            src="/icono-azimut.png"
-            alt="Azimut"
-            className="w-10 h-10 rounded-xl shrink-0"
+            src={fotoUrl || "/icono-azimut.png"}
+            alt={fotoUrl ? nombreCompleto : "Azimut"}
+            className="w-10 h-10 rounded-xl shrink-0 object-cover"
           />
           <div>
             <p className="font-bold text-slate-800">{nombreCompleto}</p>
@@ -51,10 +52,10 @@ export default function CuentaNav({
 
         <div className="flex items-center gap-3">
           <Link
-            href="/cambiar-clave"
+            href="/mi-cuenta/perfil"
             className="text-xs font-semibold text-sky-600 hover:text-sky-700"
           >
-            Cambiar contraseña
+            Perfil
           </Link>
           <LogoutButton />
         </div>
