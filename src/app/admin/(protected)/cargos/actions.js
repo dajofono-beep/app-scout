@@ -44,6 +44,7 @@ function generarFilasCargo({ producto, miembro_id, fecha, porcentaje, creado_por
         concepto: producto.nombre,
         importe: importeConDescuento,
         fecha,
+        fecha_vencimiento: producto.fecha_vencimiento ?? null,
         creado_por,
         porcentaje_aplicado: porcentaje,
       },
@@ -57,6 +58,7 @@ function generarFilasCargo({ producto, miembro_id, fecha, porcentaje, creado_por
     concepto: `${producto.nombre} (cuota ${i + 1}/${producto.cantidad_cuotas})`,
     importe,
     fecha: sumarMeses(fecha, i),
+    fecha_vencimiento: producto.fecha_vencimiento ?? null,
     creado_por,
     porcentaje_aplicado: porcentaje,
   }));
@@ -95,7 +97,7 @@ export async function crearCargoIndividual(formData) {
 
   const { data: producto, error: productoError } = await supabase
     .from("productos")
-    .select("id, nombre, importe, es_cuotable, cantidad_cuotas")
+    .select("id, nombre, importe, es_cuotable, cantidad_cuotas, fecha_vencimiento")
     .eq("id", producto_id)
     .single();
   if (productoError) throw new Error(productoError.message);
@@ -128,7 +130,7 @@ export async function crearCargoPorRama(formData) {
 
   const { data: producto, error: productoError } = await supabase
     .from("productos")
-    .select("id, nombre, importe, es_cuotable, cantidad_cuotas")
+    .select("id, nombre, importe, es_cuotable, cantidad_cuotas, fecha_vencimiento")
     .eq("id", producto_id)
     .single();
   if (productoError) throw new Error(productoError.message);
@@ -209,7 +211,9 @@ export async function crearCargoPorFamilia(formData) {
 
   const { data: producto, error: productoError } = await supabase
     .from("productos")
-    .select("id, nombre, importe, es_cuotable, cantidad_cuotas, aplica_descuento_hermanos")
+    .select(
+      "id, nombre, importe, es_cuotable, cantidad_cuotas, aplica_descuento_hermanos, fecha_vencimiento"
+    )
     .eq("id", producto_id)
     .single();
   if (productoError) throw new Error(productoError.message);
@@ -314,13 +318,14 @@ export async function actualizarCargo(formData) {
   const concepto = formData.get("concepto")?.toString().trim();
   const importe = Number(formData.get("importe"));
   const fecha = formData.get("fecha")?.toString();
+  const fecha_vencimiento = formData.get("fecha_vencimiento")?.toString() || null;
 
   if (!concepto || !fecha) throw new Error("Concepto y fecha son obligatorios");
   if (!importe || importe <= 0) throw new Error("El importe debe ser mayor a 0");
 
   const { error } = await supabase
     .from("cargos")
-    .update({ concepto, importe, fecha })
+    .update({ concepto, importe, fecha, fecha_vencimiento })
     .eq("id", id);
   if (error) throw new Error(error.message);
 

@@ -158,6 +158,7 @@ export default async function CargosPage({ searchParams }) {
                 <th className="p-3 font-bold">Concepto</th>
                 <th className="p-3 font-bold">Importe</th>
                 <th className="p-3 font-bold">Fecha</th>
+                <th className="p-3 font-bold">Vencimiento</th>
                 <th className="p-3 font-bold">Estado</th>
                 <th className="p-3"></th>
               </tr>
@@ -191,6 +192,7 @@ export default async function CargosPage({ searchParams }) {
                   </td>
                   <td className="p-3 font-semibold">{formatoMoneda(c.importe)}</td>
                   <td className="p-3 text-slate-600">{c.fecha}</td>
+                  <td className="p-3 text-slate-600">{c.fecha_vencimiento ?? "—"}</td>
                   <td className="p-3">
                     <span
                       className={`text-xs px-2 py-1 rounded-full ${

@@ -93,6 +93,17 @@ export default async function FichaCargoPage({ params }) {
             className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
           />
         </div>
+        <div>
+          <label className="block text-sm font-semibold text-slate-600 mb-1">
+            Fecha de vencimiento (opcional)
+          </label>
+          <input
+            name="fecha_vencimiento"
+            type="date"
+            defaultValue={cargo.fecha_vencimiento ?? ""}
+            className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
+          />
+        </div>
         <div className="flex gap-3">
           <button
             type="submit"

@@ -61,6 +61,21 @@ export default async function FichaProductoPage({ params }) {
             className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
           />
         </div>
+        <div>
+          <label className="block text-sm font-semibold text-slate-600 mb-1">
+            Fecha de vencimiento (opcional)
+          </label>
+          <input
+            name="fecha_vencimiento"
+            type="date"
+            defaultValue={producto.fecha_vencimiento ?? ""}
+            className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
+          />
+          <p className="text-xs text-slate-400 mt-1">
+            Ej. la fecha del campamento. Se copia a cada cargo que se genere con
+            este producto, para ordenarlos y recordarles a las familias.
+          </p>
+        </div>
         <label className="flex items-center gap-2 text-sm">
           <input
             type="checkbox"

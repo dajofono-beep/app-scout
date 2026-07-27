@@ -4,7 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { urlFirmadaComprobante } from "@/lib/supabase/comprobantes";
 import CuentaTabs from "./cuenta-tabs";
 import MovimientosTabs from "./movimientos-tabs";
-import BarraProgreso from "./barra-progreso";
+import LineaTiempoPagos from "./linea-tiempo-pagos";
 import Torta3D from "./torta3d";
 import PagoForm from "./pago-form";
 import Social from "./social";
@@ -233,6 +233,9 @@ export default async function MiCuentaPage() {
       id: `cargo-${c.id}`,
       miembro_id: c.miembro_id,
       fecha: c.fecha,
+      // Los cargos se ordenan por vencimiento (cuándo hay que pagarlos),
+      // no por cuándo se cargaron, para ver rápido lo próximo a vencer.
+      fechaOrden: c.fecha_vencimiento || c.fecha,
       titulo: c.concepto,
       importe: c.importe,
       estado: c.estado,
@@ -244,13 +247,14 @@ export default async function MiCuentaPage() {
       id: `pago-${p.id}`,
       miembro_id: p.miembro_id,
       fecha: p.fecha_pago,
+      fechaOrden: p.fecha_pago,
       titulo: p.medio_pago ? `Pago (${p.medio_pago})` : "Pago",
       importe: p.importe,
       estado: p.estado_efectivo,
       porcentaje_aplicado: null,
       comprobante_href: p.comprobante_href,
     })),
-  ].sort((a, b) => (a.fecha < b.fecha ? 1 : a.fecha > b.fecha ? -1 : 0));
+  ].sort((a, b) => (a.fechaOrden < b.fechaOrden ? -1 : a.fechaOrden > b.fechaOrden ? 1 : 0));
 
   const panelPago = (
     <PagoForm
@@ -265,30 +269,40 @@ export default async function MiCuentaPage() {
   const pagadoTotal = (pagos ?? [])
     .filter((p) => p.estado_efectivo === "acreditado")
     .reduce((acc, p) => acc + Number(p.importe), 0);
-  const adeudadoTotal = Math.max(totalCargos - pagadoTotal - pendienteTotal, 0);
+  const pagosRealizados = pagadoTotal + pendienteTotal;
 
-  const datosCobertura = {
-    titulo: `Sobre el total de cargos generados (${formatoMoneda(totalCargos)})`,
-    labels: ["Pagado", "Pendiente de acreditar", "Adeudado"],
-    valores: [pagadoTotal, pendienteTotal, adeudadoTotal],
-    // "Adeudado" no se pinta en la barra: queda como el tramo vacío,
-    // así se ve literalmente cuánto falta pagar en vez de otro color.
-    colores: ["#10b981", "#f59e0b", null],
-    total: totalCargos,
-  };
-
+  // Cada concepto se ordena por su vencimiento más próximo, para que la
+  // composición muestre primero lo que hay que pagar antes.
   const porConcepto = new Map();
   for (const c of cargosActivos) {
     const label = quitarSufijoCuota(c.concepto);
-    porConcepto.set(label, (porConcepto.get(label) ?? 0) + Number(c.importe));
+    const fechaOrden = c.fecha_vencimiento || c.fecha;
+    const actual = porConcepto.get(label);
+    if (actual) {
+      actual.importe += Number(c.importe);
+      if (fechaOrden < actual.fechaOrden) actual.fechaOrden = fechaOrden;
+    } else {
+      porConcepto.set(label, { importe: Number(c.importe), fechaOrden });
+    }
   }
-  const entradasConcepto = [...porConcepto.entries()];
+  const entradasConcepto = [...porConcepto.entries()].sort((a, b) =>
+    a[1].fechaOrden < b[1].fechaOrden ? -1 : a[1].fechaOrden > b[1].fechaOrden ? 1 : 0
+  );
   const datosDetalle = {
     titulo: "Composición de los cargos por concepto",
     labels: entradasConcepto.map(([label]) => label),
-    valores: entradasConcepto.map(([, importe]) => importe),
+    valores: entradasConcepto.map(([, v]) => v.importe),
     colores: entradasConcepto.map((_, i) => PALETA_CATEGORICA[i % PALETA_CATEGORICA.length]),
   };
+  const colorPorConcepto = Object.fromEntries(
+    entradasConcepto.map(([label], i) => [label, PALETA_CATEGORICA[i % PALETA_CATEGORICA.length]])
+  );
+
+  const conceptosLinea = entradasConcepto.map(([label, v]) => ({
+    label,
+    importe: v.importe,
+    fechaOrden: v.fechaOrden,
+  }));
 
   const panelListado = (
     <section className="space-y-2.5">
@@ -356,14 +370,15 @@ export default async function MiCuentaPage() {
   );
 
   const panelCobertura = (
-    <div className="space-y-4">
-      <div className="bg-white rounded-2xl shadow-sm p-5">
-        <BarraProgreso {...datosDetalle} />
-      </div>
-      <div className="bg-white rounded-2xl shadow-sm p-5">
-        <BarraProgreso {...datosCobertura} />
-      </div>
-    </div>
+    <LineaTiempoPagos
+      conceptos={conceptosLinea}
+      colorPorConcepto={colorPorConcepto}
+      totalCargos={totalCargos}
+      pagadoTotal={pagadoTotal}
+      pendienteTotal={pendienteTotal}
+      pagosRealizados={pagosRealizados}
+      hoyIso={hoy.toISOString().slice(0, 10)}
+    />
   );
 
   const panelMovimientos = (

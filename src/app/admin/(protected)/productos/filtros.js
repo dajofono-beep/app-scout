@@ -31,6 +31,7 @@ export default function FiltrosProductos({ valores }) {
       <th className="p-2"></th>
       <th className="p-2"></th>
       <th className="p-2"></th>
+      <th className="p-2"></th>
       <th className="p-2 font-normal">
         <select
           defaultValue={valores.activo}

@@ -56,6 +56,7 @@ export default async function ProductosPage({ searchParams }) {
               <th className="p-3 font-bold">Importe</th>
               <th className="p-3 font-bold">Cuotable</th>
               <th className="p-3 font-bold">Desc. hermanos</th>
+              <th className="p-3 font-bold">Vencimiento</th>
               <th className="p-3 font-bold">Estado</th>
               <th className="p-3"></th>
             </tr>
@@ -79,6 +80,7 @@ export default async function ProductosPage({ searchParams }) {
                 <td className="p-3 text-slate-600">
                   {p.aplica_descuento_hermanos ? "Sí" : "—"}
                 </td>
+                <td className="p-3 text-slate-600">{p.fecha_vencimiento ?? "—"}</td>
                 <td className="p-3">
                   <span
                     className={`text-xs px-2 py-1 rounded-full ${
