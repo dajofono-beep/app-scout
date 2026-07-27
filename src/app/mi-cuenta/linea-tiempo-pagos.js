@@ -198,7 +198,7 @@ export default function LineaTiempoPagos({
           <p className="font-bold text-emerald-600">{formatoMoneda(pagosRealizados)}</p>
         </div>
         <div className="text-right">
-          <p className="text-slate-400 text-xs">Pago pendiente a la fecha</p>
+          <p className="text-slate-400 text-xs">Saldo pendiente a la fecha</p>
           <p className="font-bold text-amber-600">{formatoMoneda(pagoPendienteALaFecha)}</p>
         </div>
       </div>

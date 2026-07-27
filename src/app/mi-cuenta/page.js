@@ -415,6 +415,14 @@ export default async function MiCuentaPage() {
           {esFamiliaConVarios ? "Saldo total de la familia" : "Saldo actual"}
         </p>
         <p className="text-3xl font-bold">{formatoMoneda(saldoTotal)}</p>
+        <div className="flex gap-4 mt-1 text-xs text-white/80">
+          <span>
+            Deuda total <span className="font-bold text-white">{formatoMoneda(totalCargos)}</span>
+          </span>
+          <span>
+            Total Pagos <span className="font-bold text-white">{formatoMoneda(pagosRealizados)}</span>
+          </span>
+        </div>
         {pendienteTotal > 0 && (
           <p className="text-xs bg-white/20 rounded-full px-3 py-1 inline-block mt-2">
             {formatoMoneda(pendienteTotal)} en pagos pendientes de acreditar
