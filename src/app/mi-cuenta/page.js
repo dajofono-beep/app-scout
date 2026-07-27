@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { urlFirmadaComprobante } from "@/lib/supabase/comprobantes";
 import CuentaTabs from "./cuenta-tabs";
 import MovimientosTabs from "./movimientos-tabs";
+import ListadoTabs from "./listado-tabs";
 import LineaTiempoPagos from "./linea-tiempo-pagos";
 import Torta3D from "./torta3d";
 import PagoForm from "./pago-form";
@@ -312,69 +313,83 @@ export default async function MiCuentaPage() {
     fechaOrden: v.fechaOrden,
   }));
 
-  const panelListado = (
-    <section className="space-y-2.5">
-      {movimientos.map((m) => {
-        const estilo = estiloMovimiento(m);
-        return (
-          <div
-            key={m.id}
-            className="bg-white rounded-2xl shadow-sm p-4 flex items-center gap-3"
-          >
-            <span
-              className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${estilo.iconoClase}`}
+  function renderMovimientos(lista, mensajeVacio) {
+    return (
+      <section className="space-y-2.5">
+        {lista.map((m) => {
+          const estilo = estiloMovimiento(m);
+          return (
+            <div
+              key={m.id}
+              className="bg-white rounded-2xl shadow-sm p-4 flex items-center gap-3"
             >
-              <IconoFlecha
-                direccion={m.tipo === "pago" ? "arriba" : "abajo"}
-                className="w-5 h-5"
-              />
-            </span>
-            <div className="flex-1 min-w-0">
-              <p className="font-bold text-slate-800 truncate">
-                {m.titulo}
-                {m.porcentaje_aplicado != null && (
-                  <span className="text-xs text-amber-700 font-normal">
-                    {" "}
-                    · {m.porcentaje_aplicado}%
+              <span
+                className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${estilo.iconoClase}`}
+              >
+                <IconoFlecha
+                  direccion={m.tipo === "pago" ? "arriba" : "abajo"}
+                  className="w-5 h-5"
+                />
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-slate-800 truncate">
+                  {m.titulo}
+                  {m.porcentaje_aplicado != null && (
+                    <span className="text-xs text-amber-700 font-normal">
+                      {" "}
+                      · {m.porcentaje_aplicado}%
+                    </span>
+                  )}
+                </p>
+                <p className="text-xs text-slate-400">
+                  {m.fecha}
+                  {esFamiliaConVarios && ` · ${nombrePorId[m.miembro_id]}`}
+                </p>
+              </div>
+              {m.comprobante_href && (
+                <a
+                  href={m.comprobante_href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="Ver comprobante"
+                  className="shrink-0 text-slate-400 hover:text-sky-600"
+                >
+                  <IconoComprobante className="w-5 h-5" />
+                </a>
+              )}
+              <div className="text-right shrink-0">
+                <p className={`font-bold ${estilo.montoClase}`}>
+                  {m.tipo === "cargo" ? "-" : "+"}
+                  {formatoMoneda(m.importe)}
+                </p>
+                {estilo.badge && (
+                  <span
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${estilo.badge.clase}`}
+                  >
+                    {estilo.badge.texto}
                   </span>
                 )}
-              </p>
-              <p className="text-xs text-slate-400">
-                {m.fecha}
-                {esFamiliaConVarios && ` · ${nombrePorId[m.miembro_id]}`}
-              </p>
+              </div>
             </div>
-            {m.comprobante_href && (
-              <a
-                href={m.comprobante_href}
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Ver comprobante"
-                className="shrink-0 text-slate-400 hover:text-sky-600"
-              >
-                <IconoComprobante className="w-5 h-5" />
-              </a>
-            )}
-            <div className="text-right shrink-0">
-              <p className={`font-bold ${estilo.montoClase}`}>
-                {m.tipo === "cargo" ? "-" : "+"}
-                {formatoMoneda(m.importe)}
-              </p>
-              {estilo.badge && (
-                <span
-                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${estilo.badge.clase}`}
-                >
-                  {estilo.badge.texto}
-                </span>
-              )}
-            </div>
-          </div>
-        );
-      })}
-      {movimientos.length === 0 && (
-        <p className="text-slate-500 text-sm">Todavía no hay movimientos.</p>
+          );
+        })}
+        {lista.length === 0 && <p className="text-slate-500 text-sm">{mensajeVacio}</p>}
+      </section>
+    );
+  }
+
+  const panelListado = (
+    <ListadoTabs
+      panelTodos={renderMovimientos(movimientos, "Todavía no hay movimientos.")}
+      panelCargos={renderMovimientos(
+        movimientos.filter((m) => m.tipo === "cargo"),
+        "Todavía no hay cargos."
       )}
-    </section>
+      panelPagos={renderMovimientos(
+        movimientos.filter((m) => m.tipo === "pago"),
+        "Todavía no hay pagos."
+      )}
+    />
   );
 
   const panelCobertura = (
