@@ -25,14 +25,26 @@ function formatoFecha(iso) {
   return `${dia} de ${MESES_LARGO[mes - 1]}`;
 }
 
+// Fecha única si todos los pagos de un grupo caen el mismo día, o un
+// rango "del X al Y" si hay varias fechas distintas.
+function formatoRangoFechas(pagosDelGrupo) {
+  if (pagosDelGrupo.length === 0) return "";
+  const fechas = pagosDelGrupo.map((p) => p.fecha).sort();
+  const primera = fechas[0];
+  const ultima = fechas[fechas.length - 1];
+  return primera === ultima
+    ? formatoFecha(primera)
+    : `${formatoFecha(primera)} al ${formatoFecha(ultima)}`;
+}
+
 // conceptos: [{ label, importe, fechaOrden }], ya ordenados por fecha
 // de vencimiento ascendente (el próximo a vencer primero).
+// pagosLinea: [{ id, estado, importe, fecha }] (acreditados y pendientes).
 export default function LineaTiempoPagos({
   conceptos,
   colorPorConcepto,
   totalCargos,
-  pagadoTotal,
-  pendienteTotal,
+  pagosLinea,
   pagosRealizados,
   hoyIso,
 }) {
@@ -59,12 +71,27 @@ export default function LineaTiempoPagos({
   const deudaALaFecha = segmentos.slice(0, paso).reduce((acc, s) => acc + s.importe, 0);
   const pagoPendienteALaFecha = Math.max(deudaALaFecha - pagosRealizados, 0);
 
+  const pagosAcreditados = pagosLinea.filter((p) => p.estado === "acreditado");
+  const pagosPendientes = pagosLinea.filter((p) => p.estado === "pendiente");
+  const pagadoTotal = pagosAcreditados.reduce((acc, p) => acc + p.importe, 0);
+  const pendienteTotal = pagosPendientes.reduce((acc, p) => acc + p.importe, 0);
+
   // El ancho de esta barra es proporcional al total de cargos (misma
   // escala que la barra de arriba), no a sí misma: si se pagó la mitad
   // de lo adeudado, esta barra ocupa la mitad del ancho de la de arriba.
   const segmentosPagos = [
-    { label: "Pagado", importe: pagadoTotal, color: "#10b981" },
-    { label: "Pendiente de acreditar", importe: pendienteTotal, color: "#f59e0b" },
+    {
+      label: "Pagado",
+      importe: pagadoTotal,
+      color: "#10b981",
+      fechas: formatoRangoFechas(pagosAcreditados),
+    },
+    {
+      label: "Pendiente de acreditar",
+      importe: pendienteTotal,
+      color: "#f59e0b",
+      fechas: formatoRangoFechas(pagosPendientes),
+    },
   ];
   let acumuladoPago = 0;
   const segmentosPagosPos = segmentosPagos.map((s) => {
@@ -100,7 +127,7 @@ export default function LineaTiempoPagos({
           {segmentos.map((s) => (
             <div
               key={s.label}
-              title={`${s.label} · ${formatoMoneda(s.importe)}`}
+              title={`Vence el ${formatoFecha(s.fechaOrden)}\n${s.label} · ${formatoMoneda(s.importe)}`}
               style={{
                 width: `${s.fin - s.inicio}%`,
                 background: colorPorConcepto[s.label] ?? "#94a3b8",
@@ -127,7 +154,10 @@ export default function LineaTiempoPagos({
             <p className="font-bold text-slate-800">{formatoMoneda(totalCargos)}</p>
           </div>
           <div className="text-right">
-            <p className="text-slate-400 text-xs">Deuda a la fecha</p>
+            <p className="text-slate-400 text-xs">
+              Deuda a la fecha
+              {paso !== pasoInicial && paso > 0 && ` (${formatoFecha(segmentos[paso - 1].fechaOrden)})`}
+            </p>
             <p className="font-bold text-red-500">{formatoMoneda(deudaALaFecha)}</p>
           </div>
         </div>
@@ -136,7 +166,11 @@ export default function LineaTiempoPagos({
           {segmentosPagosPos.map(
             (s) =>
               s.fin - s.inicio > 0 && (
-                <div key={s.label} title={`${s.label} · ${formatoMoneda(s.importe)}`} style={{ width: `${s.fin - s.inicio}%`, background: s.color }} />
+                <div
+                  key={s.label}
+                  title={`${s.fechas}\n${s.label} · ${formatoMoneda(s.importe)}`}
+                  style={{ width: `${s.fin - s.inicio}%`, background: s.color }}
+                />
               )
           )}
         </div>

@@ -270,6 +270,14 @@ export default async function MiCuentaPage() {
     .filter((p) => p.estado_efectivo === "acreditado")
     .reduce((acc, p) => acc + Number(p.importe), 0);
   const pagosRealizados = pagadoTotal + pendienteTotal;
+  const pagosLinea = (pagos ?? [])
+    .filter((p) => p.estado_efectivo === "acreditado" || p.estado_efectivo === "pendiente")
+    .map((p) => ({
+      id: p.id,
+      estado: p.estado_efectivo,
+      importe: Number(p.importe),
+      fecha: p.fecha_pago,
+    }));
 
   // Cada concepto se ordena por su vencimiento más próximo, para que la
   // composición muestre primero lo que hay que pagar antes.
@@ -374,8 +382,7 @@ export default async function MiCuentaPage() {
       conceptos={conceptosLinea}
       colorPorConcepto={colorPorConcepto}
       totalCargos={totalCargos}
-      pagadoTotal={pagadoTotal}
-      pendienteTotal={pendienteTotal}
+      pagosLinea={pagosLinea}
       pagosRealizados={pagosRealizados}
       hoyIso={hoy.toISOString().slice(0, 10)}
     />
