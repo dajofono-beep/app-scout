@@ -79,6 +79,15 @@ function estiloMovimiento(m) {
         badge: { texto: "Cancelado", clase: "bg-gray-100 text-gray-500" },
       };
     }
+    // Un cargo con importe negativo es un descuento o corrección puntual:
+    // resta deuda en vez de sumarla, así que se muestra como un crédito.
+    if (m.importe < 0) {
+      return {
+        iconoClase: "bg-emerald-50 text-emerald-500",
+        montoClase: "text-emerald-600",
+        badge: null,
+      };
+    }
     return {
       iconoClase: "bg-red-50 text-red-500",
       montoClase: "text-red-500",
@@ -365,8 +374,8 @@ export default async function MiCuentaPage() {
               )}
               <div className="text-right shrink-0">
                 <p className={`font-bold ${estilo.montoClase}`}>
-                  {m.tipo === "cargo" ? "-" : "+"}
-                  {formatoMoneda(m.importe)}
+                  {m.tipo === "cargo" ? (m.importe < 0 ? "+" : "-") : "+"}
+                  {formatoMoneda(Math.abs(m.importe))}
                 </p>
                 {estilo.badge && (
                   <span

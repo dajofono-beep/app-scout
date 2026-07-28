@@ -294,8 +294,10 @@ export async function crearCargoManual(formData) {
   if (!miembro_id || !concepto || !fecha) {
     throw new Error("Miembro, concepto y fecha son obligatorios");
   }
-  if (!importe || importe <= 0) {
-    throw new Error("El importe debe ser mayor a 0");
+  // Se permite un importe negativo (p.ej. un descuento o corrección
+  // puntual), que resta de la cuenta del miembro en lugar de sumar.
+  if (!importe) {
+    throw new Error("El importe no puede ser 0");
   }
 
   const { error } = await supabase.from("cargos").insert({
@@ -321,7 +323,7 @@ export async function actualizarCargo(formData) {
   const fecha_vencimiento = formData.get("fecha_vencimiento")?.toString() || null;
 
   if (!concepto || !fecha) throw new Error("Concepto y fecha son obligatorios");
-  if (!importe || importe <= 0) throw new Error("El importe debe ser mayor a 0");
+  if (!importe) throw new Error("El importe no puede ser 0");
 
   const { error } = await supabase
     .from("cargos")

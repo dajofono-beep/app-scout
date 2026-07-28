@@ -75,7 +75,6 @@ export default async function FichaCargoPage({ params }) {
             name="importe"
             type="number"
             step="0.01"
-            min="0"
             defaultValue={cargo.importe}
             required
             className="w-full border border-slate-200 rounded-xl px-4 py-2.5"

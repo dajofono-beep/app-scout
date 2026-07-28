@@ -133,7 +133,7 @@ export default async function CargosPage({ searchParams }) {
             ))}
           </select>
           <input name="concepto" required placeholder="Concepto" className="border border-slate-200 rounded-xl px-4 py-2.5" />
-          <input name="importe" type="number" step="0.01" min="0" required placeholder="Importe" className="border border-slate-200 rounded-xl px-4 py-2.5" />
+          <input name="importe" type="number" step="0.01" required placeholder="Importe (puede ser negativo)" className="border border-slate-200 rounded-xl px-4 py-2.5" />
           <input type="date" name="fecha" required defaultValue={hoy()} className="border border-slate-200 rounded-xl px-4 py-2.5 sm:col-span-2" />
           <button type="submit" className="sm:col-span-2 bg-sky-600 text-white rounded-full py-2.5 font-bold">
             Cargar
