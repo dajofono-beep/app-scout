@@ -38,7 +38,7 @@ export default function FiltrosCargos({ valores }) {
           onChange={(e) => actualizar({ estado: e.target.value })}
           className="border border-slate-200 rounded-lg px-3 py-1.5 text-sm w-full"
         >
-          <option value="">Todos</option>
+          <option value="todos">Todos</option>
           <option value="activo">Activos</option>
           <option value="cancelado">Cancelados</option>
         </select>

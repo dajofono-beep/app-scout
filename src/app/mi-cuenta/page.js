@@ -229,7 +229,7 @@ export default async function MiCuentaPage() {
   );
 
   const movimientos = [
-    ...(cargos ?? []).map((c) => ({
+    ...(cargos ?? []).filter((c) => c.estado === "activo").map((c) => ({
       tipo: "cargo",
       id: `cargo-${c.id}`,
       miembro_id: c.miembro_id,

@@ -13,9 +13,11 @@ export default async function CargosPage({ searchParams }) {
   const params = await searchParams;
   const valoresFiltro = {
     miembro: params?.miembro ?? "",
-    estado: params?.estado ?? "",
+    // Por defecto se muestran solo los activos, para no ensuciar el
+    // listado con cargos cancelados (p.ej. por errores de asignación).
+    estado: params?.estado ?? "activo",
   };
-  const hayFiltros = Object.values(valoresFiltro).some(Boolean);
+  const hayFiltros = Boolean(valoresFiltro.miembro) || valoresFiltro.estado !== "activo";
 
   const supabase = await createClient();
 
@@ -54,7 +56,9 @@ export default async function CargosPage({ searchParams }) {
     .limit(100);
 
   if (miembroIds) cargosQuery = cargosQuery.in("miembro_id", miembroIds);
-  if (valoresFiltro.estado) cargosQuery = cargosQuery.eq("estado", valoresFiltro.estado);
+  if (valoresFiltro.estado && valoresFiltro.estado !== "todos") {
+    cargosQuery = cargosQuery.eq("estado", valoresFiltro.estado);
+  }
 
   const { data: cargos } = await cargosQuery;
 
