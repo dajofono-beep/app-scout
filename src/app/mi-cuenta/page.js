@@ -148,6 +148,12 @@ export default async function MiCuentaPage() {
     .select("*")
     .in("miembro_id", idsFamiliares);
 
+  // familiares ya viene ordenado por orden_familia (1º primero), que es
+  // quien más paga según la escala de descuento por hermanos.
+  const saldosOrdenados = idsFamiliares
+    .map((id) => (saldos ?? []).find((s) => s.miembro_id === id))
+    .filter(Boolean);
+
   const { data: cargos } = await supabase
     .from("cargos")
     .select("*")
@@ -446,7 +452,7 @@ export default async function MiCuentaPage() {
 
         {esFamiliaConVarios && (
           <div className="mt-3 pt-3 border-t border-white/20 space-y-1">
-            {(saldos ?? []).map((s) => (
+            {saldosOrdenados.map((s) => (
               <div key={s.miembro_id} className="flex justify-between text-sm">
                 <span className="text-white/85">{nombrePorId[s.miembro_id]}</span>
                 <span className="font-bold">{formatoMoneda(s.saldo)}</span>
