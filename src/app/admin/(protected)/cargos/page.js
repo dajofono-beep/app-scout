@@ -84,6 +84,15 @@ export default async function CargosPage({ searchParams }) {
 
       {!sinDatos && (
         <>
+          {(familias ?? []).length > 0 && (
+            <AsignarCargoFamiliaForm
+              familias={familias ?? []}
+              productos={productos ?? []}
+            />
+          )}
+
+          <AsignarCargoRamaForm ramas={ramas ?? []} productos={productos ?? []} />
+
           <section className="bg-white rounded-2xl shadow-sm p-5">
             <h2 className="font-bold mb-3">Asignar a un miembro</h2>
             <form
@@ -108,15 +117,6 @@ export default async function CargosPage({ searchParams }) {
               </button>
             </form>
           </section>
-
-          <AsignarCargoRamaForm ramas={ramas ?? []} productos={productos ?? []} />
-
-          {(familias ?? []).length > 0 && (
-            <AsignarCargoFamiliaForm
-              familias={familias ?? []}
-              productos={productos ?? []}
-            />
-          )}
         </>
       )}
 
