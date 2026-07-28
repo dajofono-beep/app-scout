@@ -53,9 +53,12 @@ export default function PagoForm({ esFamiliaConVarios, familiares, miembroId }) 
           <select
             name="miembro_id"
             required
-            defaultValue={miembroId}
+            defaultValue="reparto_igual"
             className="border border-slate-200 rounded-xl px-4 py-2.5 sm:col-span-3"
           >
+            <option value="reparto_igual">
+              Repartir en partes iguales entre todos
+            </option>
             {(familiares ?? []).map((f) => (
               <option key={f.id} value={f.id}>
                 Para: {f.apellido}, {f.nombre}
