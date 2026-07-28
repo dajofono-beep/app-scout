@@ -7,6 +7,9 @@ import LogoutButton from "./logout-button";
 const ITEMS = [
   { id: "principal", texto: "Principal" },
   { id: "social", texto: "Social" },
+  { id: "mensajes", texto: "Mensajes" },
+  { id: "descargas", texto: "Descargas" },
+  { id: "consultas", texto: "Consultas" },
 ];
 
 function IconoMenu({ className }) {
@@ -66,14 +69,14 @@ export default function CuentaNav({
         </div>
 
         {menuAbierto && (
-          <div className="md:hidden border-t border-sky-100 p-4 space-y-3">
-            <div className="flex flex-col gap-2">
+          <div className="md:hidden border-t border-sky-100 p-4">
+            <div className="flex flex-col gap-3">
               {ITEMS.map((item) => (
                 <button
                   key={item.id}
                   type="button"
                   onClick={() => irA(item.id)}
-                  className={`text-left text-sm font-semibold ${
+                  className={`text-left text-base font-semibold ${
                     activa === item.id
                       ? "text-sky-600"
                       : "text-slate-600 hover:text-sky-600"
@@ -82,16 +85,14 @@ export default function CuentaNav({
                   {item.texto}
                 </button>
               ))}
-            </div>
-            <div className="flex items-center gap-3 pt-3 border-t border-sky-100">
               <Link
                 href="/mi-cuenta/perfil"
                 onClick={() => setMenuAbierto(false)}
-                className="text-xs font-semibold text-sky-600 hover:text-sky-700"
+                className="text-base font-semibold text-slate-600 hover:text-sky-600"
               >
                 Perfil
               </Link>
-              <LogoutButton />
+              <LogoutButton className="text-left text-base font-semibold text-slate-600 hover:text-sky-600" />
             </div>
           </div>
         )}
@@ -126,7 +127,7 @@ export default function CuentaNav({
           ))}
         </div>
 
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden md:flex md:flex-col gap-2 items-start">
           <Link
             href="/mi-cuenta/perfil"
             className="text-xs font-semibold text-sky-600 hover:text-sky-700"
@@ -144,6 +145,13 @@ export default function CuentaNav({
         <div className={`max-w-2xl mx-auto ${activa === "social" ? "" : "hidden"}`}>
           {panelSocial}
         </div>
+        {["mensajes", "descargas", "consultas"].includes(activa) && (
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white rounded-2xl shadow-sm p-5 text-center">
+              <p className="text-slate-500 text-sm">Próximamente.</p>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
