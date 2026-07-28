@@ -141,18 +141,26 @@ export default async function AdminDashboardPage({ searchParams }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-        <div className="bg-white rounded-2xl shadow-sm p-5">
-          <p className="text-sm font-bold text-slate-400">Saldo total</p>
-          <p className="text-3xl font-bold text-slate-800">{formatoMoneda(totalSaldo)}</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <div className="bg-white rounded-2xl shadow-sm p-5 flex flex-col">
+          <p className="text-sm font-bold text-slate-400 min-h-[2.5rem]">Saldo total</p>
+          <p className="text-2xl font-bold text-slate-800">{formatoMoneda(totalSaldo)}</p>
         </div>
-        <div className="bg-white rounded-2xl shadow-sm p-5">
-          <p className="text-sm font-bold text-slate-400">Pagos pendientes</p>
-          <p className="text-3xl font-bold text-amber-600">{formatoMoneda(totalPendiente)}</p>
+        <div className="bg-white rounded-2xl shadow-sm p-5 flex flex-col">
+          <p className="text-sm font-bold text-slate-400 min-h-[2.5rem]">Pagos acreditados</p>
+          <p className="text-2xl font-bold text-emerald-600">{formatoMoneda(totalAcreditado)}</p>
         </div>
-        <div className="bg-white rounded-2xl shadow-sm p-5">
-          <p className="text-sm font-bold text-slate-400">Pagos acreditados</p>
-          <p className="text-3xl font-bold text-emerald-600">{formatoMoneda(totalAcreditado)}</p>
+        <div className="bg-white rounded-2xl shadow-sm p-5 flex flex-col">
+          <p className="text-sm font-bold text-slate-400 min-h-[2.5rem]">
+            Pagos Pendientes de Acreditarse
+          </p>
+          <p className="text-2xl font-bold text-amber-600">{formatoMoneda(totalPendiente)}</p>
+        </div>
+        <div className="bg-white rounded-2xl shadow-sm p-5 flex flex-col">
+          <p className="text-sm font-bold text-slate-400 min-h-[2.5rem]">Pagos Faltantes</p>
+          <p className="text-2xl font-bold text-red-500">
+            {formatoMoneda(totalSaldo - totalPendiente - totalAcreditado)}
+          </p>
         </div>
       </div>
 
