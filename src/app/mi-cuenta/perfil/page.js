@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import PerfilForm from "./perfil-form";
 import PasswordForm from "./password-form";
 import TituloSeccion from "../titulo-seccion";
+import BarraCuenta from "../barra-cuenta";
 
 const quicksand = Quicksand({
   variable: "--font-quicksand",
@@ -34,10 +35,15 @@ export default async function PerfilPage() {
 
   return (
     <div
-      className={`${quicksand.variable} min-h-screen bg-sky-50 px-4 py-8`}
+      className={`${quicksand.variable} min-h-screen bg-sky-50`}
       style={{ fontFamily: "var(--font-quicksand)" }}
     >
-      <div className="max-w-lg mx-auto space-y-4">
+      <BarraCuenta
+        nombreCompleto={`${miembro.apellido}, ${miembro.nombre}`}
+        ramaNombre={miembro.ramas?.nombre}
+        fotoUrl={perfil?.foto_url ?? null}
+      />
+      <div className="max-w-lg mx-auto space-y-4 px-4 py-8">
         <TituloSeccion icono="/Perfil.png" nombre="Perfil" hrefVolver="/mi-cuenta" />
 
         <section className="bg-white rounded-2xl shadow-sm p-5 space-y-2">
