@@ -34,6 +34,7 @@ export default function CuentaNav({
   fotoUrl,
   panelPrincipal,
   panelSocial,
+  panelMensajes,
 }) {
   const [activa, setActiva] = useState("principal");
   const [menuAbierto, setMenuAbierto] = useState(false);
@@ -149,7 +150,10 @@ export default function CuentaNav({
         <div className={`max-w-2xl mx-auto ${activa === "descargas" ? "" : "hidden"}`}>
           <Descargas />
         </div>
-        {["mensajes", "consultas"].includes(activa) && (
+        <div className={`max-w-2xl mx-auto ${activa === "mensajes" ? "" : "hidden"}`}>
+          {panelMensajes}
+        </div>
+        {["consultas"].includes(activa) && (
           <div className="max-w-2xl mx-auto">
             <div className="bg-white rounded-2xl shadow-sm p-5 text-center">
               <p className="text-slate-500 text-sm">Próximamente.</p>

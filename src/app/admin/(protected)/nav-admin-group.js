@@ -9,6 +9,7 @@ const ITEMS = [
   { href: "/admin/descuentos", label: "Descuentos" },
   { href: "/admin/ramas", label: "Ramas" },
   { href: "/admin/fechas-importantes", label: "Fechas importantes" },
+  { href: "/admin/mensajes", label: "Mensajes" },
 ];
 
 export default function NavAdminGroup() {

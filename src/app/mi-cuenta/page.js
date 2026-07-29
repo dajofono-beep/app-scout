@@ -9,6 +9,7 @@ import LineaTiempoPagos from "./linea-tiempo-pagos";
 import Torta3D from "./torta3d";
 import PagoForm from "./pago-form";
 import Social from "./social";
+import Mensajes from "./mensajes";
 import CuentaNav from "./cuenta-nav";
 
 const PALETA_CATEGORICA = [
@@ -438,6 +439,13 @@ export default async function MiCuentaPage() {
     />
   );
 
+  const { data: mensajes } = await supabase
+    .from("mensajes")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  const panelMensajes = <Mensajes mensajes={mensajes ?? []} />;
+
   const panelPrincipal = (
     <div className="space-y-4">
       <section className="bg-gradient-to-br from-sky-600 to-sky-400 text-white rounded-3xl shadow-md p-5">
@@ -482,6 +490,7 @@ export default async function MiCuentaPage() {
       fotoUrl={perfil?.foto_url ?? null}
       panelPrincipal={panelPrincipal}
       panelSocial={panelSocial}
+      panelMensajes={panelMensajes}
     />
   );
 }
