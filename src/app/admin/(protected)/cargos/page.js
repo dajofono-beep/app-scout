@@ -1,10 +1,9 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { crearCargoIndividual, crearCargoManual } from "./actions";
+import { crearCargoManual } from "./actions";
 import FiltrosCargos from "./filtros";
-import AsignarCargoRamaForm from "./asignar-rama-form";
-import AsignarCargoFamiliaForm from "./asignar-familia-form";
-import { formatoMoneda, etiquetaProducto } from "./utils";
+import AsignarCargoForm from "./asignar-cargo-form";
+import { formatoMoneda } from "./utils";
 import { iniciales, colorPara } from "../miembros/avatar";
 
 const hoy = () => new Date().toISOString().slice(0, 10);
@@ -83,41 +82,12 @@ export default async function CargosPage({ searchParams }) {
       )}
 
       {!sinDatos && (
-        <>
-          {(familias ?? []).length > 0 && (
-            <AsignarCargoFamiliaForm
-              familias={familias ?? []}
-              productos={productos ?? []}
-            />
-          )}
-
-          <AsignarCargoRamaForm ramas={ramas ?? []} productos={productos ?? []} />
-
-          <section className="bg-white rounded-2xl shadow-sm p-5">
-            <h2 className="font-bold mb-3">Asignar a un miembro</h2>
-            <form
-              action={crearCargoIndividual}
-              className="grid grid-cols-1 sm:grid-cols-4 gap-3"
-            >
-              <select name="miembro_id" required defaultValue="" className="border border-slate-200 rounded-xl px-4 py-2.5 sm:col-span-2">
-                <option value="" disabled>Miembro...</option>
-                {(miembros ?? []).map((m) => (
-                  <option key={m.id} value={m.id}>{m.apellido}, {m.nombre}</option>
-                ))}
-              </select>
-              <select name="producto_id" required defaultValue="" className="border border-slate-200 rounded-xl px-4 py-2.5">
-                <option value="" disabled>Producto...</option>
-                {(productos ?? []).map((p) => (
-                  <option key={p.id} value={p.id}>{etiquetaProducto(p)}</option>
-                ))}
-              </select>
-              <input type="date" name="fecha" required defaultValue={hoy()} className="border border-slate-200 rounded-xl px-4 py-2.5" />
-              <button type="submit" className="sm:col-span-4 bg-sky-600 text-white rounded-full py-2.5 font-bold">
-                Asignar cargo
-              </button>
-            </form>
-          </section>
-        </>
+        <AsignarCargoForm
+          familias={familias ?? []}
+          ramas={ramas ?? []}
+          miembros={miembros ?? []}
+          productos={productos ?? []}
+        />
       )}
 
       <section className="bg-white rounded-2xl shadow-sm p-5">
