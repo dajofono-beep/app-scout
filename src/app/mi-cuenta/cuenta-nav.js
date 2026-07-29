@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import LogoutButton from "./logout-button";
+import Descargas from "./descargas";
 
 const ITEMS = [
   { id: "principal", texto: "Principal" },
@@ -145,7 +146,10 @@ export default function CuentaNav({
         <div className={`max-w-2xl mx-auto ${activa === "social" ? "" : "hidden"}`}>
           {panelSocial}
         </div>
-        {["mensajes", "descargas", "consultas"].includes(activa) && (
+        <div className={`max-w-2xl mx-auto ${activa === "descargas" ? "" : "hidden"}`}>
+          <Descargas />
+        </div>
+        {["mensajes", "consultas"].includes(activa) && (
           <div className="max-w-2xl mx-auto">
             <div className="bg-white rounded-2xl shadow-sm p-5 text-center">
               <p className="text-slate-500 text-sm">Próximamente.</p>
