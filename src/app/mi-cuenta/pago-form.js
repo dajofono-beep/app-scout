@@ -6,11 +6,32 @@ import { crearPago } from "./actions";
 
 const hoy = () => new Date().toISOString().slice(0, 10);
 
+// Deja solo dígitos y, como mucho, una coma decimal con hasta 2 dígitos
+// (formato es-AR: coma para decimales, sin separador de miles acá).
+function limpiarImporte(valor) {
+  const limpio = valor.replace(/[^\d,]/g, "");
+  const [entero, ...resto] = limpio.split(",");
+  if (resto.length === 0) return entero;
+  return `${entero},${resto.join("").slice(0, 2)}`;
+}
+
+// Agrega el signo $ y el separador de miles para mostrar en el input,
+// a partir del valor "limpio" guardado en el estado.
+function formatearParaMostrar(importe) {
+  if (!importe) return "";
+  const [entero, decimales] = importe.split(",");
+  const enteroFormateado = (entero || "0").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return decimales !== undefined
+    ? `$ ${enteroFormateado},${decimales}`
+    : `$ ${enteroFormateado}`;
+}
+
 export default function PagoForm({ esFamiliaConVarios, familiares, miembroId }) {
   const formRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [exito, setExito] = useState(false);
+  const [importe, setImporte] = useState("");
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -19,9 +40,11 @@ export default function PagoForm({ esFamiliaConVarios, familiares, miembroId }) 
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
+    formData.set("importe", importe.replace(",", "."));
     try {
       await crearPago(formData);
       formRef.current?.reset();
+      setImporte("");
       setExito(true);
     } catch (err) {
       setError(err.message);
@@ -71,10 +94,11 @@ export default function PagoForm({ esFamiliaConVarios, familiares, miembroId }) 
         )}
         <input
           name="importe"
-          type="number"
-          step="0.01"
-          min="0"
+          type="text"
+          inputMode="decimal"
           required
+          value={formatearParaMostrar(importe)}
+          onChange={(e) => setImporte(limpiarImporte(e.target.value))}
           placeholder="Importe"
           className="border border-slate-200 rounded-xl px-4 py-2.5"
         />
