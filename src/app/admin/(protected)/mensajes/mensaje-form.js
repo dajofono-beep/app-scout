@@ -60,7 +60,7 @@ export default function MensajeForm({
         >
           <option value="todos">Todos</option>
           <option value="rama">Rama</option>
-          <option value="familia">Familia</option>
+          <option value="familia">Hermanos</option>
           <option value="miembro">Participante</option>
         </select>
       </div>
@@ -91,7 +91,7 @@ export default function MensajeForm({
           className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
         >
           <option value="" disabled>
-            Familia...
+            Hermanos...
           </option>
           {familias.map((f) => (
             <option key={f.id} value={f.id}>

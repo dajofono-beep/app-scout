@@ -206,7 +206,7 @@ export async function crearCargoPorFamilia(formData) {
   const fecha = formData.get("fecha")?.toString();
 
   if (!familia_id || !producto_id || !fecha) {
-    throw new Error("Familia, producto y fecha son obligatorios");
+    throw new Error("Hermanos, producto y fecha son obligatorios");
   }
 
   const { data: producto, error: productoError } = await supabase
@@ -226,7 +226,7 @@ export async function crearCargoPorFamilia(formData) {
   if (miembrosError) throw new Error(miembrosError.message);
 
   if (!miembros || miembros.length === 0) {
-    throw new Error("Esa familia no tiene miembros activos");
+    throw new Error("Esos hermanos no tienen miembros activos");
   }
 
   const { data: existentes, error: existentesError } = await supabase
@@ -407,7 +407,7 @@ export async function cancelarCargosPorFamilia(formData) {
   const familia_id = formData.get("familia_id")?.toString();
   const producto_id = formData.get("producto_id")?.toString();
   if (!familia_id || !producto_id) {
-    throw new Error("Familia y producto son obligatorios");
+    throw new Error("Hermanos y producto son obligatorios");
   }
 
   const { data: miembros, error } = await supabase
@@ -417,7 +417,7 @@ export async function cancelarCargosPorFamilia(formData) {
     .eq("activo", true);
   if (error) throw new Error(error.message);
   if (!miembros || miembros.length === 0) {
-    throw new Error("Esa familia no tiene miembros activos");
+    throw new Error("Esos hermanos no tienen miembros activos");
   }
 
   const resultado = await cancelarCargosDeMiembros(

@@ -57,7 +57,7 @@ export async function crearPago(formData) {
       .order("apellido");
     if (familiaresError) throw new Error(familiaresError.message);
     if (!familiares || familiares.length === 0) {
-      throw new Error("No se encontraron miembros de la familia");
+      throw new Error("No se encontraron hermanos");
     }
 
     const montos = dividirEnPartesIguales(importe, familiares.length);

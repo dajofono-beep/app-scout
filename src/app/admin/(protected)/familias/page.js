@@ -21,7 +21,7 @@ export default async function FamiliasPage({ searchParams }) {
   return (
     <div className="max-w-2xl">
       <div className="flex items-center justify-between mb-2 gap-3 flex-wrap">
-        <h1 className="text-2xl font-bold">Familias</h1>
+        <h1 className="text-2xl font-bold">Hermanos</h1>
         <div className="flex items-center gap-3">
           {hayFiltros && (
             <Link
@@ -35,12 +35,12 @@ export default async function FamiliasPage({ searchParams }) {
             href="/admin/familias/nueva"
             className="bg-sky-600 text-white rounded-full px-4 py-2 text-sm font-bold"
           >
-            + Nueva familia
+            + Nuevos hermanos
           </Link>
         </div>
       </div>
       <p className="text-sm text-slate-500 mb-6">
-        Agrupá miembros en una familia para que, al ingresar como cualquiera
+        Agrupá miembros como hermanos para que, al ingresar como cualquiera
         de ellos, puedan verse y pagar entre sí. El orden (1º, 2º, 3º hijo)
         se asigna desde <strong>Miembros</strong> y define el descuento por
         hermanos.
@@ -87,7 +87,7 @@ export default async function FamiliasPage({ searchParams }) {
         </table>
         {(familias ?? []).length === 0 && (
           <p className="text-slate-500 text-sm p-4">
-            No hay familias para este filtro.
+            No hay hermanos para este filtro.
           </p>
         )}
       </div>

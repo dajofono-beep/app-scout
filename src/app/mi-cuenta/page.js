@@ -450,7 +450,7 @@ export default async function MiCuentaPage() {
     <div className="space-y-4">
       <section className="bg-gradient-to-br from-sky-600 to-sky-400 text-white rounded-3xl shadow-md p-5">
         <p className="text-sm text-white/90">
-          {esFamiliaConVarios ? "Saldo total de la familia" : "Saldo actual"}
+          {esFamiliaConVarios ? "Saldo total entre hermanos" : "Saldo actual"}
         </p>
         <p className="text-3xl font-bold">{formatoMoneda(saldoTotal)}</p>
         <div className="flex gap-4 mt-3 text-xs text-white/80">

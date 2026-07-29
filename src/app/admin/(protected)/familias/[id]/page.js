@@ -56,7 +56,7 @@ export default async function FichaFamiliaPage({ params }) {
             formAction={eliminarFamilia}
             className="flex-1 border border-red-300 text-red-600 rounded-full py-2.5 font-bold"
           >
-            Eliminar familia
+            Eliminar hermanos
           </button>
         </div>
       </form>

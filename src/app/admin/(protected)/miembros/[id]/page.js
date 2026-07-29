@@ -127,14 +127,14 @@ export default async function FichaMiembroPage({ params }) {
         </div>
         <div>
           <label className="block text-sm font-semibold text-slate-600 mb-1">
-            Familia
+            Hermanos
           </label>
           <select
             name="familia_id"
             defaultValue={miembro.familia_id ?? ""}
             className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
           >
-            <option value="">Sin familia</option>
+            <option value="">Sin hermanos</option>
             {(familias ?? []).map((f) => (
               <option key={f.id} value={f.id}>
                 {f.nombre}
@@ -144,7 +144,7 @@ export default async function FichaMiembroPage({ params }) {
         </div>
         <div>
           <label className="block text-sm font-semibold text-slate-600 mb-1">
-            Orden en la familia (1º, 2º...)
+            Orden entre hermanos (1º, 2º...)
           </label>
           <input
             name="orden_familia"

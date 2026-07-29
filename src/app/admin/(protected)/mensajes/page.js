@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 const ETIQUETA_TIPO = {
   todos: "Todos",
   rama: "Rama",
-  familia: "Familia",
+  familia: "Hermanos",
   miembro: "Participante",
 };
 

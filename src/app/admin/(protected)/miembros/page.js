@@ -82,7 +82,7 @@ export default async function MiembrosPage({ searchParams }) {
               <th className="p-3 font-bold">Miembro</th>
               <th className="p-3 font-bold">Documento</th>
               <th className="p-3 font-bold">Rama</th>
-              <th className="p-3 font-bold">Familia</th>
+              <th className="p-3 font-bold">Hermanos</th>
               <th className="p-3 font-bold">Estado</th>
               <th className="p-3"></th>
             </tr>

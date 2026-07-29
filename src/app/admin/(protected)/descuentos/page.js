@@ -19,7 +19,7 @@ export default async function DescuentosPage() {
       <h1 className="text-2xl font-bold mb-2">Descuento por hermanos</h1>
       <p className="text-sm text-slate-500 mb-6">
         Define qué porcentaje del importe paga cada hijo según su posición
-        dentro de la familia (1º, 2º, 3º...). Se asigna la posición de cada
+        entre hermanos (1º, 2º, 3º...). Se asigna la posición de cada
         miembro desde <strong>Miembros</strong>. Si un miembro tiene una
         posición mayor a las cargadas acá, se usa el porcentaje de la última
         fila. Solo aplica a productos con &quot;Aplica descuento por

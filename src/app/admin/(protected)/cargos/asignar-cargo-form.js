@@ -44,7 +44,7 @@ export default function AsignarCargoForm({ familias, ramas, miembros, productos 
           onChange={(e) => setTipo(e.target.value)}
           className="border border-slate-200 rounded-xl px-4 py-2.5"
         >
-          {familias.length > 0 && <option value="familia">Familia</option>}
+          {familias.length > 0 && <option value="familia">Hermanos</option>}
           <option value="rama">Rama</option>
           <option value="miembro">Participante</option>
         </select>
@@ -57,7 +57,7 @@ export default function AsignarCargoForm({ familias, ramas, miembros, productos 
             className="border border-slate-200 rounded-xl px-4 py-2.5"
           >
             <option value="" disabled>
-              Familia...
+              Hermanos...
             </option>
             {familias.map((f) => (
               <option key={f.id} value={f.id}>
@@ -136,8 +136,8 @@ export default function AsignarCargoForm({ familias, ramas, miembros, productos 
 
       <p className="text-xs text-slate-500 mt-2">
         Si el producto tiene activado &quot;descuento por hermanos&quot; y
-        elegís Familia, el importe de cada integrante se calcula según su
-        orden dentro de la familia (ver sección Descuentos). Si es cuotable,
+        elegís Hermanos, el importe de cada integrante se calcula según su
+        orden entre hermanos (ver sección Descuentos). Si es cuotable,
         la fecha elegida es la de la primera cuota; las siguientes se generan
         una por mes.
       </p>

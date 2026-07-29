@@ -31,7 +31,7 @@ export default function CancelarCargosForm({ familias, ramas, miembros, producto
     if (tipo === "familia") {
       const id = formData.get("familia_id")?.toString();
       const f = familias.find((familia) => familia.id === id);
-      destinatarioTexto = `la familia ${f?.nombre ?? ""}`;
+      destinatarioTexto = `los hermanos ${f?.nombre ?? ""}`;
     } else if (tipo === "rama") {
       const id = formData.get("rama_id")?.toString();
       const r = ramas.find((rama) => rama.id === id);
@@ -72,7 +72,7 @@ export default function CancelarCargosForm({ familias, ramas, miembros, producto
           onChange={(e) => setTipo(e.target.value)}
           className="border border-slate-200 rounded-xl px-4 py-2.5"
         >
-          {familias.length > 0 && <option value="familia">Familia</option>}
+          {familias.length > 0 && <option value="familia">Hermanos</option>}
           <option value="rama">Rama</option>
           <option value="miembro">Participante</option>
         </select>
@@ -85,7 +85,7 @@ export default function CancelarCargosForm({ familias, ramas, miembros, producto
             className="border border-slate-200 rounded-xl px-4 py-2.5"
           >
             <option value="" disabled>
-              Familia...
+              Hermanos...
             </option>
             {familias.map((f) => (
               <option key={f.id} value={f.id}>

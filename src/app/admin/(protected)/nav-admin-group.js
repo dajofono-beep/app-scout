@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const ITEMS = [
-  { href: "/admin/familias", label: "Familias" },
+  { href: "/admin/familias", label: "Hermanos" },
   { href: "/admin/descuentos", label: "Descuentos" },
   { href: "/admin/ramas", label: "Ramas" },
   { href: "/admin/fechas-importantes", label: "Fechas importantes" },

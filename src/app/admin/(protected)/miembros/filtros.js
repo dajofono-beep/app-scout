@@ -59,7 +59,7 @@ export default function FiltrosMiembros({ ramas, familias, valores }) {
           onChange={(e) => actualizar({ familia_id: e.target.value })}
           className="border border-slate-200 rounded-lg px-3 py-1.5 text-sm w-full"
         >
-          <option value="">Todas</option>
+          <option value="">Todos</option>
           {familias.map((f) => (
             <option key={f.id} value={f.id}>
               {f.nombre}
