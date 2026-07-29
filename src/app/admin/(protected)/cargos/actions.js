@@ -365,3 +365,114 @@ export async function reactivarCargo(formData) {
   revalidatePath(`/admin/cargos/${id}`);
   revalidatePath("/admin");
 }
+
+// Cancela todos los cargos ACTIVOS de un producto (o de todos, si
+// producto_id es "todos") entre un conjunto de miembros. Se pueden
+// reactivar de a uno después, desde su ficha.
+async function cancelarCargosDeMiembros(supabase, miembroIds, producto_id) {
+  let query = supabase
+    .from("cargos")
+    .select("id, miembro_id")
+    .eq("estado", "activo")
+    .in("miembro_id", miembroIds);
+  if (producto_id !== "todos") {
+    query = query.eq("producto_id", producto_id);
+  }
+
+  const { data: cargos, error: cargosError } = await query;
+  if (cargosError) throw new Error(cargosError.message);
+
+  if (!cargos || cargos.length === 0) {
+    return { cancelados: 0, miembrosAfectados: 0 };
+  }
+
+  const { error } = await supabase
+    .from("cargos")
+    .update({ estado: "cancelado" })
+    .in(
+      "id",
+      cargos.map((c) => c.id)
+    );
+  if (error) throw new Error(error.message);
+
+  return {
+    cancelados: cargos.length,
+    miembrosAfectados: new Set(cargos.map((c) => c.miembro_id)).size,
+  };
+}
+
+export async function cancelarCargosPorFamilia(formData) {
+  const { supabase } = await requireSession();
+
+  const familia_id = formData.get("familia_id")?.toString();
+  const producto_id = formData.get("producto_id")?.toString();
+  if (!familia_id || !producto_id) {
+    throw new Error("Familia y producto son obligatorios");
+  }
+
+  const { data: miembros, error } = await supabase
+    .from("miembros")
+    .select("id")
+    .eq("familia_id", familia_id)
+    .eq("activo", true);
+  if (error) throw new Error(error.message);
+  if (!miembros || miembros.length === 0) {
+    throw new Error("Esa familia no tiene miembros activos");
+  }
+
+  const resultado = await cancelarCargosDeMiembros(
+    supabase,
+    miembros.map((m) => m.id),
+    producto_id
+  );
+
+  revalidatePath("/admin/cargos");
+  revalidatePath("/admin");
+  return resultado;
+}
+
+export async function cancelarCargosPorRama(formData) {
+  const { supabase } = await requireSession();
+
+  const rama_id = formData.get("rama_id")?.toString();
+  const producto_id = formData.get("producto_id")?.toString();
+  if (!rama_id || !producto_id) {
+    throw new Error("Rama y producto son obligatorios");
+  }
+
+  const { data: miembros, error } = await supabase
+    .from("miembros")
+    .select("id")
+    .eq("rama_id", rama_id)
+    .eq("activo", true);
+  if (error) throw new Error(error.message);
+  if (!miembros || miembros.length === 0) {
+    throw new Error("Esa rama no tiene miembros activos");
+  }
+
+  const resultado = await cancelarCargosDeMiembros(
+    supabase,
+    miembros.map((m) => m.id),
+    producto_id
+  );
+
+  revalidatePath("/admin/cargos");
+  revalidatePath("/admin");
+  return resultado;
+}
+
+export async function cancelarCargosPorMiembro(formData) {
+  const { supabase } = await requireSession();
+
+  const miembro_id = formData.get("miembro_id")?.toString();
+  const producto_id = formData.get("producto_id")?.toString();
+  if (!miembro_id || !producto_id) {
+    throw new Error("Participante y producto son obligatorios");
+  }
+
+  const resultado = await cancelarCargosDeMiembros(supabase, [miembro_id], producto_id);
+
+  revalidatePath("/admin/cargos");
+  revalidatePath("/admin");
+  return resultado;
+}

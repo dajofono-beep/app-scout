@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { crearCargoManual } from "./actions";
 import FiltrosCargos from "./filtros";
 import AsignarCargoForm from "./asignar-cargo-form";
+import CancelarCargosForm from "./cancelar-cargos-form";
 import { formatoMoneda } from "./utils";
 import { iniciales, colorPara } from "../miembros/avatar";
 
@@ -83,6 +84,15 @@ export default async function CargosPage({ searchParams }) {
 
       {!sinDatos && (
         <AsignarCargoForm
+          familias={familias ?? []}
+          ramas={ramas ?? []}
+          miembros={miembros ?? []}
+          productos={productos ?? []}
+        />
+      )}
+
+      {!sinDatos && (
+        <CancelarCargosForm
           familias={familias ?? []}
           ramas={ramas ?? []}
           miembros={miembros ?? []}
