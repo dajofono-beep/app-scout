@@ -123,6 +123,14 @@ export default function Social({
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
       <section className="bg-white rounded-2xl shadow-sm p-3">
+        <p className="flex items-center gap-2 font-bold text-slate-800 mb-3 px-2">
+          <img
+            src="/Social.png"
+            alt=""
+            className="w-10 h-10 object-contain shrink-0"
+          />
+          Social
+        </p>
         <div className="flex items-center justify-between mb-2">
           <button
             type="button"
