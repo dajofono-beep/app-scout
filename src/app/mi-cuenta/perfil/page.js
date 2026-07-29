@@ -1,9 +1,9 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Quicksand } from "next/font/google";
 import { createClient } from "@/lib/supabase/server";
 import PerfilForm from "./perfil-form";
 import PasswordForm from "./password-form";
+import TituloSeccion from "../titulo-seccion";
 
 const quicksand = Quicksand({
   variable: "--font-quicksand",
@@ -38,11 +38,7 @@ export default async function PerfilPage() {
       style={{ fontFamily: "var(--font-quicksand)" }}
     >
       <div className="max-w-lg mx-auto space-y-4">
-        <Link href="/mi-cuenta" className="text-sm text-sky-600 font-semibold">
-          ← Volver a mi cuenta
-        </Link>
-
-        <h1 className="text-2xl font-bold text-slate-800">Perfil</h1>
+        <TituloSeccion icono="/Perfil.png" nombre="Perfil" hrefVolver="/mi-cuenta" />
 
         <section className="bg-white rounded-2xl shadow-sm p-5 space-y-2">
           <div>

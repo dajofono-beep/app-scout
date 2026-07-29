@@ -24,14 +24,6 @@ function formatoFecha(iso) {
 export default function Mensajes({ mensajes }) {
   return (
     <section className="bg-white rounded-2xl shadow-sm p-5">
-      <p className="flex items-center gap-2 font-bold text-slate-800 mb-3">
-        <img
-          src="/Mensajes.png"
-          alt=""
-          className="w-10 h-10 object-contain shrink-0"
-        />
-        Mensajes
-      </p>
       <div className="space-y-3 max-h-[28rem] overflow-y-auto">
         {mensajes.map((m) => (
           <div key={m.id} className="border border-slate-100 rounded-xl p-4">

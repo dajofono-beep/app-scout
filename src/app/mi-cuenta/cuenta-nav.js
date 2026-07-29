@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import LogoutButton from "./logout-button";
 import Descargas from "./descargas";
+import TituloSeccion from "./titulo-seccion";
 
 const ITEMS = [
   { id: "principal", texto: "Principal" },
@@ -145,16 +146,32 @@ export default function CuentaNav({
           {panelPrincipal}
         </div>
         <div className={`max-w-2xl mx-auto ${activa === "social" ? "" : "hidden"}`}>
+          <TituloSeccion
+            icono="/Social.png"
+            nombre="Social"
+            onVolver={() => setActiva("principal")}
+          />
           {panelSocial}
         </div>
         <div className={`max-w-2xl mx-auto ${activa === "descargas" ? "" : "hidden"}`}>
+          <TituloSeccion
+            icono="/Descargas.png"
+            nombre="Descargas"
+            onVolver={() => setActiva("principal")}
+          />
           <Descargas />
         </div>
         <div className={`max-w-2xl mx-auto ${activa === "mensajes" ? "" : "hidden"}`}>
+          <TituloSeccion
+            icono="/Mensajes.png"
+            nombre="Mensajes"
+            onVolver={() => setActiva("principal")}
+          />
           {panelMensajes}
         </div>
         {["consultas"].includes(activa) && (
           <div className="max-w-2xl mx-auto">
+            <TituloSeccion nombre="Consultas" onVolver={() => setActiva("principal")} />
             <div className="bg-white rounded-2xl shadow-sm p-5 text-center">
               <p className="text-slate-500 text-sm">Próximamente.</p>
             </div>
