@@ -106,7 +106,11 @@ export default function CuentaNav({
           {panelMensajes}
         </div>
         <div className={`max-w-2xl mx-auto ${activa === "consultas" ? "" : "hidden"}`}>
-          <TituloSeccion nombre="Consultas" onVolver={() => setActiva("principal")} />
+          <TituloSeccion
+            icono="/Consultas/IconoSanMa.png"
+            nombre="Consultas"
+            onVolver={() => setActiva("principal")}
+          />
           <Consultas />
         </div>
       </main>

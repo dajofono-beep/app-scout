@@ -38,12 +38,17 @@ export default function Consultas() {
     <section className="bg-white rounded-2xl shadow-sm p-5">
       <p className="font-bold text-slate-800 mb-1">Consultas</p>
       <p className="text-xs text-slate-400 mb-3">
-        Puede cometer errores — confirmá lo importante con la comisión.
+        Puede cometer errores — confirmá lo importante con el Consejo de Grupo.
       </p>
 
       <div className="space-y-3 max-h-[24rem] overflow-y-auto mb-3">
         {historial.length === 0 && (
-          <div className="flex justify-start">
+          <div className="flex justify-start items-end gap-2">
+            <img
+              src="/Consultas/Esperando.gif"
+              alt="SanMa esperando"
+              className="w-10 h-10 rounded-full object-cover shrink-0"
+            />
             <div className="max-w-[85%] rounded-2xl px-4 py-2.5 text-sm bg-slate-100 text-slate-700">
               ¡Hola! Soy SanMa, el asistente virtual del Grupo Scout Libertador
               San Martín. ¿En qué te puedo ayudar hoy?
@@ -64,7 +69,12 @@ export default function Consultas() {
           </div>
         ))}
         {loading && (
-          <div className="flex justify-start">
+          <div className="flex justify-start items-end gap-2">
+            <img
+              src="/Consultas/Pensando.gif"
+              alt="SanMa pensando"
+              className="w-10 h-10 rounded-full object-cover shrink-0"
+            />
             <div className="max-w-[85%] rounded-2xl px-4 py-2.5 text-sm bg-slate-100 text-slate-400">
               Pensando...
             </div>
