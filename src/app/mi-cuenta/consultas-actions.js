@@ -14,28 +14,32 @@ forma breve y clara.
 ${CONTEXTO_DOCUMENTOS}`;
 
 // historial: [{ rol: "usuario" | "asistente", texto }], con la pregunta
-// nueva como último elemento.
+// nueva como último elemento. Devuelve { ok, texto } o { ok: false, error }
+// en vez de tirar una excepción: Next.js borra el mensaje de cualquier
+// error lanzado con `throw` desde un Server Action en producción (por
+// seguridad), así que un valor de retorno normal es la única forma de
+// que el mensaje llegue tal cual al chat.
 export async function preguntarConsulta(historial) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    throw new Error(
-      "El asistente todavía no está configurado. Avisale al administrador del grupo."
-    );
+    return {
+      ok: false,
+      error: "El asistente todavía no está configurado. Avisale al administrador del grupo.",
+    };
   }
   if (!Array.isArray(historial) || historial.length === 0) {
-    throw new Error("Falta la pregunta");
+    return { ok: false, error: "Falta la pregunta" };
   }
 
   const ultimo = historial[historial.length - 1];
   const previos = historial.slice(0, -1);
 
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({
-    model: "gemini-2.5-flash",
-    systemInstruction: INSTRUCCION_SISTEMA,
-  });
-
   try {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.5-flash",
+      systemInstruction: INSTRUCCION_SISTEMA,
+    });
     const chat = model.startChat({
       history: previos.map((m) => ({
         role: m.rol === "asistente" ? "model" : "user",
@@ -43,8 +47,12 @@ export async function preguntarConsulta(historial) {
       })),
     });
     const resultado = await chat.sendMessage(ultimo.texto);
-    return resultado.response.text();
+    return { ok: true, texto: resultado.response.text() };
   } catch (err) {
-    throw new Error("No se pudo conectar con el asistente. Intentá de nuevo en un momento.");
+    console.error("preguntarConsulta:", err);
+    return {
+      ok: false,
+      error: "No se pudo conectar con el asistente. Intentá de nuevo en un momento.",
+    };
   }
 }

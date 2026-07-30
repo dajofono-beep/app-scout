@@ -21,10 +21,14 @@ export default function Consultas() {
     setLoading(true);
 
     try {
-      const respuesta = await preguntarConsulta(nuevoHistorial);
-      setHistorial((h) => [...h, { rol: "asistente", texto: respuesta }]);
+      const resultado = await preguntarConsulta(nuevoHistorial);
+      if (!resultado.ok) {
+        setError(resultado.error);
+      } else {
+        setHistorial((h) => [...h, { rol: "asistente", texto: resultado.texto }]);
+      }
     } catch (err) {
-      setError(err.message);
+      setError("Ocurrió un error inesperado. Intentá de nuevo.");
     } finally {
       setLoading(false);
     }
