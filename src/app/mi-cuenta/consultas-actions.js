@@ -13,6 +13,23 @@ forma breve y clara.
 
 ${CONTEXTO_DOCUMENTOS}`;
 
+const esperar = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Gemini devuelve 503 cuando el modelo está saturado momentáneamente —
+// suele resolverse solo en unos segundos, así que reintentamos un par
+// de veces con una pausa corta antes de darnos por vencidos.
+async function enviarConReintento(chat, texto, intentos = 3) {
+  for (let intento = 1; intento <= intentos; intento++) {
+    try {
+      return await chat.sendMessage(texto);
+    } catch (err) {
+      const esSaturado = err?.status === 503;
+      if (!esSaturado || intento === intentos) throw err;
+      await esperar(1000 * intento);
+    }
+  }
+}
+
 // historial: [{ rol: "usuario" | "asistente", texto }], con la pregunta
 // nueva como último elemento. Devuelve { ok, texto } o { ok: false, error }
 // en vez de tirar una excepción: Next.js borra el mensaje de cualquier
@@ -49,13 +66,14 @@ export async function preguntarConsulta(historial) {
         parts: [{ text: m.texto }],
       })),
     });
-    const resultado = await chat.sendMessage(ultimo.texto);
+    const resultado = await enviarConReintento(chat, ultimo.texto);
     return { ok: true, texto: resultado.response.text() };
   } catch (err) {
     console.error("preguntarConsulta:", err);
-    return {
-      ok: false,
-      error: "No se pudo conectar con el asistente. Intentá de nuevo en un momento.",
-    };
+    const error =
+      err?.status === 503
+        ? "El asistente está muy solicitado en este momento. Probá de nuevo en unos segundos."
+        : "No se pudo conectar con el asistente. Intentá de nuevo en un momento.";
+    return { ok: false, error };
   }
 }
