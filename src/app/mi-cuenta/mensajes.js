@@ -18,9 +18,9 @@ function formatoFecha(iso) {
   return `${dia} de ${MESES[mes - 1]}`;
 }
 
-// mensajes: [{ id, titulo, cuerpo, created_at }], ya ordenados del más
-// nuevo al más viejo (la RLS ya filtra a los que le corresponden a esta
-// familia y están vigentes).
+// mensajes: [{ id, titulo, cuerpo, created_at, destinatarioTexto }], ya
+// ordenados del más nuevo al más viejo (la RLS ya filtra a los que le
+// corresponden a esta familia y están vigentes).
 export default function Mensajes({ mensajes }) {
   return (
     <section className="bg-white rounded-2xl shadow-sm p-5">
@@ -33,6 +33,9 @@ export default function Mensajes({ mensajes }) {
                 {formatoFecha(m.created_at.slice(0, 10))}
               </p>
             </div>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Mensaje para {m.destinatarioTexto}
+            </p>
             <p className="text-sm text-slate-600 mt-1 whitespace-pre-wrap">{m.cuerpo}</p>
           </div>
         ))}

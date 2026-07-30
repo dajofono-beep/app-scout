@@ -180,7 +180,34 @@ export default async function MiCuentaPage() {
     .select("*")
     .order("created_at", { ascending: false });
 
-  const panelMensajes = <Mensajes mensajes={mensajes ?? []} />;
+  // La tabla `familias` es de solo lectura para el admin (RLS), así que
+  // el nombre de "mis hermanos" se resuelve acá con el cliente admin en
+  // vez de con una consulta directa del lado de la familia.
+  let nombreFamiliaPropia = null;
+  if (miembro.familia_id) {
+    const { data: familiaPropia } = await admin
+      .from("familias")
+      .select("nombre")
+      .eq("id", miembro.familia_id)
+      .maybeSingle();
+    nombreFamiliaPropia = familiaPropia?.nombre ?? null;
+  }
+
+  function etiquetaDestinatario(m) {
+    if (m.destinatario_tipo === "todos") return "Todos";
+    if (m.destinatario_tipo === "rama") return `Rama: ${miembro.ramas?.nombre ?? ""}`;
+    if (m.destinatario_tipo === "familia") return `Hermanos: ${nombreFamiliaPropia ?? ""}`;
+    // "miembro": por la política de RLS, si veo este mensaje es porque
+    // destinatario_id soy yo mismo.
+    return `${miembro.apellido}, ${miembro.nombre}`;
+  }
+
+  const mensajesConDestinatario = (mensajes ?? []).map((m) => ({
+    ...m,
+    destinatarioTexto: etiquetaDestinatario(m),
+  }));
+
+  const panelMensajes = <Mensajes mensajes={mensajesConDestinatario} />;
 
   const panelPrincipal = (
     <div className="space-y-4">
