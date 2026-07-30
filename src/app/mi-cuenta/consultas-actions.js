@@ -36,8 +36,11 @@ export async function preguntarConsulta(historial) {
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
+    // Google retira modelos viejos con el tiempo (gemini-2.5-flash ya no
+    // está disponible para cuentas nuevas) — si esto vuelve a fallar con
+    // un 404, hay que revisar el modelo vigente en ai.google.dev/gemini-api/docs/latest-model.
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.6-flash",
       systemInstruction: INSTRUCCION_SISTEMA,
     });
     const chat = model.startChat({
