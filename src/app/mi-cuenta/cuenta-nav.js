@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import LogoutButton from "./logout-button";
 import Descargas from "./descargas";
+import Consultas from "./consultas";
 import TituloSeccion from "./titulo-seccion";
 import BarraCuenta from "./barra-cuenta";
 
@@ -104,14 +105,10 @@ export default function CuentaNav({
           />
           {panelMensajes}
         </div>
-        {["consultas"].includes(activa) && (
-          <div className="max-w-2xl mx-auto">
-            <TituloSeccion nombre="Consultas" onVolver={() => setActiva("principal")} />
-            <div className="bg-white rounded-2xl shadow-sm p-5 text-center">
-              <p className="text-slate-500 text-sm">Próximamente.</p>
-            </div>
-          </div>
-        )}
+        <div className={`max-w-2xl mx-auto ${activa === "consultas" ? "" : "hidden"}`}>
+          <TituloSeccion nombre="Consultas" onVolver={() => setActiva("principal")} />
+          <Consultas />
+        </div>
       </main>
     </div>
   );

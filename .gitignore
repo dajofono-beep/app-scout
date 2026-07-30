@@ -45,3 +45,8 @@ miembros.xlsx
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# PDFs fuente de la sección Consultas: ya se extrajo el texto a
+# src/lib/consultas/contexto.js, no hace falta versionar los PDFs
+# originales en el repo (uno pesa 58MB).
+public/Informacion/
