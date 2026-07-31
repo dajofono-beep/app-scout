@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import LogoutButton from "./logout-button";
 import Descargas from "./descargas";
@@ -25,16 +25,81 @@ export default function CuentaNav({
   panelMensajes,
 }) {
   const [activa, setActiva] = useState("principal");
+  const [avisoSalir, setAvisoSalir] = useState(false);
+
+  // Sincroniza el historial del navegador con la pestaña activa para que
+  // el botón/gesto "Atrás" del celular navegue dentro de la app en vez de
+  // cerrarla: entrar a una sección apila una entrada de historial; volver
+  // a Principal la saca. Si ya estamos en Principal, "Atrás" muestra un
+  // aviso y recién sale de la app si se presiona una segunda vez.
+  const enSeccionRef = useRef(false);
+  const ignorarProximoPopRef = useRef(false);
+  const avisoSalirRef = useRef(false);
+  const avisoTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    avisoSalirRef.current = avisoSalir;
+  }, [avisoSalir]);
+
+  useEffect(() => {
+    if (ignorarProximoPopRef.current) {
+      ignorarProximoPopRef.current = false;
+      enSeccionRef.current = activa !== "principal";
+      return;
+    }
+    if (activa !== "principal" && !enSeccionRef.current) {
+      window.history.pushState({ azimutSeccion: true }, "");
+      enSeccionRef.current = true;
+    } else if (activa !== "principal" && enSeccionRef.current) {
+      window.history.replaceState({ azimutSeccion: true }, "");
+    } else if (activa === "principal" && enSeccionRef.current) {
+      enSeccionRef.current = false;
+      ignorarProximoPopRef.current = true;
+      window.history.back();
+    }
+  }, [activa]);
+
+  useEffect(() => {
+    function alPresionarAtras() {
+      if (ignorarProximoPopRef.current) {
+        ignorarProximoPopRef.current = false;
+        return;
+      }
+      if (enSeccionRef.current) {
+        ignorarProximoPopRef.current = true;
+        enSeccionRef.current = false;
+        setActiva("principal");
+        return;
+      }
+      if (avisoSalirRef.current) {
+        // Segunda vez en Principal: dejamos que la salida siga su curso.
+        return;
+      }
+      window.history.pushState({ azimutSalir: true }, "");
+      setAvisoSalir(true);
+      if (avisoTimeoutRef.current) clearTimeout(avisoTimeoutRef.current);
+      avisoTimeoutRef.current = setTimeout(() => setAvisoSalir(false), 2000);
+    }
+    window.addEventListener("popstate", alPresionarAtras);
+    return () => window.removeEventListener("popstate", alPresionarAtras);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-sky-50">
-      <BarraCuenta
-        nombreCompleto={nombreCompleto}
-        ramaNombre={ramaNombre}
-        fotoUrl={fotoUrl}
-        activa={activa}
-        onSeleccionar={setActiva}
-      />
+      {activa === "principal" && (
+        <BarraCuenta
+          nombreCompleto={nombreCompleto}
+          ramaNombre={ramaNombre}
+          fotoUrl={fotoUrl}
+          activa={activa}
+          onSeleccionar={setActiva}
+        />
+      )}
+      {avisoSalir && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-800 text-white text-sm font-semibold px-4 py-2.5 rounded-full shadow-lg md:hidden">
+          Presioná Atrás de nuevo para salir
+        </div>
+      )}
       <nav className="shrink-0 bg-white md:border-r border-sky-100 md:w-56 md:p-4 flex flex-col md:gap-3">
         {/* Barra lateral en desktop: sin cambios */}
         <div className="hidden md:flex items-center gap-3 md:mb-2">
