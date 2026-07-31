@@ -47,7 +47,7 @@ export default function Consultas() {
             <img
               src="/Consultas/Esperando.gif"
               alt="SanMa esperando"
-              className="w-10 h-10 rounded-full object-cover shrink-0"
+              className="w-14 h-14 rounded-full object-cover shrink-0"
             />
             <div className="max-w-[85%] rounded-2xl px-4 py-2.5 text-sm bg-slate-100 text-slate-700">
               ¡Hola! Soy SanMa, el asistente virtual del Grupo Scout Libertador
@@ -73,7 +73,7 @@ export default function Consultas() {
             <img
               src="/Consultas/Pensando.gif"
               alt="SanMa pensando"
-              className="w-10 h-10 rounded-full object-cover shrink-0"
+              className="w-14 h-14 rounded-full object-cover shrink-0"
             />
             <div className="max-w-[85%] rounded-2xl px-4 py-2.5 text-sm bg-slate-100 text-slate-400">
               Pensando...
