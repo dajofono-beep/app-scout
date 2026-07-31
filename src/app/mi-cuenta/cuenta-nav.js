@@ -41,6 +41,14 @@ export default function CuentaNav({
     avisoSalirRef.current = avisoSalir;
   }, [avisoSalir]);
 
+  // Entrada de historial "base": sin esto, si el usuario nunca entra a una
+  // sección, el primer Atrás en Principal no tiene nada nuestro que
+  // interceptar y el navegador sale derecho de la app antes de que
+  // nuestro código llegue a reaccionar.
+  useEffect(() => {
+    window.history.pushState({ azimutBase: true }, "");
+  }, []);
+
   useEffect(() => {
     if (ignorarProximoPopRef.current) {
       ignorarProximoPopRef.current = false;
