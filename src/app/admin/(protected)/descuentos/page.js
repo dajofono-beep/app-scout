@@ -22,7 +22,7 @@ export default async function DescuentosPage() {
         entre hermanos (1º, 2º, 3º...). Se asigna la posición de cada
         miembro desde <strong>Miembros</strong>. Si un miembro tiene una
         posición mayor a las cargadas acá, se usa el porcentaje de la última
-        fila. Solo aplica a productos con &quot;Aplica descuento por
+        fila. Solo aplica a conceptos con &quot;Aplica descuento por
         hermanos&quot; activado.
       </p>
 

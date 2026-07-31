@@ -70,13 +70,13 @@ export default async function CargosPage({ searchParams }) {
 
       {sinDatos && (
         <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-xl p-3">
-          Necesitás al menos una rama y un producto activo para poder cargar cobros.
+          Necesitás al menos una rama y un concepto activo para poder cargar cobros.
         </p>
       )}
 
       {!sinDatos && (
         <p className="text-sm text-slate-500 -mt-4">
-          Si elegís un producto marcado &quot;en N cuotas&quot;, se generan N
+          Si elegís un concepto marcado &quot;en N cuotas&quot;, se generan N
           cargos automáticamente (uno por mes, empezando en la fecha que
           indiques) en vez de un solo cargo.
         </p>

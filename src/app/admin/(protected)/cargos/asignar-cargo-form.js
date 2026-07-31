@@ -108,7 +108,7 @@ export default function AsignarCargoForm({ familias, ramas, miembros, productos 
           className="border border-slate-200 rounded-xl px-4 py-2.5"
         >
           <option value="" disabled>
-            Producto...
+            Concepto...
           </option>
           {productos.map((p) => (
             <option key={p.id} value={p.id}>
@@ -135,7 +135,7 @@ export default function AsignarCargoForm({ familias, ramas, miembros, productos 
       </form>
 
       <p className="text-xs text-slate-500 mt-2">
-        Si el producto tiene activado &quot;descuento por hermanos&quot; y
+        Si el concepto tiene activado &quot;descuento por hermanos&quot; y
         elegís Hermanos, el importe de cada integrante se calcula según su
         orden entre hermanos (ver sección Descuentos). Si es cuotable,
         la fecha elegida es la de la primera cuota; las siguientes se generan
@@ -148,7 +148,7 @@ export default function AsignarCargoForm({ familias, ramas, miembros, productos 
           <p className="text-green-700">{resultado.creados} cargo(s) asignado(s).</p>
           {resultado.salteados.length > 0 && (
             <p className="text-amber-700">
-              Ya tenían este producto (se salteó): {resultado.salteados.join(", ")}
+              Ya tenían este concepto (se salteó): {resultado.salteados.join(", ")}
             </p>
           )}
         </div>

@@ -7,7 +7,7 @@ export default function NuevoProductoPage() {
       <Link href="/admin/productos" className="text-sm text-sky-600 font-semibold">
         ← Volver
       </Link>
-      <h1 className="text-2xl font-bold mt-2 mb-6">Nuevo producto</h1>
+      <h1 className="text-2xl font-bold mt-2 mb-6">Nuevo concepto</h1>
 
       <form
         action={crearProducto}
@@ -57,7 +57,7 @@ export default function NuevoProductoPage() {
           />
           <p className="text-xs text-slate-400 mt-1">
             Ej. la fecha del campamento. Se copia a cada cargo que se genere con
-            este producto, para ordenarlos y recordarles a las familias.
+            este concepto, para ordenarlos y recordarles a las familias.
           </p>
         </div>
         <label className="flex items-center gap-2 text-sm">
@@ -83,7 +83,7 @@ export default function NuevoProductoPage() {
           type="submit"
           className="w-full bg-sky-600 text-white rounded-full py-2.5 font-bold"
         >
-          Crear producto
+          Crear concepto
         </button>
       </form>
     </div>

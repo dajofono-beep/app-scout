@@ -29,7 +29,7 @@ export default async function ProductosPage({ searchParams }) {
   return (
     <div className="max-w-4xl">
       <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
-        <h1 className="text-2xl font-bold">Productos</h1>
+        <h1 className="text-2xl font-bold">Conceptos</h1>
         <div className="flex items-center gap-3">
           {hayFiltros && (
             <Link
@@ -43,7 +43,7 @@ export default async function ProductosPage({ searchParams }) {
             href="/admin/productos/nuevo"
             className="bg-sky-600 text-white rounded-full px-4 py-2 text-sm font-bold"
           >
-            + Nuevo producto
+            + Nuevo concepto
           </Link>
         </div>
       </div>
@@ -106,7 +106,7 @@ export default async function ProductosPage({ searchParams }) {
         </table>
         {(productos ?? []).length === 0 && (
           <p className="text-slate-500 text-sm p-4">
-            No hay productos para este filtro.
+            No hay conceptos para este filtro.
           </p>
         )}
       </div>

@@ -28,7 +28,7 @@ export async function crearProducto(formData) {
   if (!nombre) throw new Error("El nombre es obligatorio");
   if (!importe || importe <= 0) throw new Error("El importe debe ser mayor a 0");
   if (es_cuotable && (!cantidad_cuotas || cantidad_cuotas <= 0)) {
-    throw new Error("Indicá la cantidad de cuotas si el producto es cuotable");
+    throw new Error("Indicá la cantidad de cuotas si el concepto es cuotable");
   }
 
   const { error } = await supabase.from("productos").insert({
@@ -63,7 +63,7 @@ export async function actualizarProducto(formData) {
   if (!nombre) throw new Error("El nombre es obligatorio");
   if (!importe || importe <= 0) throw new Error("El importe debe ser mayor a 0");
   if (es_cuotable && (!cantidad_cuotas || cantidad_cuotas <= 0)) {
-    throw new Error("Indicá la cantidad de cuotas si el producto es cuotable");
+    throw new Error("Indicá la cantidad de cuotas si el concepto es cuotable");
   }
 
   const { error } = await supabase

@@ -86,12 +86,12 @@ export async function crearCargoIndividual(formData) {
   const fecha = formData.get("fecha")?.toString();
 
   if (!miembro_id || !producto_id || !fecha) {
-    throw new Error("Miembro, producto y fecha son obligatorios");
+    throw new Error("Miembro, concepto y fecha son obligatorios");
   }
 
   if (await tieneProductoActivo(supabase, miembro_id, producto_id)) {
     throw new Error(
-      "Este miembro ya tiene un cargo activo de ese producto. Cancelalo primero si querés volver a asignarlo."
+      "Este miembro ya tiene un cargo activo de ese concepto. Cancelalo primero si querés volver a asignarlo."
     );
   }
 
@@ -125,7 +125,7 @@ export async function crearCargoPorRama(formData) {
   const fecha = formData.get("fecha")?.toString();
 
   if (!rama_id || !producto_id || !fecha) {
-    throw new Error("Rama, producto y fecha son obligatorios");
+    throw new Error("Rama, concepto y fecha son obligatorios");
   }
 
   const { data: producto, error: productoError } = await supabase
@@ -206,7 +206,7 @@ export async function crearCargoPorFamilia(formData) {
   const fecha = formData.get("fecha")?.toString();
 
   if (!familia_id || !producto_id || !fecha) {
-    throw new Error("Hermanos, producto y fecha son obligatorios");
+    throw new Error("Hermanos, concepto y fecha son obligatorios");
   }
 
   const { data: producto, error: productoError } = await supabase
@@ -407,7 +407,7 @@ export async function cancelarCargosPorFamilia(formData) {
   const familia_id = formData.get("familia_id")?.toString();
   const producto_id = formData.get("producto_id")?.toString();
   if (!familia_id || !producto_id) {
-    throw new Error("Hermanos y producto son obligatorios");
+    throw new Error("Hermanos y concepto son obligatorios");
   }
 
   const { data: miembros, error } = await supabase
@@ -437,7 +437,7 @@ export async function cancelarCargosPorRama(formData) {
   const rama_id = formData.get("rama_id")?.toString();
   const producto_id = formData.get("producto_id")?.toString();
   if (!rama_id || !producto_id) {
-    throw new Error("Rama y producto son obligatorios");
+    throw new Error("Rama y concepto son obligatorios");
   }
 
   const { data: miembros, error } = await supabase
@@ -467,7 +467,7 @@ export async function cancelarCargosPorMiembro(formData) {
   const miembro_id = formData.get("miembro_id")?.toString();
   const producto_id = formData.get("producto_id")?.toString();
   if (!miembro_id || !producto_id) {
-    throw new Error("Participante y producto son obligatorios");
+    throw new Error("Participante y concepto son obligatorios");
   }
 
   const resultado = await cancelarCargosDeMiembros(supabase, [miembro_id], producto_id);

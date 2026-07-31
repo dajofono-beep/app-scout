@@ -73,7 +73,7 @@ export default async function FichaProductoPage({ params }) {
           />
           <p className="text-xs text-slate-400 mt-1">
             Ej. la fecha del campamento. Se copia a cada cargo que se genere con
-            este producto, para ordenarlos y recordarles a las familias.
+            este concepto, para ordenarlos y recordarles a las familias.
           </p>
         </div>
         <label className="flex items-center gap-2 text-sm">

@@ -24,8 +24,8 @@ export default function CancelarCargosForm({ familias, ramas, miembros, producto
     const productoId = formData.get("producto_id")?.toString();
     const productoTexto =
       productoId === "todos"
-        ? "todos los productos"
-        : (productos.find((p) => p.id === productoId)?.nombre ?? "el producto elegido");
+        ? "todos los conceptos"
+        : (productos.find((p) => p.id === productoId)?.nombre ?? "el concepto elegido");
 
     let destinatarioTexto = "el destinatario elegido";
     if (tipo === "familia") {
@@ -136,7 +136,7 @@ export default function CancelarCargosForm({ familias, ramas, miembros, producto
           className="border border-slate-200 rounded-xl px-4 py-2.5"
         >
           <option value="" disabled>
-            Producto...
+            Concepto...
           </option>
           <option value="todos">Todos</option>
           {productos.map((p) => (
@@ -156,7 +156,7 @@ export default function CancelarCargosForm({ familias, ramas, miembros, producto
       </form>
 
       <p className="text-xs text-slate-500 mt-2">
-        Cancela todos los cargos activos de ese producto para los elegidos
+        Cancela todos los cargos activos de ese concepto para los elegidos
         (incluidas todas las cuotas pendientes si es cuotable). Se pueden
         reactivar de a uno desde la ficha de cada cargo.
       </p>

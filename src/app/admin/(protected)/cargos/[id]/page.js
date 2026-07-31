@@ -47,7 +47,7 @@ export default async function FichaCargoPage({ params }) {
       {cargo.porcentaje_aplicado != null && (
         <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-xl p-3 mb-4">
           Se aplicó un {cargo.porcentaje_aplicado}% (descuento por hermanos)
-          sobre el importe del producto.
+          sobre el importe del concepto.
         </p>
       )}
 

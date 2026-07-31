@@ -32,7 +32,7 @@ export default function AsignarCargoIndividualForm({ miembroId, productos }) {
 
   return (
     <section className="bg-white rounded-2xl shadow-sm p-5">
-      <h2 className="font-bold mb-3">Asignar producto</h2>
+      <h2 className="font-bold mb-3">Asignar concepto</h2>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <input type="hidden" name="miembro_id" value={miembroId} />
         <select
@@ -42,7 +42,7 @@ export default function AsignarCargoIndividualForm({ miembroId, productos }) {
           className="border border-slate-200 rounded-xl px-4 py-2.5 sm:col-span-2"
         >
           <option value="" disabled>
-            Producto...
+            Concepto...
           </option>
           {productos.map((p) => (
             <option key={p.id} value={p.id}>
@@ -67,7 +67,7 @@ export default function AsignarCargoIndividualForm({ miembroId, productos }) {
       </form>
 
       {error && <p className="text-sm text-red-500 font-semibold mt-2">{error}</p>}
-      {ok && <p className="text-sm text-emerald-700 mt-2">Producto asignado.</p>}
+      {ok && <p className="text-sm text-emerald-700 mt-2">Concepto asignado.</p>}
     </section>
   );
 }

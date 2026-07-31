@@ -9,7 +9,7 @@ const NAV_ITEMS = [
   { href: "/admin/miembros", label: "Miembros" },
   { href: "/admin/pagos", label: "Pagos" },
   { href: "/admin/cargos", label: "Cargos" },
-  { href: "/admin/productos", label: "Productos" },
+  { href: "/admin/productos", label: "Conceptos" },
 ];
 
 export default async function AdminLayout({ children }) {
