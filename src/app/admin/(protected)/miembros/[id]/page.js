@@ -3,6 +3,10 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { actualizarMiembro } from "../actions";
 import { iniciales, colorParaRama } from "../avatar";
+import RestaurarContrasenaBoton from "../restaurar-contrasena-boton";
+import FichaMiembroTabs from "./ficha-miembro-tabs";
+import AsignarCargoIndividualForm from "./asignar-cargo-individual-form";
+import { cancelarCargo, reactivarCargo } from "../../cargos/actions";
 
 const formatoMoneda = (n) =>
   Number(n).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
@@ -31,6 +35,208 @@ export default async function FichaMiembroPage({ params }) {
     .select("*")
     .eq("miembro_id", id)
     .maybeSingle();
+  const { data: productos } = await supabase
+    .from("productos")
+    .select("*")
+    .eq("activo", true)
+    .order("nombre");
+  const { data: cargosMiembro } = await supabase
+    .from("cargos")
+    .select("*")
+    .eq("miembro_id", id)
+    .order("fecha", { ascending: false });
+
+  const panelDatos = (
+    <form
+      action={actualizarMiembro}
+      className="bg-white rounded-2xl shadow-sm p-5 space-y-3"
+    >
+      <input type="hidden" name="id" value={miembro.id} />
+
+      <div>
+        <label className="block text-sm font-semibold text-slate-600 mb-1">
+          Nombre
+        </label>
+        <input
+          name="nombre"
+          defaultValue={miembro.nombre}
+          required
+          className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-semibold text-slate-600 mb-1">
+          Apellido
+        </label>
+        <input
+          name="apellido"
+          defaultValue={miembro.apellido}
+          required
+          className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-semibold text-slate-600 mb-1">
+          DNI
+        </label>
+        <input
+          value={miembro.dni}
+          disabled
+          className="w-full border border-slate-200 rounded-xl px-4 py-2.5 bg-slate-50 text-slate-400"
+        />
+        <p className="text-xs text-slate-500 mt-1">
+          Solo refleja la contraseña inicial; no se edita acá.
+        </p>
+      </div>
+      <div>
+        <label className="block text-sm font-semibold text-slate-600 mb-1">
+          Rama
+        </label>
+        <select
+          name="rama_id"
+          defaultValue={miembro.rama_id}
+          required
+          className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
+        >
+          {(ramas ?? []).map((r) => (
+            <option key={r.id} value={r.id}>
+              {r.nombre}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div>
+        <label className="block text-sm font-semibold text-slate-600 mb-1">
+          Hermanos
+        </label>
+        <select
+          name="familia_id"
+          defaultValue={miembro.familia_id ?? ""}
+          className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
+        >
+          <option value="">Sin hermanos</option>
+          {(familias ?? []).map((f) => (
+            <option key={f.id} value={f.id}>
+              {f.nombre}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div>
+        <label className="block text-sm font-semibold text-slate-600 mb-1">
+          Orden entre hermanos (1º, 2º...)
+        </label>
+        <input
+          name="orden_familia"
+          type="number"
+          min="1"
+          defaultValue={miembro.orden_familia ?? ""}
+          className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-semibold text-slate-600 mb-1">
+          Fecha de nacimiento
+        </label>
+        <input
+          name="fecha_nacimiento"
+          type="date"
+          defaultValue={miembro.fecha_nacimiento ?? ""}
+          className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
+        />
+      </div>
+      <div className="flex items-center justify-between">
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            name="activo"
+            defaultChecked={miembro.activo}
+          />
+          Activo
+        </label>
+        <RestaurarContrasenaBoton miembroId={miembro.id} />
+      </div>
+
+      <button
+        type="submit"
+        className="w-full bg-sky-600 text-white rounded-full py-2.5 font-bold"
+      >
+        Guardar cambios
+      </button>
+    </form>
+  );
+
+  const panelCargos = (
+    <div className="space-y-4">
+      <AsignarCargoIndividualForm
+        miembroId={miembro.id}
+        productos={productos ?? []}
+      />
+
+      <section className="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <table className="min-w-full text-sm">
+          <thead>
+            <tr className="text-left text-slate-500 border-b">
+              <th className="p-3 font-bold">Concepto</th>
+              <th className="p-3 font-bold">Importe</th>
+              <th className="p-3 font-bold">Fecha</th>
+              <th className="p-3 font-bold">Estado</th>
+              <th className="p-3"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {(cargosMiembro ?? []).map((c) => (
+              <tr key={c.id} className="border-b last:border-0">
+                <td className="p-3 text-slate-600">
+                  {c.concepto}
+                  {c.porcentaje_aplicado != null && (
+                    <span className="block text-xs text-amber-700">
+                      {c.porcentaje_aplicado}% aplicado
+                    </span>
+                  )}
+                </td>
+                <td className="p-3 font-semibold">{formatoMoneda(c.importe)}</td>
+                <td className="p-3 text-slate-600">{c.fecha}</td>
+                <td className="p-3">
+                  <span
+                    className={`text-xs px-2 py-1 rounded-full ${
+                      c.estado === "cancelado"
+                        ? "bg-slate-200 text-slate-600"
+                        : "bg-green-100 text-green-800"
+                    }`}
+                  >
+                    {c.estado === "cancelado" ? "Cancelado" : "Activo"}
+                  </span>
+                </td>
+                <td className="p-3 text-right">
+                  {c.estado === "activo" ? (
+                    <form action={cancelarCargo}>
+                      <input type="hidden" name="id" value={c.id} />
+                      <button className="text-red-600 hover:underline text-xs font-semibold">
+                        Eliminar
+                      </button>
+                    </form>
+                  ) : (
+                    <form action={reactivarCargo}>
+                      <input type="hidden" name="id" value={c.id} />
+                      <button className="text-green-700 hover:underline text-xs font-semibold">
+                        Reactivar
+                      </button>
+                    </form>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {(cargosMiembro ?? []).length === 0 && (
+          <p className="text-slate-500 text-sm p-4">
+            Todavía no tiene cargos asignados.
+          </p>
+        )}
+      </section>
+    </div>
+  );
 
   return (
     <div className="max-w-lg">
@@ -67,120 +273,7 @@ export default async function FichaMiembroPage({ params }) {
         )}
       </div>
 
-      <form
-        action={actualizarMiembro}
-        className="bg-white rounded-2xl shadow-sm p-5 space-y-3"
-      >
-        <input type="hidden" name="id" value={miembro.id} />
-
-        <div>
-          <label className="block text-sm font-semibold text-slate-600 mb-1">
-            Nombre
-          </label>
-          <input
-            name="nombre"
-            defaultValue={miembro.nombre}
-            required
-            className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-semibold text-slate-600 mb-1">
-            Apellido
-          </label>
-          <input
-            name="apellido"
-            defaultValue={miembro.apellido}
-            required
-            className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-semibold text-slate-600 mb-1">
-            DNI
-          </label>
-          <input
-            value={miembro.dni}
-            disabled
-            className="w-full border border-slate-200 rounded-xl px-4 py-2.5 bg-slate-50 text-slate-400"
-          />
-          <p className="text-xs text-slate-500 mt-1">
-            Solo refleja la contraseña inicial; no se edita acá.
-          </p>
-        </div>
-        <div>
-          <label className="block text-sm font-semibold text-slate-600 mb-1">
-            Rama
-          </label>
-          <select
-            name="rama_id"
-            defaultValue={miembro.rama_id}
-            required
-            className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
-          >
-            {(ramas ?? []).map((r) => (
-              <option key={r.id} value={r.id}>
-                {r.nombre}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-semibold text-slate-600 mb-1">
-            Hermanos
-          </label>
-          <select
-            name="familia_id"
-            defaultValue={miembro.familia_id ?? ""}
-            className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
-          >
-            <option value="">Sin hermanos</option>
-            {(familias ?? []).map((f) => (
-              <option key={f.id} value={f.id}>
-                {f.nombre}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-semibold text-slate-600 mb-1">
-            Orden entre hermanos (1º, 2º...)
-          </label>
-          <input
-            name="orden_familia"
-            type="number"
-            min="1"
-            defaultValue={miembro.orden_familia ?? ""}
-            className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-semibold text-slate-600 mb-1">
-            Fecha de nacimiento
-          </label>
-          <input
-            name="fecha_nacimiento"
-            type="date"
-            defaultValue={miembro.fecha_nacimiento ?? ""}
-            className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
-          />
-        </div>
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            name="activo"
-            defaultChecked={miembro.activo}
-          />
-          Activo
-        </label>
-
-        <button
-          type="submit"
-          className="w-full bg-sky-600 text-white rounded-full py-2.5 font-bold"
-        >
-          Guardar cambios
-        </button>
-      </form>
+      <FichaMiembroTabs panelDatos={panelDatos} panelCargos={panelCargos} />
     </div>
   );
 }

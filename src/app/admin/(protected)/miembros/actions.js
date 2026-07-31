@@ -130,6 +130,34 @@ export async function actualizarMiembro(formData) {
   revalidatePath(`/admin/miembros/${id}`);
 }
 
+// Vuelve a poner el DNI como contraseña de acceso del miembro, igual que
+// al darlo de alta, por si olvidó la que puso él mismo.
+export async function restaurarContrasena(formData) {
+  await verificarAdmin();
+
+  const id = formData.get("id")?.toString();
+  if (!id) throw new Error("Falta el id del participante");
+
+  const admin = createAdminClient();
+
+  const { data: miembro, error: miembroError } = await admin
+    .from("miembros")
+    .select("dni, auth_user_id")
+    .eq("id", id)
+    .maybeSingle();
+  if (miembroError) throw new Error(miembroError.message);
+  if (!miembro?.auth_user_id) {
+    throw new Error("Este participante no tiene un usuario de acceso.");
+  }
+
+  const { error } = await admin.auth.admin.updateUserById(miembro.auth_user_id, {
+    password: miembro.dni,
+  });
+  if (error) throw new Error(error.message);
+
+  revalidatePath(`/admin/miembros/${id}`);
+}
+
 function celda(valor) {
   if (valor == null) return null;
   if (typeof valor === "object" && "text" in valor) return valor.text; // rich text
