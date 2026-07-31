@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Quicksand } from "next/font/google";
 import { createClient } from "@/lib/supabase/client";
+import { ingresarFamilia } from "./login-actions";
 
 const quicksand = Quicksand({
   variable: "--font-quicksand",
@@ -58,17 +59,12 @@ export default function FamilyLoginPage() {
     setLoading(true);
     setError(null);
 
-    const supabase = createClient();
-    const email = `m${miembroId}@grupo.local`;
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password: dni,
-    });
+    const resultado = await ingresarFamilia(miembroId, dni);
 
     setLoading(false);
 
-    if (error) {
-      setError("Contraseña incorrecta.");
+    if (!resultado.ok) {
+      setError(resultado.error);
       return;
     }
 
