@@ -18,12 +18,16 @@ export default function LogoutButton({ className }) {
     await supabase.auth.signOut();
 
     if (window.innerWidth < 768) {
-      // Intenta cerrar la app/pestaña (solo funciona si el navegador lo
-      // permite, p. ej. una PWA instalada sin más historial). Si después
-      // de un instante seguimos en la página, no funcionó y mostramos el
-      // login como red de seguridad.
+      // Mismo cierre que logra el botón Atrás al presionarlo dos veces:
+      // ese mecanismo (en cuenta-nav.js) intercepta el primer "atrás" y
+      // recién deja pasar el segundo. Con esta bandera le decimos que no
+      // intercepte esta vez, así un solo "atrás" programático hace lo
+      // mismo que ya probaste que cierra la app. Si después de un
+      // instante seguimos en la página, no funcionó y mostramos el login
+      // como red de seguridad.
+      window.__azimutSaliendo = true;
       window.close();
-      window.history.go(-(window.history.length + 1));
+      window.history.back();
       setTimeout(() => {
         router.push("/");
         router.refresh();
