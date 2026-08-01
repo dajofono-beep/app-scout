@@ -26,6 +26,40 @@ function formatearParaMostrar(importe) {
     : `$ ${enteroFormateado}`;
 }
 
+// Las fotos que saca la cámara del celular suelen pesar varios MB —
+// mucho más que el límite de tamaño del server action. Se reducen acá
+// (redimensionando y recomprimiendo como JPEG) antes de subirlas. Si
+// algo falla, o es un formato que el navegador no puede dibujar en un
+// canvas (p. ej. HEIC), se sube el archivo original tal cual.
+async function comprimirImagen(archivo, maxLado = 1600, calidad = 0.75) {
+  if (!archivo.type.startsWith("image/") || archivo.type === "image/heic") {
+    return archivo;
+  }
+
+  try {
+    const bitmap = await createImageBitmap(archivo);
+    const escala = Math.min(1, maxLado / Math.max(bitmap.width, bitmap.height));
+    const ancho = Math.round(bitmap.width * escala);
+    const alto = Math.round(bitmap.height * escala);
+
+    const canvas = document.createElement("canvas");
+    canvas.width = ancho;
+    canvas.height = alto;
+    canvas.getContext("2d").drawImage(bitmap, 0, 0, ancho, alto);
+
+    const blob = await new Promise((resolve) =>
+      canvas.toBlob(resolve, "image/jpeg", calidad)
+    );
+
+    if (!blob || blob.size >= archivo.size) return archivo;
+    return new File([blob], archivo.name.replace(/\.\w+$/, ".jpg"), {
+      type: "image/jpeg",
+    });
+  } catch {
+    return archivo;
+  }
+}
+
 export default function PagoForm({ esFamiliaConVarios, familiares, miembroId }) {
   const formRef = useRef(null);
   const [loading, setLoading] = useState(false);
@@ -42,6 +76,12 @@ export default function PagoForm({ esFamiliaConVarios, familiares, miembroId }) 
 
     const formData = new FormData(e.currentTarget);
     formData.set("importe", importe.replace(",", "."));
+
+    const comprobante = formData.get("comprobante");
+    if (comprobante && comprobante.size > 0) {
+      formData.set("comprobante", await comprimirImagen(comprobante));
+    }
+
     try {
       await crearPago(formData);
       formRef.current?.reset();
