@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import LogoutButton from "./logout-button";
 import NavAdminGroup from "./nav-admin-group";
+import BarraAdmin from "./barra-admin";
 
 const NAV_ITEMS = [
   { href: "/admin", label: "Resumen" },
@@ -36,7 +37,8 @@ export default async function AdminLayout({ children }) {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-sky-50">
-      <nav className="md:w-56 shrink-0 bg-white border-b md:border-b-0 md:border-r border-sky-100 p-4 flex md:flex-col gap-3">
+      <BarraAdmin nombreAdmin={admin.nombre} />
+      <nav className="hidden md:flex md:w-56 shrink-0 bg-white md:border-r border-sky-100 p-4 md:flex-col gap-3">
         <div className="flex items-center gap-2 md:mb-2">
           <img
             src="/icono-azimut.png"
