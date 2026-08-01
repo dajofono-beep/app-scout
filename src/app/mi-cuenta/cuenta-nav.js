@@ -69,10 +69,6 @@ export default function CuentaNav({
 
   useEffect(() => {
     function alPresionarAtras() {
-      if (window.__azimutSaliendo) {
-        // El botón "Salir" ya decidió cerrar la app: no interceptar.
-        return;
-      }
       if (ignorarProximoPopRef.current) {
         ignorarProximoPopRef.current = false;
         return;

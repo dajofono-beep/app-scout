@@ -14,20 +14,6 @@ export default function LogoutButton() {
     const supabase = createClient();
     await supabase.auth.signOut();
 
-    if (window.innerWidth < 768) {
-      // Intenta cerrar la app/pestaña (solo funciona si el navegador lo
-      // permite, p. ej. una PWA instalada sin más historial). Si después
-      // de un instante seguimos en la página, no funcionó y mostramos el
-      // login como red de seguridad.
-      window.close();
-      window.history.go(-(window.history.length + 1));
-      setTimeout(() => {
-        router.push("/admin/login");
-        router.refresh();
-      }, 400);
-      return;
-    }
-
     router.push("/admin/login");
     router.refresh();
   }
@@ -45,9 +31,9 @@ export default function LogoutButton() {
       {confirmando && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
           <div className="bg-white rounded-3xl shadow-sm p-6 w-full max-w-sm">
-            <p className="font-bold text-slate-800 text-lg mb-2">¿Salir?</p>
+            <p className="font-bold text-slate-800 text-lg mb-2">¿Cerrar sesión?</p>
             <p className="text-sm text-slate-500 mb-6">
-              ¿Estás seguro que querés salir de la aplicación?
+              ¿Estás seguro que querés cerrar la sesión?
             </p>
             <div className="flex gap-3">
               <button

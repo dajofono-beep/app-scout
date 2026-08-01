@@ -17,24 +17,6 @@ export default function LogoutButton({ className }) {
     const supabase = createClient();
     await supabase.auth.signOut();
 
-    if (window.innerWidth < 768) {
-      // Mismo cierre que logra el botón Atrás al presionarlo dos veces:
-      // ese mecanismo (en cuenta-nav.js) intercepta el primer "atrás" y
-      // recién deja pasar el segundo. Con esta bandera le decimos que no
-      // intercepte esta vez, así un solo "atrás" programático hace lo
-      // mismo que ya probaste que cierra la app. Si después de un
-      // instante seguimos en la página, no funcionó y mostramos el login
-      // como red de seguridad.
-      window.__azimutSaliendo = true;
-      window.close();
-      window.history.back();
-      setTimeout(() => {
-        router.push("/");
-        router.refresh();
-      }, 400);
-      return;
-    }
-
     router.push("/");
     router.refresh();
   }
@@ -52,9 +34,9 @@ export default function LogoutButton({ className }) {
       {confirmando && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
           <div className="bg-white rounded-3xl shadow-sm p-6 w-full max-w-sm">
-            <p className="font-bold text-slate-800 text-lg mb-2">¿Salir?</p>
+            <p className="font-bold text-slate-800 text-lg mb-2">¿Cerrar sesión?</p>
             <p className="text-sm text-slate-500 mb-6">
-              ¿Estás seguro que querés salir de la aplicación?
+              ¿Estás seguro que querés cerrar la sesión?
             </p>
             <div className="flex gap-3">
               <button
