@@ -32,6 +32,7 @@ export default function PagoForm({ esFamiliaConVarios, familiares, miembroId }) 
   const [error, setError] = useState(null);
   const [exito, setExito] = useState(false);
   const [importe, setImporte] = useState("");
+  const [medioPago, setMedioPago] = useState("");
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -45,6 +46,7 @@ export default function PagoForm({ esFamiliaConVarios, familiares, miembroId }) 
       await crearPago(formData);
       formRef.current?.reset();
       setImporte("");
+      setMedioPago("");
       setExito(true);
     } catch (err) {
       setError(err.message);
@@ -112,7 +114,8 @@ export default function PagoForm({ esFamiliaConVarios, familiares, miembroId }) 
         />
         <select
           name="medio_pago"
-          defaultValue=""
+          value={medioPago}
+          onChange={(e) => setMedioPago(e.target.value)}
           className="border border-slate-200 rounded-xl px-4 py-2.5"
         >
           <option value="">Medio de pago...</option>
@@ -130,6 +133,7 @@ export default function PagoForm({ esFamiliaConVarios, familiares, miembroId }) 
             type="file"
             name="comprobante"
             accept="image/*"
+            capture={medioPago === "Efectivo" ? "environment" : undefined}
             className="text-sm w-full"
           />
         </div>
