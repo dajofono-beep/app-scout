@@ -36,6 +36,20 @@ export default function FamilyLoginPage() {
       });
   }, []);
 
+  // En el celular, el botón/gesto Atrás desde esta pantalla cierra la
+  // app en vez de volver a páginas viejas de una sesión anterior (p.
+  // ej. si se llegó acá después de cerrar sesión desde Mi Cuenta). En
+  // PC se deja el comportamiento normal del navegador.
+  useEffect(() => {
+    function alPresionarAtras() {
+      if (window.innerWidth >= 768) return;
+      window.close();
+      window.history.go(-(window.history.length + 1));
+    }
+    window.addEventListener("popstate", alPresionarAtras);
+    return () => window.removeEventListener("popstate", alPresionarAtras);
+  }, []);
+
   async function handleRamaChange(e) {
     const nuevaRamaId = e.target.value;
     setRamaId(nuevaRamaId);
