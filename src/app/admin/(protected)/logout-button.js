@@ -1,23 +1,31 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function LogoutButton() {
   const router = useRouter();
+  const [confirmando, setConfirmando] = useState(false);
 
-  async function handleLogout() {
-    const confirmado = window.confirm("¿Estás seguro que querés salir?");
-    if (!confirmado) return;
+  async function confirmarSalida() {
+    setConfirmando(false);
 
     const supabase = createClient();
     await supabase.auth.signOut();
 
-    // En el celular, si la app corre como PWA instalada, esto la cierra;
-    // si no se puede (el navegador no lo permite), sigue de largo y
-    // muestra el login igual.
     if (window.innerWidth < 768) {
+      // Intenta cerrar la app/pestaña (solo funciona si el navegador lo
+      // permite, p. ej. una PWA instalada sin más historial). Si después
+      // de un instante seguimos en la página, no funcionó y mostramos el
+      // login como red de seguridad.
       window.close();
+      window.history.go(-(window.history.length + 1));
+      setTimeout(() => {
+        router.push("/admin/login");
+        router.refresh();
+      }, 400);
+      return;
     }
 
     router.push("/admin/login");
@@ -25,11 +33,41 @@ export default function LogoutButton() {
   }
 
   return (
-    <button
-      onClick={handleLogout}
-      className="text-xs font-semibold text-slate-500 border border-slate-200 rounded-full px-3 py-1.5 hover:text-slate-700 hover:border-slate-300"
-    >
-      Cerrar sesión
-    </button>
+    <>
+      <button
+        type="button"
+        onClick={() => setConfirmando(true)}
+        className="text-xs font-semibold text-slate-500 border border-slate-200 rounded-full px-3 py-1.5 hover:text-slate-700 hover:border-slate-300"
+      >
+        Cerrar sesión
+      </button>
+
+      {confirmando && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="bg-white rounded-3xl shadow-sm p-6 w-full max-w-sm">
+            <p className="font-bold text-slate-800 text-lg mb-2">¿Salir?</p>
+            <p className="text-sm text-slate-500 mb-6">
+              ¿Estás seguro que querés salir de la aplicación?
+            </p>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setConfirmando(false)}
+                className="flex-1 border border-slate-200 text-slate-600 rounded-full py-2.5 font-bold"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={confirmarSalida}
+                className="flex-1 bg-sky-600 text-white rounded-full py-2.5 font-bold"
+              >
+                Salir
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
