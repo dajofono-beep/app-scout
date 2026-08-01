@@ -195,9 +195,7 @@ export default function MovimientosPanel({
         id: `cargo-${c.id}`,
         miembro_id: c.miembro_id,
         fecha: c.fecha,
-        // Los cargos se ordenan por vencimiento (cuándo hay que pagarlos),
-        // no por cuándo se cargaron, para ver rápido lo próximo a vencer.
-        fechaOrden: c.fecha_vencimiento || c.fecha,
+        fechaOrden: c.fecha,
         titulo: c.concepto,
         importe: c.importe,
         estado: c.estado,
@@ -216,7 +214,8 @@ export default function MovimientosPanel({
         porcentaje_aplicado: null,
         comprobante_href: p.comprobante_href,
       })),
-    ].sort((a, b) => (a.fechaOrden < b.fechaOrden ? -1 : a.fechaOrden > b.fechaOrden ? 1 : 0));
+      // Del más reciente al más viejo: lo último cargado o pagado queda arriba.
+    ].sort((a, b) => (a.fechaOrden > b.fechaOrden ? -1 : a.fechaOrden < b.fechaOrden ? 1 : 0));
 
     return {
       totalCargos,
