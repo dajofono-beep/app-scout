@@ -7,6 +7,7 @@ import RestaurarContrasenaBoton from "../restaurar-contrasena-boton";
 import FichaMiembroTabs from "./ficha-miembro-tabs";
 import AsignarCargoIndividualForm from "./asignar-cargo-individual-form";
 import { cancelarCargo, reactivarCargo } from "../../cargos/actions";
+import CamposRamaHermanos from "../campos-rama-hermanos";
 
 const formatoMoneda = (n) =>
   Number(n).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
@@ -88,52 +89,13 @@ export default async function FichaMiembroPage({ params }) {
           Solo refleja la contraseña inicial; no se edita acá.
         </p>
       </div>
-      <div>
-        <label className="block text-sm font-semibold text-slate-600 mb-1">
-          Rama
-        </label>
-        <select
-          name="rama_id"
-          defaultValue={miembro.rama_id}
-          required
-          className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
-        >
-          {(ramas ?? []).map((r) => (
-            <option key={r.id} value={r.id}>
-              {r.nombre}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label className="block text-sm font-semibold text-slate-600 mb-1">
-          Hermanos
-        </label>
-        <select
-          name="familia_id"
-          defaultValue={miembro.familia_id ?? ""}
-          className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
-        >
-          <option value="">Sin hermanos</option>
-          {(familias ?? []).map((f) => (
-            <option key={f.id} value={f.id}>
-              {f.nombre}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label className="block text-sm font-semibold text-slate-600 mb-1">
-          Orden entre hermanos (1º, 2º...)
-        </label>
-        <input
-          name="orden_familia"
-          type="number"
-          min="1"
-          defaultValue={miembro.orden_familia ?? ""}
-          className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
-        />
-      </div>
+      <CamposRamaHermanos
+        ramas={ramas ?? []}
+        familias={familias ?? []}
+        ramaIdInicial={miembro.rama_id}
+        familiaIdInicial={miembro.familia_id ?? ""}
+        ordenFamiliaInicial={miembro.orden_familia ?? ""}
+      />
       <div>
         <label className="block text-sm font-semibold text-slate-600 mb-1">
           Fecha de nacimiento

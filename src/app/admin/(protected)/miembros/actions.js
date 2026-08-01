@@ -58,6 +58,18 @@ async function crearMiembroConAcceso(admin, datos) {
   return miembro;
 }
 
+// La rama "Adultos" no participa del esquema de hermanos/orden; se
+// vuelve a chequear acá (además del formulario) por si llega un envío
+// manual que se salte el disabled del cliente.
+async function esRamaAdultos(client, rama_id) {
+  const { data } = await client
+    .from("ramas")
+    .select("nombre")
+    .eq("id", rama_id)
+    .maybeSingle();
+  return data?.nombre === "Adultos";
+}
+
 export async function crearMiembro(formData) {
   await verificarAdmin();
 
@@ -65,9 +77,9 @@ export async function crearMiembro(formData) {
   const apellido = formData.get("apellido")?.toString().trim();
   const dni = formData.get("dni")?.toString().trim();
   const rama_id = formData.get("rama_id")?.toString();
-  const familia_id = formData.get("familia_id")?.toString() || null;
+  let familia_id = formData.get("familia_id")?.toString() || null;
   const ordenRaw = formData.get("orden_familia")?.toString();
-  const orden_familia = ordenRaw ? Number(ordenRaw) : null;
+  let orden_familia = ordenRaw ? Number(ordenRaw) : null;
   const fecha_nacimiento = formData.get("fecha_nacimiento")?.toString() || null;
 
   if (!nombre || !apellido || !dni || !rama_id) {
@@ -80,6 +92,11 @@ export async function crearMiembro(formData) {
   }
 
   const admin = createAdminClient();
+
+  if (await esRamaAdultos(admin, rama_id)) {
+    familia_id = null;
+    orden_familia = null;
+  }
 
   await crearMiembroConAcceso(admin, {
     nombre,
@@ -103,13 +120,18 @@ export async function actualizarMiembro(formData) {
   const apellido = formData.get("apellido")?.toString().trim();
   const rama_id = formData.get("rama_id")?.toString();
   const activo = formData.get("activo") === "on";
-  const familia_id = formData.get("familia_id")?.toString() || null;
+  let familia_id = formData.get("familia_id")?.toString() || null;
   const ordenRaw = formData.get("orden_familia")?.toString();
-  const orden_familia = ordenRaw ? Number(ordenRaw) : null;
+  let orden_familia = ordenRaw ? Number(ordenRaw) : null;
   const fecha_nacimiento = formData.get("fecha_nacimiento")?.toString() || null;
 
   if (!nombre || !apellido || !rama_id) {
     throw new Error("Nombre, apellido y rama son obligatorios");
+  }
+
+  if (await esRamaAdultos(supabase, rama_id)) {
+    familia_id = null;
+    orden_familia = null;
   }
 
   const { error } = await supabase
