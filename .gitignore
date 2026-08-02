@@ -50,3 +50,7 @@ next-env.d.ts
 # src/lib/consultas/contexto.js, no hace falta versionar los PDFs
 # originales en el repo (uno pesa 58MB).
 public/Informacion/
+
+# Backups de la base de datos (contienen datos reales de las familias:
+# DNI, teléfono, fecha de nacimiento, etc.) — nunca deben subirse.
+/backups/
