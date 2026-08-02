@@ -41,11 +41,36 @@ export default function FamilyLoginPage() {
   // ej. si se llegó acá después de cerrar sesión desde Mi Cuenta). En
   // PC se deja el comportamiento normal del navegador.
   useEffect(() => {
+    let vaciando = false;
+
+    function vaciarHistorial() {
+      vaciando = true;
+      let restantes = window.history.length + 2;
+      function paso() {
+        if (restantes <= 0) {
+          vaciando = false;
+          return;
+        }
+        restantes--;
+        window.history.back();
+        setTimeout(paso, 30);
+      }
+      paso();
+    }
+
     function alPresionarAtras() {
+      // Ignora los "atrás" que dispara el propio vaciado en cadena.
+      if (vaciando) return;
       if (window.innerWidth >= 768) return;
       window.close();
-      window.history.go(-(window.history.length + 1));
+      // Un solo salto grande (history.go) no es confiable en el
+      // navegador del celular cuando el historial es profundo (p. ej.
+      // después de haber navegado bastante por Mi Cuenta); se vacía de
+      // a un paso genuino por vez, como si se presionara Atrás varias
+      // veces seguidas.
+      vaciarHistorial();
     }
+
     window.addEventListener("popstate", alPresionarAtras);
     return () => window.removeEventListener("popstate", alPresionarAtras);
   }, []);
