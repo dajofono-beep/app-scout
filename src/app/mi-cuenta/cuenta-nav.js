@@ -46,6 +46,7 @@ export default function CuentaNav({
   // interceptar y el navegador sale derecho de la app antes de que
   // nuestro código llegue a reaccionar.
   useEffect(() => {
+    if (window.__azimutCerrandoApp) return;
     window.history.pushState({ azimutBase: true }, "");
   }, []);
 
@@ -69,6 +70,11 @@ export default function CuentaNav({
 
   useEffect(() => {
     function alPresionarAtras() {
+      if (window.__azimutCerrandoApp) {
+        // La app se está cerrando desde otra pantalla (p. ej. el login):
+        // no interceptar, dejar que la salida siga su curso.
+        return;
+      }
       if (ignorarProximoPopRef.current) {
         ignorarProximoPopRef.current = false;
         return;

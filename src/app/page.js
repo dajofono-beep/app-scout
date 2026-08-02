@@ -62,6 +62,14 @@ export default function FamilyLoginPage() {
       // Ignora los "atrás" que dispara el propio vaciado en cadena.
       if (vaciando) return;
       if (window.innerWidth >= 768) return;
+      // Si venimos de Mi Cuenta, el historial de atrás todavía tiene
+      // entradas de /mi-cuenta: al vaciar, Next.js puede remontar esa
+      // pantalla un instante (y su propio manejador de Atrás pediría una
+      // segunda pulsación). Esta bandera le avisa que no intercepte.
+      window.__azimutCerrandoApp = true;
+      setTimeout(() => {
+        window.__azimutCerrandoApp = false;
+      }, 3000);
       window.close();
       // Un solo salto grande (history.go) no es confiable en el
       // navegador del celular cuando el historial es profundo (p. ej.
