@@ -80,6 +80,23 @@ export async function confirmarPago(formData) {
   revalidatePath("/admin");
 }
 
+export async function confirmarPagos(formData) {
+  const supabase = await requireSession();
+  const ids = formData.getAll("id").map((v) => v.toString());
+  if (ids.length === 0) throw new Error("Elegí al menos un pago");
+
+  const { error } = await supabase
+    .from("pagos")
+    .update({ confirmado_at: new Date().toISOString() })
+    .in("id", ids);
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/admin/pagos");
+  revalidatePath("/admin");
+
+  return { confirmados: ids.length };
+}
+
 export async function reasignarPago(formData) {
   const supabase = await requireSession();
   const id = formData.get("id");

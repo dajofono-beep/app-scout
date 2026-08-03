@@ -17,6 +17,7 @@ export default function FiltrosPagos({ valores }) {
 
   return (
     <tr className="border-b bg-slate-50">
+      <th className="p-2"></th>
       <th className="p-2 font-normal">
         <input
           defaultValue={valores.miembro}
