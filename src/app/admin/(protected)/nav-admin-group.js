@@ -10,6 +10,7 @@ const ITEMS = [
   { href: "/admin/ramas", label: "Ramas" },
   { href: "/admin/fechas-importantes", label: "Fechas importantes" },
   { href: "/admin/mensajes", label: "Mensajes" },
+  { href: "/admin/grupos-padres", label: "Grupos de Padres" },
 ];
 
 export default function NavAdminGroup() {

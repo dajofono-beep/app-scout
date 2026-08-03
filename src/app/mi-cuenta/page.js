@@ -207,7 +207,25 @@ export default async function MiCuentaPage() {
     destinatarioTexto: etiquetaDestinatario(m),
   }));
 
-  const panelMensajes = <Mensajes mensajes={mensajesConDestinatario} />;
+  const { data: config } = await supabase
+    .from("configuracion")
+    .select("grupos_padres_visible")
+    .eq("id", 1)
+    .maybeSingle();
+
+  let linkGrupoWhatsapp = null;
+  if (config?.grupos_padres_visible && miembro.rama_id) {
+    const { data: grupo } = await supabase
+      .from("grupos_whatsapp")
+      .select("link")
+      .eq("rama_id", miembro.rama_id)
+      .maybeSingle();
+    linkGrupoWhatsapp = grupo?.link ?? null;
+  }
+
+  const panelMensajes = (
+    <Mensajes mensajes={mensajesConDestinatario} linkGrupoWhatsapp={linkGrupoWhatsapp} />
+  );
 
   const panelPrincipal = (
     <div className="space-y-4">

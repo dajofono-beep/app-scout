@@ -21,9 +21,25 @@ function formatoFecha(iso) {
 // mensajes: [{ id, titulo, cuerpo, created_at, destinatarioTexto }], ya
 // ordenados del más nuevo al más viejo (la RLS ya filtra a los que le
 // corresponden a esta familia y están vigentes).
-export default function Mensajes({ mensajes }) {
+export default function Mensajes({ mensajes, linkGrupoWhatsapp }) {
   return (
     <section className="bg-white rounded-2xl shadow-sm p-5">
+      {linkGrupoWhatsapp && (
+        <a
+          href={linkGrupoWhatsapp}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-between gap-3 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 mb-4 hover:bg-emerald-100"
+        >
+          <div>
+            <p className="font-bold text-emerald-800 text-sm">
+              Grupo de WhatsApp de tu rama
+            </p>
+            <p className="text-xs text-emerald-700">Tocá para unirte</p>
+          </div>
+          <span className="text-emerald-700 text-lg">↗</span>
+        </a>
+      )}
       <div className="space-y-3 max-h-[28rem] overflow-y-auto">
         {mensajes.map((m) => (
           <div key={m.id} className="border border-slate-100 rounded-xl p-4">
