@@ -117,3 +117,5 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 
 - El admin puede seleccionar y confirmar varios pagos pendientes a la vez (checkbox + "Confirmar seleccionados"), sin perder la opción de confirmar uno solo.
 - Nueva sección **Grupos de Padres** en Administración: un link de WhatsApp por rama (todas menos Adultos) y un interruptor para mostrarlos o no en Mi Cuenta. Los links viven en una tabla aparte de `ramas` (que es de lectura pública) para que nunca queden expuestos sin loguearse. En Mi Cuenta, la tarjeta del grupo aparece debajo de los mensajes.
+- Se agregó este mismo `CHANGELOG.md`, reconstruido a partir del historial real de commits, y se dejó como hábito mantenerlo actualizado con cada cambio nuevo.
+- Se agregó `MANUAL_DE_USO.md`: un manual breve, paso a paso, pensado para que lo consulten las familias del Grupo — se actualiza también con cada funcionalidad nueva de cara al usuario final.
