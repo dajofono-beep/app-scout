@@ -139,11 +139,18 @@ export default async function MiCuentaPage() {
     0
   );
 
+  const { data: mediosPago } = await supabase
+    .from("medios_pago")
+    .select("id, nombre")
+    .eq("habilitado", true)
+    .order("orden");
+
   const panelPago = (
     <PagoForm
       esFamiliaConVarios={esFamiliaConVarios}
       familiares={familiares}
       miembroId={miembro.id}
+      mediosPago={mediosPago ?? []}
     />
   );
 

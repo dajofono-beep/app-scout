@@ -119,3 +119,10 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - Nueva sección **Grupos de Padres** en Administración: un link de WhatsApp por rama (todas menos Adultos) y un interruptor para mostrarlos o no en Mi Cuenta. Los links viven en una tabla aparte de `ramas` (que es de lectura pública) para que nunca queden expuestos sin loguearse. En Mi Cuenta, la tarjeta del grupo aparece debajo de los mensajes.
 - Se agregó este mismo `CHANGELOG.md`, reconstruido a partir del historial real de commits, y se dejó como hábito mantenerlo actualizado con cada cambio nuevo.
 - Se agregó `MANUAL_DE_USO.md`: un manual breve, paso a paso, pensado para que lo consulten las familias del Grupo — se actualiza también con cada funcionalidad nueva de cara al usuario final.
+
+## 2026-08-06 — Mercado Pago
+
+- Nueva sección **Medios de Pago** en Administración: habilitar o no, uno por uno, Efectivo/Transferencia/Mercado Pago — lo que esté deshabilitado deja de aparecer en el desplegable de "Cargar un pago" de Mi Cuenta.
+- Pantalla de configuración exclusiva para Mercado Pago (titular de la cuenta, credenciales de prueba y de producción por separado, qué ambiente está activo, y un campo de recargo ya preparado para más adelante) — de acceso admin-only, nunca visible ni para las familias ni para el resto del panel.
+- **Se integró el cobro real por Mercado Pago** (Checkout Pro): al elegir ese medio en Mi Cuenta, la familia es redirigida al checkout de Mercado Pago; cuando el pago se aprueba, un webhook lo acredita a su cuenta al instante, sin esperar los 4 días ni intervención del admin. Los pagos manuales (Efectivo/Transferencia) siguen exactamente igual que antes.
+- Probado de punta a punta con credenciales de prueba de Mercado Pago — funciona correctamente.

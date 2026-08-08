@@ -1,8 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { MEDIOS_PAGO } from "@/lib/medios-pago";
-import { crearPago } from "./actions";
+import { crearPago, crearPagoMercadoPago } from "./actions";
 
 const hoy = () => new Date().toISOString().slice(0, 10);
 
@@ -60,13 +59,15 @@ async function comprimirImagen(archivo, maxLado = 1600, calidad = 0.75) {
   }
 }
 
-export default function PagoForm({ esFamiliaConVarios, familiares, miembroId }) {
+export default function PagoForm({ esFamiliaConVarios, familiares, miembroId, mediosPago }) {
   const formRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [exito, setExito] = useState(false);
   const [importe, setImporte] = useState("");
   const [medioPago, setMedioPago] = useState("");
+
+  const esMercadoPago = medioPago === "Mercado Pago";
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -76,6 +77,22 @@ export default function PagoForm({ esFamiliaConVarios, familiares, miembroId }) 
 
     const formData = new FormData(e.currentTarget);
     formData.set("importe", importe.replace(",", "."));
+
+    if (esMercadoPago) {
+      try {
+        const resultado = await crearPagoMercadoPago(formData);
+        if (!resultado.ok) {
+          setError(resultado.error);
+          return;
+        }
+        window.location.href = resultado.url;
+      } catch {
+        setError("Ocurrió un error inesperado. Intentá de nuevo.");
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
 
     const comprobante = formData.get("comprobante");
     if (comprobante && comprobante.size > 0) {
@@ -144,14 +161,16 @@ export default function PagoForm({ esFamiliaConVarios, familiares, miembroId }) 
           placeholder="Importe"
           className="border border-slate-200 rounded-xl px-4 py-2.5"
         />
-        <input
-          name="fecha_pago"
-          type="date"
-          required
-          defaultValue={hoy()}
-          max={hoy()}
-          className="border border-slate-200 rounded-xl px-4 py-2.5"
-        />
+        {!esMercadoPago && (
+          <input
+            name="fecha_pago"
+            type="date"
+            required
+            defaultValue={hoy()}
+            max={hoy()}
+            className="border border-slate-200 rounded-xl px-4 py-2.5"
+          />
+        )}
         <select
           name="medio_pago"
           value={medioPago}
@@ -159,24 +178,26 @@ export default function PagoForm({ esFamiliaConVarios, familiares, miembroId }) 
           className="border border-slate-200 rounded-xl px-4 py-2.5"
         >
           <option value="">Medio de pago...</option>
-          {MEDIOS_PAGO.map((medio) => (
-            <option key={medio} value={medio}>
-              {medio}
+          {(mediosPago ?? []).map((medio) => (
+            <option key={medio.id} value={medio.nombre}>
+              {medio.nombre}
             </option>
           ))}
         </select>
-        <div className="sm:col-span-3">
-          <label className="block text-xs text-slate-500 mb-1">
-            Comprobante de la transferencia (opcional)
-          </label>
-          <input
-            type="file"
-            name="comprobante"
-            accept="image/*"
-            capture={medioPago === "Efectivo" ? "environment" : undefined}
-            className="text-sm w-full"
-          />
-        </div>
+        {!esMercadoPago && (
+          <div className="sm:col-span-3">
+            <label className="block text-xs text-slate-500 mb-1">
+              Comprobante de la transferencia (opcional)
+            </label>
+            <input
+              type="file"
+              name="comprobante"
+              accept="image/*"
+              capture={medioPago === "Efectivo" ? "environment" : undefined}
+              className="text-sm w-full"
+            />
+          </div>
+        )}
 
         {error && (
           <p className="sm:col-span-3 text-sm text-red-500 font-semibold">{error}</p>
@@ -187,12 +208,17 @@ export default function PagoForm({ esFamiliaConVarios, familiares, miembroId }) 
           disabled={loading}
           className="sm:col-span-3 bg-sky-600 text-white rounded-full py-2.5 font-bold disabled:opacity-50"
         >
-          {loading ? "Registrando..." : "Registrar pago"}
+          {loading
+            ? "Un momento..."
+            : esMercadoPago
+              ? "Pagar con Mercado Pago"
+              : "Registrar pago"}
         </button>
       </form>
       <p className="text-xs text-slate-500 mt-2">
-        El pago queda como &quot;Pendiente&quot; por 4 días, tiempo en el que
-        el administrador puede revisarlo. Luego se acredita solo.
+        {esMercadoPago
+          ? "Te vamos a redirigir a Mercado Pago para completar el pago. Una vez aprobado, se acredita solo, sin esperar."
+          : "El pago queda como \"Pendiente\" por 4 días, tiempo en el que el administrador puede revisarlo. Luego se acredita solo."}
       </p>
     </section>
   );

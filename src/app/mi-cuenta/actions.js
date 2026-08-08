@@ -103,3 +103,153 @@ export async function crearPago(formData) {
 
   revalidatePath("/mi-cuenta");
 }
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://azimut-kappa.vercel.app";
+
+// A diferencia de crearPago, devuelve { ok, url } o { ok: false, error }
+// en vez de tirar una excepción: Next.js borra el mensaje de cualquier
+// error lanzado con `throw` desde un server action en producción, así
+// que un valor de retorno normal es la única forma de que el mensaje
+// (p. ej. "Mercado Pago no está configurado") llegue tal cual al chat.
+export async function crearPagoMercadoPago(formData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "No autenticado" };
+
+  const miembro_id = formData.get("miembro_id")?.toString();
+  const importe = Number(formData.get("importe"));
+  if (!miembro_id) return { ok: false, error: "Elegí para quién es el pago" };
+  if (!importe || importe <= 0) {
+    return { ok: false, error: "El importe debe ser mayor a 0" };
+  }
+
+  const admin = createAdminClient();
+  const { data: config } = await admin
+    .from("mercadopago_config")
+    .select("*")
+    .eq("id", 1)
+    .maybeSingle();
+
+  const accessToken =
+    config?.ambiente === "produccion"
+      ? config?.access_token_produccion
+      : config?.access_token_prueba;
+  if (!accessToken) {
+    return {
+      ok: false,
+      error: "Mercado Pago todavía no está configurado. Avisale al administrador del grupo.",
+    };
+  }
+
+  const fecha_pago = new Date().toISOString().slice(0, 10);
+  let pagos;
+
+  if (miembro_id === "reparto_igual") {
+    const { data: familiares, error: familiaresError } = await supabase
+      .from("miembros")
+      .select("id")
+      .order("apellido");
+    if (familiaresError) return { ok: false, error: familiaresError.message };
+    if (!familiares || familiares.length === 0) {
+      return { ok: false, error: "No se encontraron hermanos" };
+    }
+
+    const montos = dividirEnPartesIguales(importe, familiares.length);
+    const { data, error } = await supabase
+      .from("pagos")
+      .insert(
+        familiares.map((f, i) => ({
+          miembro_id: f.id,
+          importe: montos[i],
+          fecha_pago,
+          medio_pago: "Mercado Pago",
+          origen: "mercadopago",
+          estado: "activo",
+          creado_por: user.id,
+        }))
+      )
+      .select();
+    if (error) return { ok: false, error: error.message };
+    pagos = data;
+  } else {
+    const { data, error } = await supabase
+      .from("pagos")
+      .insert({
+        miembro_id,
+        importe,
+        fecha_pago,
+        medio_pago: "Mercado Pago",
+        origen: "mercadopago",
+        estado: "activo",
+        creado_por: user.id,
+      })
+      .select()
+      .single();
+    if (error) return { ok: false, error: error.message };
+    pagos = [data];
+  }
+
+  const idsPagos = pagos.map((p) => p.id);
+
+  let respuesta;
+  try {
+    respuesta = await fetch("https://api.mercadopago.com/checkout/preferences", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        items: [
+          {
+            title: "Cuota - Grupo Scout Libertador San Martín",
+            quantity: 1,
+            unit_price: importe,
+            currency_id: "ARS",
+          },
+        ],
+        external_reference: idsPagos.join(","),
+        back_urls: {
+          success: `${SITE_URL}/mi-cuenta`,
+          pending: `${SITE_URL}/mi-cuenta`,
+          failure: `${SITE_URL}/mi-cuenta`,
+        },
+        auto_return: "approved",
+        notification_url: `${SITE_URL}/api/mercadopago/webhook`,
+      }),
+    });
+  } catch (err) {
+    console.error("crearPagoMercadoPago:", err);
+    respuesta = null;
+  }
+
+  if (!respuesta || !respuesta.ok) {
+    // Los pagos ya quedaron creados; si Mercado Pago rechaza la
+    // preferencia, se cancelan para no dejar registros pendientes que
+    // nunca se van a completar.
+    await supabase.from("pagos").update({ estado: "cancelado" }).in("id", idsPagos);
+    if (respuesta) console.error("crearPagoMercadoPago:", await respuesta.text());
+    return {
+      ok: false,
+      error: "No se pudo conectar con Mercado Pago. Intentá de nuevo en un momento.",
+    };
+  }
+
+  const datosPreferencia = await respuesta.json();
+
+  await supabase
+    .from("pagos")
+    .update({ mp_preference_id: datosPreferencia.id })
+    .in("id", idsPagos);
+
+  revalidatePath("/mi-cuenta");
+
+  const url =
+    config.ambiente === "produccion"
+      ? datosPreferencia.init_point
+      : datosPreferencia.sandbox_init_point;
+
+  return { ok: true, url };
+}

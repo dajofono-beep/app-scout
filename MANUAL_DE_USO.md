@@ -30,11 +30,19 @@ Al entrar ves de entrada:
 
 1. Desde Principal, tocá **"Cargar un pago"**.
 2. Si tenés más de un hijo, elegís si el pago es para repartir en partes iguales o para uno puntual.
-3. Completá el **importe**, la **fecha** y el **medio de pago** (Efectivo o Transferencia).
-4. Sacale una foto al comprobante (o al efectivo entregado) — si elegiste Efectivo, el celular abre la cámara directo.
+3. Completá el **importe** y elegí el **medio de pago** — según lo que el Grupo tenga habilitado, vas a ver Efectivo, Transferencia y/o Mercado Pago.
+
+**Efectivo o Transferencia:**
+
+4. Completá también la fecha, y sacale una foto al comprobante (o al efectivo entregado) — si elegiste Efectivo, el celular abre la cámara directo.
 5. Tocá **"Registrar pago"**.
 
 El pago queda como **"Pendiente"** unos días (para que el administrador pueda revisarlo) y después se acredita solo a tu cuenta.
+
+**Mercado Pago (si está habilitado):**
+
+4. Tocá **"Pagar con Mercado Pago"** — te redirige al checkout de Mercado Pago para que completes el pago ahí.
+5. Una vez aprobado, volvés a Mi Cuenta y el pago ya figura **acreditado al instante**, sin esperar ni necesitar que el administrador lo revise.
 
 ## 5. Movimientos
 
