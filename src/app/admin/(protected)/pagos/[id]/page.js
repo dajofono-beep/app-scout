@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { urlFirmadaComprobante } from "@/lib/supabase/comprobantes";
-import { MEDIOS_PAGO } from "@/lib/medios-pago";
 import {
   actualizarPago,
   cancelarPago,
@@ -34,6 +33,14 @@ export default async function FichaPagoPage({ params }) {
     .from("miembros")
     .select("id, nombre, apellido")
     .order("apellido");
+
+  // Se traen todos los medios (no solo los habilitados hoy) para poder
+  // seguir mostrando/editando correctamente un pago viejo aunque ese
+  // medio ya no esté habilitado para pagos nuevos.
+  const { data: mediosPago } = await supabase
+    .from("medios_pago")
+    .select("id, nombre")
+    .order("orden");
 
   const comprobanteHref = pago.comprobante_url
     ? await urlFirmadaComprobante(createAdminClient(), pago.comprobante_url)
@@ -120,9 +127,9 @@ export default async function FichaPagoPage({ params }) {
             className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
           >
             <option value="">Sin especificar</option>
-            {MEDIOS_PAGO.map((medio) => (
-              <option key={medio} value={medio}>
-                {medio}
+            {(mediosPago ?? []).map((medio) => (
+              <option key={medio.id} value={medio.nombre}>
+                {medio.nombre}
               </option>
             ))}
           </select>
