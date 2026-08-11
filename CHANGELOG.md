@@ -127,3 +127,10 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - **Se integró el cobro real por Mercado Pago** (Checkout Pro): al elegir ese medio en Mi Cuenta, la familia es redirigida al checkout de Mercado Pago; cuando el pago se aprueba, un webhook lo acredita a su cuenta al instante, sin esperar los 4 días ni intervención del admin. Los pagos manuales (Efectivo/Transferencia) siguen exactamente igual que antes.
 - Probado de punta a punta con credenciales de prueba y en producción con Mercado Pago real — funciona correctamente.
 - Se corrigió la ficha de un pago en Administración: el desplegable "Medio de pago" usaba una lista vieja fija (sin Mercado Pago), así que un pago de Mercado Pago se mostraba como "Sin especificar" — y guardar sin querer lo hubiera borrado. Ahora usa la misma tabla `medios_pago` como fuente única.
+
+## 2026-08-11 — Alerta de próximo vencimiento en Mi Cuenta
+
+- Nuevo campo en Concepto: "Avisar en Mi Cuenta si no está pago cerca de esta fecha" (solo tiene efecto si el concepto tiene fecha de vencimiento cargada). Los conceptos ya existentes quedan sin marcar hasta que el admin lo active a mano en cada uno.
+- La tarjeta de saldo de Mi Cuenta ahora tiene un botón **"Más información"**, siempre disponible, que despliega — por cada hermano, nunca mezclando entre ellos — si tiene conceptos marcados ya vencidos sin pagar (con el monto) o un próximo concepto marcado a futuro sin cubrir, o "Estás al día para los próximos eventos" si no hay nada pendiente.
+- El cálculo se hace en cascada (pagos más viejos primero) sobre los cargos de cada hermano por separado, igual que en el reporte de Excel — a propósito, para que lo pagado de más por un hermano no tape la deuda real de otro. Por eso este número puede diferir del "Saldo pendiente a la fecha" de la pestaña Pagos/Cargos, que sí mezcla a toda la familia.
+- Corregidos dos bugs en el camino: la fecha de vencimiento se lee del concepto actual (no de la copia vieja guardada en el cargo), y la consulta a la tabla `productos` desde Mi Cuenta pasó a usar el cliente admin (esa tabla es de lectura solo para administradores).

@@ -79,6 +79,17 @@ export default async function FichaProductoPage({ params }) {
         <label className="flex items-center gap-2 text-sm">
           <input
             type="checkbox"
+            name="alerta_vencimiento"
+            defaultChecked={producto.alerta_vencimiento}
+          />
+          Avisar en Mi Cuenta si no está pago cerca de esta fecha
+        </label>
+        <p className="text-xs text-slate-400 -mt-2">
+          Solo tiene efecto si cargaste una fecha de vencimiento arriba.
+        </p>
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
             name="es_cuotable"
             defaultChecked={producto.es_cuotable}
           />

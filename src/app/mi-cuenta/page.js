@@ -8,9 +8,8 @@ import PagoForm from "./pago-form";
 import Social from "./social";
 import Mensajes from "./mensajes";
 import CuentaNav from "./cuenta-nav";
-
-const formatoMoneda = (n) =>
-  Number(n).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
+import TarjetaSaldo from "./tarjeta-saldo";
+import { calcularVencimientos } from "./proximo-vencimiento";
 
 export default async function MiCuentaPage() {
   const supabase = await createClient();
@@ -156,10 +155,25 @@ export default async function MiCuentaPage() {
 
   const cargosActivos = (cargos ?? []).filter((c) => c.estado === "activo");
   const totalCargos = cargosActivos.reduce((acc, c) => acc + Number(c.importe), 0);
-  const pagadoTotal = (pagos ?? [])
-    .filter((p) => p.estado_efectivo === "acreditado")
-    .reduce((acc, p) => acc + Number(p.importe), 0);
+  const pagosAcreditados = (pagos ?? []).filter((p) => p.estado_efectivo === "acreditado");
+  const pagadoTotal = pagosAcreditados.reduce((acc, p) => acc + Number(p.importe), 0);
   const pagosRealizados = pagadoTotal + pendienteTotal;
+
+  // `productos` es de lectura solo para administradores (RLS), así que
+  // se resuelve con el cliente admin — mismo caso que `familias` más
+  // arriba.
+  const { data: productosVencimiento } = await admin
+    .from("productos")
+    .select("id, fecha_vencimiento, alerta_vencimiento");
+
+  const vencimientos = calcularVencimientos({
+    familiares: familiares ?? [],
+    cargos: cargos ?? [],
+    pagosAcreditados,
+    productos: productosVencimiento ?? [],
+    nombrePorId,
+    hoyIso: hoy.toISOString().slice(0, 10),
+  });
 
   const panelMovimientos = (
     <MovimientosPanel
@@ -236,36 +250,16 @@ export default async function MiCuentaPage() {
 
   const panelPrincipal = (
     <div className="space-y-4">
-      <section className="bg-gradient-to-br from-sky-600 to-sky-400 text-white rounded-3xl shadow-md p-5">
-        <p className="text-sm text-white/90">
-          {esFamiliaConVarios ? "Saldo total entre hermanos" : "Saldo actual"}
-        </p>
-        <p className="text-3xl font-bold">{formatoMoneda(saldoTotal)}</p>
-        <div className="flex gap-4 mt-3 text-xs text-white/80">
-          <span>
-            Deuda total <span className="font-bold text-white">{formatoMoneda(totalCargos)}</span>
-          </span>
-          <span>
-            Total Pagos <span className="font-bold text-white">{formatoMoneda(pagosRealizados)}</span>
-          </span>
-        </div>
-        {pendienteTotal > 0 && (
-          <p className="text-xs bg-white/20 rounded-full px-3 py-1 inline-block mt-2">
-            {formatoMoneda(pendienteTotal)} en pagos pendientes de acreditar
-          </p>
-        )}
-
-        {esFamiliaConVarios && (
-          <div className="mt-3 pt-3 border-t border-white/20 space-y-1">
-            {saldosOrdenados.map((s) => (
-              <div key={s.miembro_id} className="flex justify-between text-sm">
-                <span className="text-white/85">{nombrePorId[s.miembro_id]}</span>
-                <span className="font-bold">{formatoMoneda(s.saldo)}</span>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+      <TarjetaSaldo
+        esFamiliaConVarios={esFamiliaConVarios}
+        saldoTotal={saldoTotal}
+        totalCargos={totalCargos}
+        pagosRealizados={pagosRealizados}
+        pendienteTotal={pendienteTotal}
+        saldosOrdenados={saldosOrdenados}
+        nombrePorId={nombrePorId}
+        vencimientos={vencimientos}
+      />
 
       <CuentaTabs panelPago={panelPago} panelMovimientos={panelMovimientos} />
     </div>

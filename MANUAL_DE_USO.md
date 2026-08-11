@@ -26,6 +26,8 @@ Al entrar ves de entrada:
 - Si hay pagos recién cargados, un aviso de cuánto está "pendiente de acreditar" (ver sección 5).
 - Si tenés más de un hijo en el Grupo, el desglose de saldo de cada uno.
 
+Tocando **"Más información"**, se despliega si hay algún concepto importante (por ejemplo, un campamento o una salida) sin pagar — con el monto, o el mensaje "Estás al día para los próximos eventos" si no hay nada pendiente. Si no está al día con alguno de estos conceptos, puede no ser posible participar de esa actividad.
+
 ## 4. Cargar un pago
 
 1. Desde Principal, tocá **"Cargar un pago"**.

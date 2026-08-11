@@ -24,6 +24,7 @@ export async function crearProducto(formData) {
   const aplica_descuento_hermanos =
     formData.get("aplica_descuento_hermanos") === "on";
   const fecha_vencimiento = formData.get("fecha_vencimiento")?.toString() || null;
+  const alerta_vencimiento = formData.get("alerta_vencimiento") === "on";
 
   if (!nombre) throw new Error("El nombre es obligatorio");
   if (!importe || importe <= 0) throw new Error("El importe debe ser mayor a 0");
@@ -39,6 +40,7 @@ export async function crearProducto(formData) {
     cantidad_cuotas: es_cuotable ? cantidad_cuotas : null,
     aplica_descuento_hermanos,
     fecha_vencimiento,
+    alerta_vencimiento: fecha_vencimiento ? alerta_vencimiento : false,
   });
   if (error) throw new Error(error.message);
 
@@ -59,6 +61,7 @@ export async function actualizarProducto(formData) {
   const aplica_descuento_hermanos =
     formData.get("aplica_descuento_hermanos") === "on";
   const fecha_vencimiento = formData.get("fecha_vencimiento")?.toString() || null;
+  const alerta_vencimiento = formData.get("alerta_vencimiento") === "on";
 
   if (!nombre) throw new Error("El nombre es obligatorio");
   if (!importe || importe <= 0) throw new Error("El importe debe ser mayor a 0");
@@ -77,6 +80,7 @@ export async function actualizarProducto(formData) {
       cantidad_cuotas: es_cuotable ? cantidad_cuotas : null,
       aplica_descuento_hermanos,
       fecha_vencimiento,
+      alerta_vencimiento: fecha_vencimiento ? alerta_vencimiento : false,
     })
     .eq("id", id);
   if (error) throw new Error(error.message);
