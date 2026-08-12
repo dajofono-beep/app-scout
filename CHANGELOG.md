@@ -138,3 +138,10 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-08-11 — Nueva descarga
 
 - Se sumó el "Formulario Declaración Jurada de Salud - Scouts de Argentina" a la tarjeta "Autorizaciones Anuales" de la sección Descargas.
+
+## 2026-08-12 — Agregados al panel de Resumen (admin)
+
+- Nueva tarjeta **"Riesgo de no poder participar del próximo evento"**: cuenta cuántas familias tienen algún miembro con conceptos marcados (ver alerta de vencimiento de Mi Cuenta) vencidos o próximos sin cubrir.
+- Nueva tarjeta **"Pagos pendientes de revisión"**, con la cantidad y un link directo a la lista filtrada en Pagos.
+- Nueva tarjeta **"Cobrado por medio de pago"**, con el total acreditado agrupado por Efectivo/Transferencia/Mercado Pago.
+- Las tres respetan el filtro por rama que ya tenía el panel (excepto el link a Pagos pendientes, que siempre muestra todos sin importar la rama elegida), y quedan ocultas detrás de un botón **"Más información"**, igual que en Mi Cuenta.

@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { calcularVencimientos } from "@/app/mi-cuenta/proximo-vencimiento";
+import MasInformacionResumen from "./mas-informacion-resumen";
 
 const COLOR_RAMA = {
   Manada: { dot: "bg-yellow-400", chip: "bg-yellow-50 text-yellow-700", ring: "ring-yellow-400" },
@@ -37,7 +39,7 @@ export default async function AdminDashboardPage({ searchParams }) {
 
   const { data: miembrosActivos } = await supabase
     .from("miembros")
-    .select("id, nombre, apellido, rama_id, ramas(nombre)")
+    .select("id, nombre, apellido, rama_id, familia_id, ramas(nombre)")
     .eq("activo", true);
 
   const totalMiembros = miembrosActivos?.length ?? 0;
@@ -86,17 +88,65 @@ export default async function AdminDashboardPage({ searchParams }) {
   const menosDeuda = [...ranking].sort((a, b) => Number(a.saldo) - Number(b.saldo)).slice(0, 5);
   const masDeuda = [...ranking].sort((a, b) => Number(b.saldo) - Number(a.saldo)).slice(0, 5);
 
-  let ultimosPagos = [];
+  let pagosFiltrados = [];
+  let cargosFiltrados = [];
   if (idsFiltrados.length > 0) {
-    const { data } = await supabase
+    const { data: dataPagos } = await supabase
       .from("estado_pagos")
       .select("*, miembros(nombre, apellido, ramas(nombre))")
       .in("miembro_id", idsFiltrados)
       .order("fecha_pago", { ascending: false })
-      .order("created_at", { ascending: false })
-      .limit(5);
-    ultimosPagos = data ?? [];
+      .order("created_at", { ascending: false });
+    pagosFiltrados = dataPagos ?? [];
+
+    const { data: dataCargos } = await supabase
+      .from("cargos")
+      .select("id, miembro_id, producto_id, concepto, importe, estado, fecha, fecha_vencimiento")
+      .in("miembro_id", idsFiltrados);
+    cargosFiltrados = dataCargos ?? [];
   }
+  const ultimosPagos = pagosFiltrados.slice(0, 5);
+
+  const pagosPendientesCount = pagosFiltrados.filter(
+    (p) => p.estado_efectivo === "pendiente"
+  ).length;
+
+  const pagosAcreditadosFiltrados = pagosFiltrados.filter(
+    (p) => p.estado_efectivo === "acreditado"
+  );
+
+  const acreditadoPorMedio = {};
+  for (const p of pagosAcreditadosFiltrados) {
+    const medio = p.medio_pago || "Sin especificar";
+    acreditadoPorMedio[medio] = (acreditadoPorMedio[medio] ?? 0) + Number(p.importe);
+  }
+  const acreditadoPorMedioOrdenado = Object.entries(acreditadoPorMedio).sort(
+    (a, b) => b[1] - a[1]
+  );
+
+  const { data: productosVencimiento } = await supabase
+    .from("productos")
+    .select("id, fecha_vencimiento, alerta_vencimiento");
+
+  const familiaIdPorMiembro = Object.fromEntries(
+    (miembrosActivos ?? []).map((m) => [m.id, m.familia_id])
+  );
+  const nombrePorIdSimple = Object.fromEntries(
+    (miembrosActivos ?? []).map((m) => [m.id, `${m.apellido}, ${m.nombre}`])
+  );
+
+  const vencimientosFiltrados = calcularVencimientos({
+    familiares: idsFiltrados.map((id) => ({ id })),
+    cargos: cargosFiltrados,
+    pagosAcreditados: pagosAcreditadosFiltrados,
+    productos: productosVencimiento ?? [],
+    nombrePorId: nombrePorIdSimple,
+    hoyIso: new Date().toISOString().slice(0, 10),
+  });
+
+  const familiasEnRiesgo = new Set(
+    vencimientosFiltrados.map((v) => familiaIdPorMiembro[v.miembroId] ?? v.miembroId)
+  ).size;
 
   return (
     <div>
@@ -163,6 +213,12 @@ export default async function AdminDashboardPage({ searchParams }) {
           </p>
         </div>
       </div>
+
+      <MasInformacionResumen
+        familiasEnRiesgo={familiasEnRiesgo}
+        pagosPendientesCount={pagosPendientesCount}
+        acreditadoPorMedioOrdenado={acreditadoPorMedioOrdenado}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="bg-white rounded-2xl shadow-sm p-5">
