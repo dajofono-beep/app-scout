@@ -134,3 +134,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - La tarjeta de saldo de Mi Cuenta ahora tiene un botón **"Más información"**, siempre disponible, que despliega — por cada hermano, nunca mezclando entre ellos — si tiene conceptos marcados ya vencidos sin pagar (con el monto) o un próximo concepto marcado a futuro sin cubrir, o "Estás al día para los próximos eventos" si no hay nada pendiente.
 - El cálculo se hace en cascada (pagos más viejos primero) sobre los cargos de cada hermano por separado, igual que en el reporte de Excel — a propósito, para que lo pagado de más por un hermano no tape la deuda real de otro. Por eso este número puede diferir del "Saldo pendiente a la fecha" de la pestaña Pagos/Cargos, que sí mezcla a toda la familia.
 - Corregidos dos bugs en el camino: la fecha de vencimiento se lee del concepto actual (no de la copia vieja guardada en el cargo), y la consulta a la tabla `productos` desde Mi Cuenta pasó a usar el cliente admin (esa tabla es de lectura solo para administradores).
+
+## 2026-08-11 — Nueva descarga
+
+- Se sumó el "Formulario Declaración Jurada de Salud - Scouts de Argentina" a la tarjeta "Autorizaciones Anuales" de la sección Descargas.

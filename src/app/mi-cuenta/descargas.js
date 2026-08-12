@@ -15,6 +15,10 @@ const GRUPOS = [
         nombre: "Autorización Anual para Salidas Cercanas",
         archivo: "Autorizacion-Anual-para-Salidas-Cercanas.pdf",
       },
+      {
+        nombre: "Formulario Declaración Jurada de Salud - Scouts de Argentina",
+        archivo: "Formulario-Declaracion-Jurada-de-Salud-Scouts-de-Argentina.pdf",
+      },
     ],
   },
   {
