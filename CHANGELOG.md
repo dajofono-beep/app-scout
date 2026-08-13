@@ -145,3 +145,8 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - Nueva tarjeta **"Pagos pendientes de revisión"**, con la cantidad y un link directo a la lista filtrada en Pagos.
 - Nueva tarjeta **"Cobrado por medio de pago"**, con el total acreditado agrupado por Efectivo/Transferencia/Mercado Pago.
 - Las tres respetan el filtro por rama que ya tenía el panel (excepto el link a Pagos pendientes, que siempre muestra todos sin importar la rama elegida), y quedan ocultas detrás de un botón **"Más información"**, igual que en Mi Cuenta.
+
+## 2026-08-12 — Comprobante obligatorio al cargar un pago
+
+- Al cargar un pago en Efectivo o Transferencia, ahora es obligatorio adjuntar el comprobante (antes era opcional). El campo cambió su texto a "Adjuntar comprobante de pago".
+- Elegir Efectivo sigue abriendo la cámara del celular directo; elegir Transferencia ahora abre el buscador de archivos con los PDF priorizados en vez de la galería de fotos.

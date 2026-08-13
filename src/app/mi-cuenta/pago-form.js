@@ -187,12 +187,13 @@ export default function PagoForm({ esFamiliaConVarios, familiares, miembroId, me
         {!esMercadoPago && (
           <div className="sm:col-span-3">
             <label className="block text-xs text-slate-500 mb-1">
-              Comprobante de la transferencia (opcional)
+              Adjuntar comprobante de pago
             </label>
             <input
               type="file"
               name="comprobante"
-              accept="image/*"
+              required
+              accept={medioPago === "Transferencia" ? "application/pdf,image/*" : "image/*"}
               capture={medioPago === "Efectivo" ? "environment" : undefined}
               className="text-sm w-full"
             />

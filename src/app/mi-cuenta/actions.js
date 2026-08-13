@@ -47,6 +47,7 @@ export async function crearPago(formData) {
   if (!miembro_id) throw new Error("Elegí para quién es el pago");
   if (!importe || importe <= 0) throw new Error("El importe debe ser mayor a 0");
   if (!fecha_pago) throw new Error("La fecha es obligatoria");
+  if (!hayComprobante) throw new Error("Adjuntá el comprobante de pago");
 
   if (miembro_id === "reparto_igual") {
     // RLS ("miembros_lectura_grupo"/propia familia) ya limita esta consulta

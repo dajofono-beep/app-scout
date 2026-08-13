@@ -36,7 +36,7 @@ Tocando **"Más información"**, se despliega si hay algún concepto importante 
 
 **Efectivo o Transferencia:**
 
-4. Completá también la fecha, y sacale una foto al comprobante (o al efectivo entregado) — si elegiste Efectivo, el celular abre la cámara directo.
+4. Completá también la fecha, y adjuntá el comprobante de pago — es obligatorio. Si elegiste Efectivo, el celular abre la cámara directo para sacarle una foto; si elegiste Transferencia, se abre el buscador de archivos (para subir el PDF o la captura del comprobante).
 5. Tocá **"Registrar pago"**.
 
 El pago queda como **"Pendiente"** unos días (para que el administrador pueda revisarlo) y después se acredita solo a tu cuenta.
