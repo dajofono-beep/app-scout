@@ -173,3 +173,8 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-08-12 — Datos viejos al navegar en Administración
 
 - Corregido un bug: al navegar entre secciones del panel de administración (por ejemplo, ir a Resumen después de asignar cargos), a veces se mostraba información desactualizada, y solo se solucionaba cerrando sesión y volviendo a entrar. Causa: el menú del admin dejaba que Next.js precargue y guarde en el navegador una copia de cada pantalla, algo que solo ocurre en producción (no se puede reproducir en desarrollo). Se desactivó esa precarga en los tres menús de navegación del admin, para que cada clic traiga siempre los datos frescos del servidor.
+
+## 2026-08-12 — Rediseño de la acreditación de Mercado Pago
+
+- Corregido un bug de fondo: si la familia cancelaba o desistía del pago dentro de la app de Mercado Pago, el pago quedaba registrado como "Pendiente" para siempre en Azimut, sin ninguna forma automática de resolverse.
+- Se rediseñó el flujo: ahora el pago no se registra en la base hasta que Mercado Pago confirma que fue aprobado (vía el webhook, como ya funcionaba para acreditar). Si la familia cancela, cierra la app, o el pago es rechazado, no se crea ningún registro — nada que limpiar a mano.

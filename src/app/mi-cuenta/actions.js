@@ -169,9 +169,14 @@ export async function crearPagoMercadoPago(formData) {
     };
   }
 
-  const fecha_pago = new Date().toISOString().slice(0, 10);
-  let pagos;
-
+  // No se crea ninguna fila en `pagos` todavía: el pago solo pasa a
+  // existir cuando Mercado Pago confirma que se aprobó (ver el webhook
+  // en api/mercadopago/webhook/route.js). Así, si la familia cancela,
+  // cierra la app, o el pago es rechazado, no queda ningún registro
+  // "Pendiente" fantasma para limpiar. Los datos necesarios para crear
+  // el pago en ese momento (a quién, cuánto) viajan en `metadata` de la
+  // preferencia, no en la base.
+  let partes;
   if (miembro_id === "reparto_igual") {
     const { data: familiares, error: familiaresError } = await supabase
       .from("miembros")
@@ -183,41 +188,12 @@ export async function crearPagoMercadoPago(formData) {
     }
 
     const montos = dividirEnPartesIguales(importe, familiares.length);
-    const { data, error } = await supabase
-      .from("pagos")
-      .insert(
-        familiares.map((f, i) => ({
-          miembro_id: f.id,
-          importe: montos[i],
-          fecha_pago,
-          medio_pago: "Mercado Pago",
-          origen: "mercadopago",
-          estado: "activo",
-          creado_por: user.id,
-        }))
-      )
-      .select();
-    if (error) return { ok: false, error: error.message };
-    pagos = data;
+    partes = familiares.map((f, i) => ({ miembro_id: f.id, importe: montos[i] }));
   } else {
-    const { data, error } = await supabase
-      .from("pagos")
-      .insert({
-        miembro_id,
-        importe,
-        fecha_pago,
-        medio_pago: "Mercado Pago",
-        origen: "mercadopago",
-        estado: "activo",
-        creado_por: user.id,
-      })
-      .select()
-      .single();
-    if (error) return { ok: false, error: error.message };
-    pagos = [data];
+    partes = [{ miembro_id, importe }];
   }
 
-  const idsPagos = pagos.map((p) => p.id);
+  const datosPago = JSON.stringify({ creado_por: user.id, partes });
 
   let respuesta;
   try {
@@ -236,7 +212,7 @@ export async function crearPagoMercadoPago(formData) {
             currency_id: "ARS",
           },
         ],
-        external_reference: idsPagos.join(","),
+        metadata: { datos_pago: datosPago },
         back_urls: {
           success: `${SITE_URL}/mi-cuenta`,
           pending: `${SITE_URL}/mi-cuenta`,
@@ -252,11 +228,6 @@ export async function crearPagoMercadoPago(formData) {
   }
 
   if (!respuesta || !respuesta.ok) {
-    // Los pagos ya quedaron creados; si Mercado Pago rechaza la
-    // preferencia, se cancelan para no dejar registros pendientes que
-    // nunca se van a completar. La familia no tiene permiso de UPDATE
-    // sobre pagos (RLS), así que hace falta el cliente admin.
-    await admin.from("pagos").update({ estado: "cancelado" }).in("id", idsPagos);
     if (respuesta) console.error("crearPagoMercadoPago:", await respuesta.text());
     return {
       ok: false,
@@ -265,13 +236,6 @@ export async function crearPagoMercadoPago(formData) {
   }
 
   const datosPreferencia = await respuesta.json();
-
-  await admin
-    .from("pagos")
-    .update({ mp_preference_id: datosPreferencia.id })
-    .in("id", idsPagos);
-
-  revalidatePath("/mi-cuenta");
 
   const url =
     config.ambiente === "produccion"

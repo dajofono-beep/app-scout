@@ -1,9 +1,17 @@
+import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 // Mercado Pago avisa acá cuando cambia el estado de un pago. Nunca hay
 // que confiar en los datos que manda el aviso en sí (podrían falsificarse):
 // siempre se vuelve a pedir el pago real a la API de Mercado Pago con el
 // id recibido, y recién ahí se decide si se acredita.
+//
+// El registro en `pagos` no existe hasta este momento: se crea acá
+// mismo, ya acreditado, solo cuando Mercado Pago confirma la
+// aprobación. Así, si la familia cancela o el pago es rechazado, nunca
+// queda un registro "Pendiente" fantasma — simplemente no se crea
+// nada. Los datos de a quién y cuánto viajan en `metadata` de la
+// preferencia (ver crearPagoMercadoPago en mi-cuenta/actions.js).
 export async function POST(request) {
   const url = new URL(request.url);
   let paymentId = url.searchParams.get("data.id") || url.searchParams.get("id");
@@ -40,19 +48,49 @@ export async function POST(request) {
   const pago = await respuesta.json();
   if (pago.status !== "approved") return new Response("ok", { status: 200 });
 
-  const idsPagos = (pago.external_reference ?? "").split(",").filter(Boolean);
-  if (idsPagos.length === 0) return new Response("ok", { status: 200 });
+  let datosPago;
+  try {
+    datosPago = JSON.parse(pago.metadata?.datos_pago ?? "");
+  } catch {
+    datosPago = null;
+  }
+  if (!datosPago?.partes?.length) return new Response("ok", { status: 200 });
 
-  // El filtro por confirmado_at nulo evita reprocesar si Mercado Pago
-  // reenvía el mismo aviso más de una vez.
-  await admin
+  // Idempotencia: si Mercado Pago reenvía el mismo aviso más de una
+  // vez, no duplicar el pago ya creado.
+  const { data: yaCreado } = await admin
     .from("pagos")
-    .update({
+    .select("id")
+    .eq("mp_payment_id", String(pago.id))
+    .limit(1);
+  if (yaCreado && yaCreado.length > 0) return new Response("ok", { status: 200 });
+
+  const fecha_pago = (pago.date_approved ?? pago.date_created ?? new Date().toISOString()).slice(
+    0,
+    10
+  );
+
+  const { error } = await admin.from("pagos").insert(
+    datosPago.partes.map((p) => ({
+      miembro_id: p.miembro_id,
+      importe: p.importe,
+      fecha_pago,
+      medio_pago: "Mercado Pago",
+      origen: "mercadopago",
+      estado: "activo",
       confirmado_at: new Date().toISOString(),
       mp_payment_id: String(pago.id),
-    })
-    .in("id", idsPagos)
-    .is("confirmado_at", null);
+      creado_por: datosPago.creado_por,
+    }))
+  );
+  if (error) {
+    console.error("webhook mercadopago:", error.message);
+    return new Response("ok", { status: 200 });
+  }
+
+  revalidatePath("/mi-cuenta");
+  revalidatePath("/admin");
+  revalidatePath("/admin/pagos");
 
   return new Response("ok", { status: 200 });
 }
