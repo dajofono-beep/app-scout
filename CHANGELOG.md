@@ -155,3 +155,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 
 - Se sumaron dos documentos nuevos a la base de conocimiento de SanMa (Consultas): "Historia del Grupo Scout Libertador San Martín" y una guía general de "Vida Scout" (campamentos, especialidades, progresión, ceremonias y técnicas de vida al aire libre).
 - Se ajustaron las instrucciones internas para que SanMa distinga cuál de los cuatro documentos es específico de este Grupo (Historia del Grupo, con prioridad si preguntan por su historia o identidad) y cuáles son de carácter general del escultismo.
+
+## 2026-08-12 — Ajuste de texto en Mi Cuenta
+
+- En la tarjeta de saldo, el mensaje "Estás al día para los próximos eventos" pasó a decir "Estás al día para participar del próximo evento".

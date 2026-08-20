@@ -89,7 +89,7 @@ export default function TarjetaSaldo({
             ))
           ) : (
             <span className="inline-block rounded-full px-3 py-1 text-xs font-bold bg-emerald-200 text-emerald-900">
-              Estás al día para los próximos eventos
+              Estás al día para participar del próximo evento
             </span>
           )}
         </div>
