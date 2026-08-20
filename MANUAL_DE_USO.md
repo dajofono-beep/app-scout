@@ -67,7 +67,7 @@ Documentos y autorizaciones en PDF que el Grupo deja disponibles, agrupados por 
 
 ## 9. Consultas (SanMa)
 
-Un chat con **SanMa**, el asistente del Grupo. Le podés preguntar dudas sobre el Proyecto Educativo o las reuniones de padres, y responde en base a esa información.
+Un chat con **SanMa**, el asistente del Grupo. Le podés preguntar dudas sobre el Proyecto Educativo, las reuniones de padres, la historia del Grupo o la vida scout en general (campamentos, especialidades, progresión), y responde en base a esa información.
 - Escribí tu pregunta y tocá "Enviar".
 - En el celular, también podés tocar el ícono de micrófono y dictarla en vez de escribirla.
 - SanMa puede cometer errores — para algo importante, confirmalo con el Consejo de Grupo.

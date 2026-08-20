@@ -150,3 +150,8 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 
 - Al cargar un pago en Efectivo o Transferencia, ahora es obligatorio adjuntar el comprobante (antes era opcional). El campo cambió su texto a "Adjuntar comprobante de pago".
 - Elegir Efectivo sigue abriendo la cámara del celular directo; elegir Transferencia ahora abre el buscador de archivos con los PDF priorizados en vez de la galería de fotos.
+
+## 2026-08-12 — Más información para SanMa
+
+- Se sumaron dos documentos nuevos a la base de conocimiento de SanMa (Consultas): "Historia del Grupo Scout Libertador San Martín" y una guía general de "Vida Scout" (campamentos, especialidades, progresión, ceremonias y técnicas de vida al aire libre).
+- Se ajustaron las instrucciones internas para que SanMa distinga cuál de los cuatro documentos es específico de este Grupo (Historia del Grupo, con prioridad si preguntan por su historia o identidad) y cuáles son de carácter general del escultismo.
