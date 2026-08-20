@@ -29,12 +29,17 @@ async function subirComprobanteAPagos(pagos, comprobante) {
   if (error) throw new Error(error.message);
 }
 
+// Devuelve { ok: true } o { ok: false, error } en vez de tirar una
+// excepción: Next.js borra el mensaje de cualquier error lanzado con
+// `throw` desde un server action en producción, así que un valor de
+// retorno normal es la única forma de que el mensaje (p. ej. "El
+// comprobante debe ser una imagen...") llegue tal cual al formulario.
 export async function crearPago(formData) {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) throw new Error("No autenticado");
+  if (!user) return { ok: false, error: "No autenticado" };
 
   const miembro_id = formData.get("miembro_id")?.toString();
   const importe = Number(formData.get("importe"));
@@ -44,10 +49,12 @@ export async function crearPago(formData) {
   const hayComprobante =
     comprobante && typeof comprobante !== "string" && comprobante.size > 0;
 
-  if (!miembro_id) throw new Error("Elegí para quién es el pago");
-  if (!importe || importe <= 0) throw new Error("El importe debe ser mayor a 0");
-  if (!fecha_pago) throw new Error("La fecha es obligatoria");
-  if (!hayComprobante) throw new Error("Adjuntá el comprobante de pago");
+  if (!miembro_id) return { ok: false, error: "Elegí para quién es el pago" };
+  if (!importe || importe <= 0) {
+    return { ok: false, error: "El importe debe ser mayor a 0" };
+  }
+  if (!fecha_pago) return { ok: false, error: "La fecha es obligatoria" };
+  if (!hayComprobante) return { ok: false, error: "Adjuntá el comprobante de pago" };
 
   if (miembro_id === "reparto_igual") {
     // RLS ("miembros_lectura_grupo"/propia familia) ya limita esta consulta
@@ -56,9 +63,9 @@ export async function crearPago(formData) {
       .from("miembros")
       .select("id")
       .order("apellido");
-    if (familiaresError) throw new Error(familiaresError.message);
+    if (familiaresError) return { ok: false, error: familiaresError.message };
     if (!familiares || familiares.length === 0) {
-      throw new Error("No se encontraron hermanos");
+      return { ok: false, error: "No se encontraron hermanos" };
     }
 
     const montos = dividirEnPartesIguales(importe, familiares.length);
@@ -76,7 +83,7 @@ export async function crearPago(formData) {
         }))
       )
       .select();
-    if (error) throw new Error(error.message);
+    if (error) return { ok: false, error: error.message };
 
     try {
       await subirComprobanteAPagos(pagos, comprobante);
@@ -89,11 +96,11 @@ export async function crearPago(formData) {
         .from("pagos")
         .delete()
         .in("id", pagos.map((p) => p.id));
-      throw err;
+      return { ok: false, error: err.message };
     }
 
     revalidatePath("/mi-cuenta");
-    return;
+    return { ok: true };
   }
 
   // La política de RLS ("pagos_insertan_su_familia") valida que miembro_id
@@ -110,16 +117,17 @@ export async function crearPago(formData) {
     })
     .select()
     .single();
-  if (error) throw new Error(error.message);
+  if (error) return { ok: false, error: error.message };
 
   try {
     await subirComprobanteAPagos([pago], comprobante);
   } catch (err) {
     await createAdminClient().from("pagos").delete().eq("id", pago.id);
-    throw err;
+    return { ok: false, error: err.message };
   }
 
   revalidatePath("/mi-cuenta");
+  return { ok: true };
 }
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://azimut-kappa.vercel.app";

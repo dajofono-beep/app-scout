@@ -100,13 +100,17 @@ export default function PagoForm({ esFamiliaConVarios, familiares, miembroId, me
     }
 
     try {
-      await crearPago(formData);
+      const resultado = await crearPago(formData);
+      if (!resultado.ok) {
+        setError(resultado.error);
+        return;
+      }
       formRef.current?.reset();
       setImporte("");
       setMedioPago("");
       setExito(true);
-    } catch (err) {
-      setError(err.message);
+    } catch {
+      setError("Ocurrió un error inesperado. Intentá de nuevo.");
     } finally {
       setLoading(false);
     }
