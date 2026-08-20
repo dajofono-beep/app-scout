@@ -78,7 +78,19 @@ export async function crearPago(formData) {
       .select();
     if (error) throw new Error(error.message);
 
-    if (hayComprobante) await subirComprobanteAPagos(pagos, comprobante);
+    try {
+      await subirComprobanteAPagos(pagos, comprobante);
+    } catch (err) {
+      // Sin comprobante el pago queda incompleto (es obligatorio) — se
+      // borra en vez de dejarlo registrado a medias. La familia solo
+      // tiene permiso de INSERT sobre pagos (RLS), no de DELETE, así que
+      // hace falta el cliente admin para poder deshacerlo.
+      await createAdminClient()
+        .from("pagos")
+        .delete()
+        .in("id", pagos.map((p) => p.id));
+      throw err;
+    }
 
     revalidatePath("/mi-cuenta");
     return;
@@ -100,7 +112,12 @@ export async function crearPago(formData) {
     .single();
   if (error) throw new Error(error.message);
 
-  if (hayComprobante) await subirComprobanteAPagos([pago], comprobante);
+  try {
+    await subirComprobanteAPagos([pago], comprobante);
+  } catch (err) {
+    await createAdminClient().from("pagos").delete().eq("id", pago.id);
+    throw err;
+  }
 
   revalidatePath("/mi-cuenta");
 }
@@ -229,8 +246,9 @@ export async function crearPagoMercadoPago(formData) {
   if (!respuesta || !respuesta.ok) {
     // Los pagos ya quedaron creados; si Mercado Pago rechaza la
     // preferencia, se cancelan para no dejar registros pendientes que
-    // nunca se van a completar.
-    await supabase.from("pagos").update({ estado: "cancelado" }).in("id", idsPagos);
+    // nunca se van a completar. La familia no tiene permiso de UPDATE
+    // sobre pagos (RLS), así que hace falta el cliente admin.
+    await admin.from("pagos").update({ estado: "cancelado" }).in("id", idsPagos);
     if (respuesta) console.error("crearPagoMercadoPago:", await respuesta.text());
     return {
       ok: false,
@@ -240,7 +258,7 @@ export async function crearPagoMercadoPago(formData) {
 
   const datosPreferencia = await respuesta.json();
 
-  await supabase
+  await admin
     .from("pagos")
     .update({ mp_preference_id: datosPreferencia.id })
     .in("id", idsPagos);

@@ -163,3 +163,8 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-08-12 — Comprobante en PDF
 
 - Corregido un bug: al hacer obligatorio el comprobante y priorizar PDF para Transferencia, la subida fallaba porque tanto la validación de la app como el bucket de Storage solo aceptaban imágenes. Ahora se acepta también PDF en ambos lados.
+
+## 2026-08-12 — El pago no se registra si falla el comprobante
+
+- Corregido un bug de fondo: si la subida del comprobante fallaba (por ejemplo, por un archivo con formato no soportado), el pago igual quedaba registrado, aunque la familia viera un error. Ahora, si el comprobante no se pudo subir, el pago se borra antes de mostrar el error.
+- De paso se corrigió el mismo problema en Mercado Pago: cuando falla la conexión con Mercado Pago, el pago creado ahora sí se cancela correctamente (antes el intento de cancelación no tenía efecto por un permiso de base de datos).
