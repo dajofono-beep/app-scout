@@ -2,14 +2,20 @@
 // se accede a él desde el servidor con el cliente admin (service role).
 const BUCKET = "comprobantes";
 const MAX_BYTES = 5 * 1024 * 1024;
-const TIPOS_PERMITIDOS = ["image/png", "image/jpeg", "image/webp", "image/heic"];
+const TIPOS_PERMITIDOS = [
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+  "image/heic",
+  "application/pdf",
+];
 
 export async function subirComprobante(admin, pagoId, archivo) {
   if (archivo.size > MAX_BYTES) {
     throw new Error("La imagen del comprobante no puede pesar más de 5 MB");
   }
   if (!TIPOS_PERMITIDOS.includes(archivo.type)) {
-    throw new Error("El comprobante debe ser una imagen (JPG, PNG, WEBP o HEIC)");
+    throw new Error("El comprobante debe ser una imagen (JPG, PNG, WEBP, HEIC) o un PDF");
   }
 
   const extension = archivo.name.split(".").pop() || "jpg";

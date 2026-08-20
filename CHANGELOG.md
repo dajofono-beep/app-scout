@@ -159,3 +159,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-08-12 — Ajuste de texto en Mi Cuenta
 
 - En la tarjeta de saldo, el mensaje "Estás al día para los próximos eventos" pasó a decir "Estás al día para participar del próximo evento".
+
+## 2026-08-12 — Comprobante en PDF
+
+- Corregido un bug: al hacer obligatorio el comprobante y priorizar PDF para Transferencia, la subida fallaba porque tanto la validación de la app como el bucket de Storage solo aceptaban imágenes. Ahora se acepta también PDF en ambos lados.
