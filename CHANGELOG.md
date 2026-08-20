@@ -169,3 +169,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - Corregido un bug de fondo: si la subida del comprobante fallaba (por ejemplo, por un archivo con formato no soportado), el pago igual quedaba registrado, aunque la familia viera un error. Ahora, si el comprobante no se pudo subir, el pago se borra antes de mostrar el error.
 - De paso se corrigió el mismo problema en Mercado Pago: cuando falla la conexión con Mercado Pago, el pago creado ahora sí se cancela correctamente (antes el intento de cancelación no tenía efecto por un permiso de base de datos).
 - Se corrigió también el mensaje de error que veía la familia al cargar un pago: en producción Next.js oculta el detalle de cualquier error, así que ahora se muestra el motivo real (por ejemplo, "El comprobante debe ser una imagen... o un PDF") en vez de un mensaje técnico genérico.
+
+## 2026-08-12 — Datos viejos al navegar en Administración
+
+- Corregido un bug: al navegar entre secciones del panel de administración (por ejemplo, ir a Resumen después de asignar cargos), a veces se mostraba información desactualizada, y solo se solucionaba cerrando sesión y volviendo a entrar. Causa: el menú del admin dejaba que Next.js precargue y guarde en el navegador una copia de cada pantalla, algo que solo ocurre en producción (no se puede reproducir en desarrollo). Se desactivó esa precarga en los tres menús de navegación del admin, para que cada clic traiga siempre los datos frescos del servidor.

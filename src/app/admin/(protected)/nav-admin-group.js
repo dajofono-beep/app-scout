@@ -39,6 +39,7 @@ export default function NavAdminGroup() {
             <Link
               key={item.href}
               href={item.href}
+              prefetch={false}
               className="text-sm font-semibold text-slate-600 hover:text-sky-600"
             >
               {item.label}

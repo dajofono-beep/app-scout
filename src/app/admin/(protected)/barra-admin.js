@@ -68,6 +68,7 @@ export default function BarraAdmin({ nombreAdmin }) {
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={false}
                 className="text-base font-semibold text-slate-600 hover:text-sky-600"
               >
                 {item.label}
