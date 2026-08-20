@@ -178,3 +178,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 
 - Corregido un bug de fondo: si la familia cancelaba o desistía del pago dentro de la app de Mercado Pago, el pago quedaba registrado como "Pendiente" para siempre en Azimut, sin ninguna forma automática de resolverse.
 - Se rediseñó el flujo: ahora el pago no se registra en la base hasta que Mercado Pago confirma que fue aprobado (vía el webhook, como ya funcionaba para acreditar). Si la familia cancela, cierra la app, o el pago es rechazado, no se crea ningún registro — nada que limpiar a mano.
+
+## 2026-08-12 — Comprobante solo con medio de pago elegido
+
+- Corregido: al cargar un pago sin haber elegido todavía Efectivo o Transferencia, igual se podía tocar el campo de comprobante y abría el buscador de archivos o la cámara. Ahora ese campo recién aparece una vez elegido el medio de pago correspondiente.

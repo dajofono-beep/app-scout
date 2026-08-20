@@ -188,7 +188,7 @@ export default function PagoForm({ esFamiliaConVarios, familiares, miembroId, me
             </option>
           ))}
         </select>
-        {!esMercadoPago && (
+        {(medioPago === "Efectivo" || medioPago === "Transferencia") && (
           <div className="sm:col-span-3">
             <label className="block text-xs text-slate-500 mb-1">
               Adjuntar comprobante de pago
