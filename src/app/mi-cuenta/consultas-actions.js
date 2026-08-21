@@ -1,6 +1,6 @@
 "use server";
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import { CONTEXTO_DOCUMENTOS } from "@/lib/consultas/contexto";
 
 const INSTRUCCION_SISTEMA = `Te llamás SanMa, el asistente virtual del Grupo Scout Libertador San
@@ -28,7 +28,7 @@ const esperar = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 async function enviarConReintento(chat, texto, intentos = 3) {
   for (let intento = 1; intento <= intentos; intento++) {
     try {
-      return await chat.sendMessage(texto);
+      return await chat.sendMessage({ message: texto });
     } catch (err) {
       const esSaturado = err?.status === 503;
       if (!esSaturado || intento === intentos) throw err;
@@ -59,22 +59,20 @@ export async function preguntarConsulta(historial) {
   const previos = historial.slice(0, -1);
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey);
+    const ai = new GoogleGenAI({ apiKey });
     // Google retira modelos viejos con el tiempo (gemini-2.5-flash ya no
     // está disponible para cuentas nuevas) — si esto vuelve a fallar con
     // un 404, hay que revisar el modelo vigente en ai.google.dev/gemini-api/docs/latest-model.
-    const model = genAI.getGenerativeModel({
+    const chat = ai.chats.create({
       model: "gemini-3.6-flash",
-      systemInstruction: INSTRUCCION_SISTEMA,
-    });
-    const chat = model.startChat({
+      config: { systemInstruction: INSTRUCCION_SISTEMA },
       history: previos.map((m) => ({
         role: m.rol === "asistente" ? "model" : "user",
         parts: [{ text: m.texto }],
       })),
     });
     const resultado = await enviarConReintento(chat, ultimo.texto);
-    return { ok: true, texto: resultado.response.text() };
+    return { ok: true, texto: resultado.text };
   } catch (err) {
     console.error("preguntarConsulta:", err);
     const error =

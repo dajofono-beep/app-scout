@@ -186,3 +186,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-08-12 — Botón "Enviar" cortado en Consultas
 
 - Corregido: en celulares angostos, el botón "Enviar" del chat con SanMa quedaba fuera de la pantalla. El cuadro de texto y el micrófono ahora van en una fila, y "Enviar" pasó a su propia fila ocupando todo el ancho.
+
+## 2026-08-21 — SanMa dejó de responder
+
+- Corregido: SanMa (Consultas) dejó de conectarse con el error "No se pudo conectar con el asistente". La causa fue doble: el paquete que usábamos para hablar con Gemini (`@google/generative-ai`) está deprecado por Google desde agosto de 2025, así que se reemplazó por el paquete oficial vigente (`@google/genai`); y aparte, la cuenta de Google AI Studio se había quedado sin créditos prepagos (Google cambió su forma de facturar la API este año) — eso se resolvió cargando crédito en la cuenta.
