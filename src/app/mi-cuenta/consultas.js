@@ -140,33 +140,35 @@ export default function Consultas() {
 
       {error && <p className="text-sm text-red-500 font-semibold mb-2">{error}</p>}
 
-      <form onSubmit={enviar} className="flex gap-2">
-        <input
-          value={pregunta}
-          onChange={(e) => setPregunta(e.target.value)}
-          placeholder={escuchando ? "Escuchando..." : "Escribí tu pregunta..."}
-          disabled={loading}
-          className="flex-1 border border-slate-200 rounded-xl px-4 py-2.5 text-sm disabled:bg-slate-50"
-        />
-        {soportaVoz && (
-          <button
-            type="button"
-            onClick={alternarEscucha}
+      <form onSubmit={enviar} className="flex flex-col gap-2">
+        <div className="flex items-center gap-2">
+          <input
+            value={pregunta}
+            onChange={(e) => setPregunta(e.target.value)}
+            placeholder={escuchando ? "Escuchando..." : "Escribí tu pregunta..."}
             disabled={loading}
-            aria-label={escuchando ? "Detener grabación" : "Preguntar por voz"}
-            className={`md:hidden rounded-full w-10 h-10 flex items-center justify-center shrink-0 disabled:opacity-50 ${
-              escuchando
-                ? "bg-red-500 text-white animate-pulse"
-                : "border border-slate-200 text-slate-500"
-            }`}
-          >
-            <IconoMicrofono className="w-5 h-5" />
-          </button>
-        )}
+            className="flex-1 border border-slate-200 rounded-xl px-4 py-3 text-sm disabled:bg-slate-50"
+          />
+          {soportaVoz && (
+            <button
+              type="button"
+              onClick={alternarEscucha}
+              disabled={loading}
+              aria-label={escuchando ? "Detener grabación" : "Preguntar por voz"}
+              className={`md:hidden rounded-full w-11 h-11 flex items-center justify-center shrink-0 disabled:opacity-50 ${
+                escuchando
+                  ? "bg-red-500 text-white animate-pulse"
+                  : "border border-slate-200 text-slate-500"
+              }`}
+            >
+              <IconoMicrofono className="w-5 h-5" />
+            </button>
+          )}
+        </div>
         <button
           type="submit"
           disabled={loading || !pregunta.trim()}
-          className="bg-sky-600 text-white rounded-full px-5 py-2.5 text-sm font-bold disabled:opacity-50"
+          className="w-full bg-sky-600 text-white rounded-full px-5 py-3 text-sm font-bold disabled:opacity-50"
         >
           Enviar
         </button>

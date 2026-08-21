@@ -182,3 +182,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-08-12 — Comprobante solo con medio de pago elegido
 
 - Corregido: al cargar un pago sin haber elegido todavía Efectivo o Transferencia, igual se podía tocar el campo de comprobante y abría el buscador de archivos o la cámara. Ahora ese campo recién aparece una vez elegido el medio de pago correspondiente.
+
+## 2026-08-12 — Botón "Enviar" cortado en Consultas
+
+- Corregido: en celulares angostos, el botón "Enviar" del chat con SanMa quedaba fuera de la pantalla. El cuadro de texto y el micrófono ahora van en una fila, y "Enviar" pasó a su propia fila ocupando todo el ancho.
