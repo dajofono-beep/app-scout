@@ -190,3 +190,11 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-08-21 — SanMa dejó de responder
 
 - Corregido: SanMa (Consultas) dejó de conectarse con el error "No se pudo conectar con el asistente". La causa fue doble: el paquete que usábamos para hablar con Gemini (`@google/generative-ai`) está deprecado por Google desde agosto de 2025, así que se reemplazó por el paquete oficial vigente (`@google/genai`); y aparte, la cuenta de Google AI Studio se había quedado sin créditos prepagos (Google cambió su forma de facturar la API este año) — eso se resolvió cargando crédito en la cuenta.
+
+## 2026-08-21 — ABM de Administradores
+
+- Nueva sección **Administradores** dentro de Administración: listado, alta y ficha de edición/baja. Hasta ahora, para agregar un administrador había que hacerlo a mano desde el Dashboard de Supabase — ahora se puede desde la propia app.
+- Al crear uno nuevo, se elige el nombre de una lista con los miembros activos del grupo (en vez de escribirlo a mano), se carga su email y contraseña (con confirmación de contraseña), y la app crea la cuenta de acceso y el alta como administrador en un solo paso.
+- "Quitar administrador" le revoca el acceso al panel pero no borra su cuenta de login — queda reversible, se lo puede volver a agregar sin recrearle nada. No se puede quitar a uno mismo, ni al último administrador que queda.
+- Nuevo ícono de ojo para mostrar/ocultar los caracteres en todos los campos de contraseña (cambio de contraseña en Mi Cuenta, alta y edición de administradores) — por seguridad, el campo vuelve a ocultarse solo apenas pierde el foco.
+

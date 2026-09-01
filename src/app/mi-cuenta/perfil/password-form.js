@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { actualizarContrasena } from "./actions";
+import CampoPassword from "@/components/campo-password";
 
 export default function PasswordForm() {
   const [password, setPassword] = useState("");
@@ -47,24 +48,22 @@ export default function PasswordForm() {
         <label className="block text-sm font-semibold text-slate-600 mb-1">
           Nueva contraseña
         </label>
-        <input
-          type="password"
+        <CampoPassword
           required
+          autoComplete="new-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
         />
       </div>
       <div>
         <label className="block text-sm font-semibold text-slate-600 mb-1">
           Repetir contraseña
         </label>
-        <input
-          type="password"
+        <CampoPassword
           required
+          autoComplete="new-password"
           value={confirmacion}
           onChange={(e) => setConfirmacion(e.target.value)}
-          className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
         />
       </div>
 

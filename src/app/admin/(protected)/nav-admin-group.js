@@ -12,6 +12,7 @@ const ITEMS = [
   { href: "/admin/mensajes", label: "Mensajes" },
   { href: "/admin/grupos-padres", label: "Grupos de Padres" },
   { href: "/admin/medios-pago", label: "Medios de Pago" },
+  { href: "/admin/administradores", label: "Administradores" },
 ];
 
 export default function NavAdminGroup() {
