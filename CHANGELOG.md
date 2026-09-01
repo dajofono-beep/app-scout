@@ -198,3 +198,6 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - "Quitar administrador" le revoca el acceso al panel pero no borra su cuenta de login — queda reversible, se lo puede volver a agregar sin recrearle nada. No se puede quitar a uno mismo, ni al último administrador que queda.
 - Nuevo ícono de ojo para mostrar/ocultar los caracteres en todos los campos de contraseña (cambio de contraseña en Mi Cuenta, alta y edición de administradores) — por seguridad, el campo vuelve a ocultarse solo apenas pierde el foco.
 
+## 2026-08-21 — Tarjeta de saldo en la ficha de miembro (admin)
+
+- La ficha de un miembro en Administración ahora muestra la misma información que la tarjeta de saldo de Mi Cuenta (deuda total, total pagado, pagos pendientes y la alerta de próximo vencimiento con "Más información"), pero en blanco (para distinguirse a simple vista de lo que ve la familia) y con los textos en tercera persona ("Este miembro no podría participar del siguiente evento" / "Este miembro puede participar del próximo evento"). No se tocó nada del lado de las familias.

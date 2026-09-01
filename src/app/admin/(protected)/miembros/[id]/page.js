@@ -8,6 +8,8 @@ import FichaMiembroTabs from "./ficha-miembro-tabs";
 import AsignarCargoIndividualForm from "./asignar-cargo-individual-form";
 import { cancelarCargo, reactivarCargo } from "../../cargos/actions";
 import CamposRamaHermanos from "../campos-rama-hermanos";
+import TarjetaSaldoAdmin from "./tarjeta-saldo-admin";
+import { calcularVencimientos } from "@/app/mi-cuenta/proximo-vencimiento";
 
 const formatoMoneda = (n) =>
   Number(n).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
@@ -46,6 +48,34 @@ export default async function FichaMiembroPage({ params }) {
     .select("*")
     .eq("miembro_id", id)
     .order("fecha", { ascending: false });
+  const { data: pagosMiembro } = await supabase
+    .from("estado_pagos")
+    .select("*")
+    .eq("miembro_id", id);
+  // Catálogo completo (no solo los activos, que es lo que necesita el
+  // desplegable de "asignar cargo") — para la alerta de vencimiento hace
+  // falta la fecha/alerta de cualquier concepto, esté activo o no.
+  const { data: productosVencimiento } = await supabase
+    .from("productos")
+    .select("id, fecha_vencimiento, alerta_vencimiento");
+
+  const cargosActivos = (cargosMiembro ?? []).filter((c) => c.estado === "activo");
+  const totalCargos = cargosActivos.reduce((acc, c) => acc + Number(c.importe), 0);
+  const pendienteTotal = Number(saldo?.total_pagos_pendientes ?? 0);
+  const pagosRealizados =
+    Number(saldo?.total_pagos_acreditados ?? 0) + pendienteTotal;
+  const pagosAcreditados = (pagosMiembro ?? []).filter(
+    (p) => p.estado_efectivo === "acreditado"
+  );
+
+  const vencimientos = calcularVencimientos({
+    familiares: [{ id: miembro.id }],
+    cargos: cargosMiembro ?? [],
+    pagosAcreditados,
+    productos: productosVencimiento ?? [],
+    nombrePorId: { [miembro.id]: `${miembro.apellido}, ${miembro.nombre}` },
+    hoyIso: new Date().toISOString().slice(0, 10),
+  });
 
   const panelDatos = (
     <form
@@ -222,17 +252,14 @@ export default async function FichaMiembroPage({ params }) {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm p-5 mb-4">
-        <p className="text-sm font-bold text-slate-500">Saldo actual</p>
-        <p className="text-2xl font-bold">
-          {formatoMoneda(saldo?.saldo ?? 0)}
-        </p>
-        {Number(saldo?.total_pagos_pendientes ?? 0) > 0 && (
-          <p className="text-sm text-amber-700 mt-1">
-            {formatoMoneda(saldo.total_pagos_pendientes)} en pagos pendientes
-            de acreditar.
-          </p>
-        )}
+      <div className="mb-4">
+        <TarjetaSaldoAdmin
+          saldoTotal={Number(saldo?.saldo ?? 0)}
+          totalCargos={totalCargos}
+          pagosRealizados={pagosRealizados}
+          pendienteTotal={pendienteTotal}
+          vencimiento={vencimientos[0] ?? null}
+        />
       </div>
 
       <FichaMiembroTabs panelDatos={panelDatos} panelCargos={panelCargos} />
