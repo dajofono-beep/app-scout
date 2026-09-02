@@ -201,3 +201,8 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-08-21 — Tarjeta de saldo en la ficha de miembro (admin)
 
 - La ficha de un miembro en Administración ahora muestra la misma información que la tarjeta de saldo de Mi Cuenta (deuda total, total pagado, pagos pendientes y la alerta de próximo vencimiento con "Más información"), pero en blanco (para distinguirse a simple vista de lo que ve la familia) y con los textos en tercera persona ("Este miembro no podría participar del siguiente evento" / "Este miembro puede participar del próximo evento"). No se tocó nada del lado de las familias.
+
+## 2026-08-21 — Pagos de Mercado Pago duplicados
+
+- Corregido un bug: si Mercado Pago reenviaba el mismo aviso de pago aprobado dos veces casi al mismo tiempo (algo que hace con frecuencia), el webhook podía crear dos filas en `pagos` para el mismo pago — el chequeo de "¿ya existe?" no alcanza a evitarlo porque los dos avisos pueden pasarlo antes de que ninguno haya terminado de insertar.
+- Se agregó una restricción única en la base de datos sobre `(mp_payment_id, miembro_id)`, que bloquea el duplicado sin depender del timing — sigue permitiendo que un pago repartido entre varios hermanos genere una fila por cada uno. Confirmado con una prueba manual: el segundo intento de duplicado fue rechazado correctamente.

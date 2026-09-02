@@ -84,7 +84,14 @@ export async function POST(request) {
     }))
   );
   if (error) {
-    console.error("webhook mercadopago:", error.message);
+    // 23505 = violación de la restricción única (mp_payment_id,
+    // miembro_id) — significa que otro aviso duplicado de Mercado
+    // Pago para este mismo pago ya lo insertó primero. No es un
+    // error real, es la protección contra la condición de carrera
+    // haciendo su trabajo.
+    if (error.code !== "23505") {
+      console.error("webhook mercadopago:", error.message);
+    }
     return new Response("ok", { status: 200 });
   }
 
