@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { urlFirmadaComprobante } from "@/lib/supabase/comprobantes";
 import { actualizarMiembro } from "../actions";
 import { iniciales, colorParaRama } from "../avatar";
 import RestaurarContrasenaBoton from "../restaurar-contrasena-boton";
@@ -51,7 +53,21 @@ export default async function FichaMiembroPage({ params }) {
   const { data: pagosMiembro } = await supabase
     .from("estado_pagos")
     .select("*")
-    .eq("miembro_id", id);
+    .eq("miembro_id", id)
+    .order("fecha_pago", { ascending: false });
+
+  const adminClient = createAdminClient();
+  const pagosConComprobante = await Promise.all(
+    (pagosMiembro ?? []).map(async (p) => ({
+      ...p,
+      comprobante_href: p.comprobante_url
+        ? await urlFirmadaComprobante(adminClient, p.comprobante_url)
+        : null,
+    }))
+  );
+  const totalPagos = (pagosMiembro ?? [])
+    .filter((p) => p.estado_efectivo !== "cancelado")
+    .reduce((acc, p) => acc + Number(p.importe), 0);
   // Catálogo completo (no solo los activos, que es lo que necesita el
   // desplegable de "asignar cargo") — para la alerta de vencimiento hace
   // falta la fecha/alerta de cualquier concepto, esté activo o no.
@@ -226,8 +242,77 @@ export default async function FichaMiembroPage({ params }) {
             Todavía no tiene cargos asignados.
           </p>
         )}
+        {(cargosMiembro ?? []).length > 0 && (
+          <div className="flex justify-between items-center p-3 border-t bg-slate-50">
+            <span className="text-sm font-bold text-slate-600">Total cargos activos</span>
+            <span className="font-bold text-slate-800">{formatoMoneda(totalCargos)}</span>
+          </div>
+        )}
       </section>
     </div>
+  );
+
+  const panelPagos = (
+    <section className="bg-white rounded-2xl shadow-sm overflow-hidden">
+      <table className="min-w-full text-sm">
+        <thead>
+          <tr className="text-left text-slate-500 border-b">
+            <th className="p-3 font-bold">Fecha</th>
+            <th className="p-3 font-bold">Importe</th>
+            <th className="p-3 font-bold">Medio</th>
+            <th className="p-3 font-bold">Estado</th>
+            <th className="p-3"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {pagosConComprobante.map((p) => (
+            <tr key={p.id} className="border-b last:border-0">
+              <td className="p-3 text-slate-600">{p.fecha_pago}</td>
+              <td className="p-3 font-semibold">{formatoMoneda(p.importe)}</td>
+              <td className="p-3 text-slate-600">{p.medio_pago ?? "Sin especificar"}</td>
+              <td className="p-3">
+                <span
+                  className={`text-xs px-2 py-1 rounded-full ${
+                    p.estado_efectivo === "cancelado"
+                      ? "bg-slate-200 text-slate-600"
+                      : p.estado_efectivo === "pendiente"
+                        ? "bg-amber-100 text-amber-800"
+                        : "bg-green-100 text-green-800"
+                  }`}
+                >
+                  {p.estado_efectivo === "cancelado"
+                    ? "Cancelado"
+                    : p.estado_efectivo === "pendiente"
+                      ? "Pendiente"
+                      : "Acreditado"}
+                </span>
+              </td>
+              <td className="p-3 text-right">
+                {p.comprobante_href && (
+                  <a
+                    href={p.comprobante_href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sky-600 hover:underline text-xs font-semibold"
+                  >
+                    Ver comprobante
+                  </a>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {pagosConComprobante.length === 0 && (
+        <p className="text-slate-500 text-sm p-4">Todavía no registró pagos.</p>
+      )}
+      {pagosConComprobante.length > 0 && (
+        <div className="flex justify-between items-center p-3 border-t bg-slate-50">
+          <span className="text-sm font-bold text-slate-600">Total pagado</span>
+          <span className="font-bold text-slate-800">{formatoMoneda(totalPagos)}</span>
+        </div>
+      )}
+    </section>
   );
 
   return (
@@ -262,7 +347,11 @@ export default async function FichaMiembroPage({ params }) {
         />
       </div>
 
-      <FichaMiembroTabs panelDatos={panelDatos} panelCargos={panelCargos} />
+      <FichaMiembroTabs
+        panelDatos={panelDatos}
+        panelCargos={panelCargos}
+        panelPagos={panelPagos}
+      />
     </div>
   );
 }

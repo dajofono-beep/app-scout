@@ -5,9 +5,10 @@ import { useState } from "react";
 const BOTONES = [
   { id: "datos", texto: "Datos Generales" },
   { id: "cargos", texto: "Cargos" },
+  { id: "pagos", texto: "Pagos" },
 ];
 
-export default function FichaMiembroTabs({ panelDatos, panelCargos }) {
+export default function FichaMiembroTabs({ panelDatos, panelCargos, panelPagos }) {
   const [vista, setVista] = useState("datos");
 
   return (
@@ -31,6 +32,7 @@ export default function FichaMiembroTabs({ panelDatos, panelCargos }) {
 
       <div className={vista === "datos" ? "" : "hidden"}>{panelDatos}</div>
       <div className={vista === "cargos" ? "" : "hidden"}>{panelCargos}</div>
+      <div className={vista === "pagos" ? "" : "hidden"}>{panelPagos}</div>
     </div>
   );
 }

@@ -206,3 +206,8 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 
 - Corregido un bug: si Mercado Pago reenviaba el mismo aviso de pago aprobado dos veces casi al mismo tiempo (algo que hace con frecuencia), el webhook podía crear dos filas en `pagos` para el mismo pago — el chequeo de "¿ya existe?" no alcanza a evitarlo porque los dos avisos pueden pasarlo antes de que ninguno haya terminado de insertar.
 - Se agregó una restricción única en la base de datos sobre `(mp_payment_id, miembro_id)`, que bloquea el duplicado sin depender del timing — sigue permitiendo que un pago repartido entre varios hermanos genere una fila por cada uno. Confirmado con una prueba manual: el segundo intento de duplicado fue rechazado correctamente.
+
+## 2026-08-21 — Solapa de Pagos en la ficha de miembro (admin)
+
+- Nueva solapa **Pagos** en la ficha de un miembro: lista fecha, importe, medio de pago, estado (Pendiente/Acreditado/Cancelado) y el link al comprobante cuando lo hay, con el total pagado al pie.
+- La solapa **Cargos** también suma un total al pie, con los cargos activos (sin contar los cancelados).
