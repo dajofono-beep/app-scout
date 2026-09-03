@@ -33,12 +33,13 @@ export default function CobranzaMensualChart({ meses }) {
   const escalaMax = calcularEscala(maxTotal);
   const pasos = [0, 0.25, 0.5, 0.75, 1].map((f) => escalaMax * f);
 
-  const alto = 240;
-  const abajo = 210;
+  const alto = 175;
+  const abajo = 145;
   const arriba = 10;
   const izquierda = 85;
-  const derecha = 600;
-  const anchoGrupo = (derecha - izquierda) / meses.length;
+  const anchoGrupo = 70;
+  const derecha = izquierda + anchoGrupo * meses.length;
+  const anchoTotal = derecha + 20;
   const anchoBarra = Math.min(36, anchoGrupo * 0.45);
 
   const y = (v) => abajo - (v / escalaMax) * (abajo - arriba);
@@ -59,7 +60,13 @@ export default function CobranzaMensualChart({ meses }) {
         </span>
       </div>
       <div className="overflow-x-auto">
-        <svg viewBox={`0 0 620 ${alto}`} className="w-full min-w-[420px]" role="img" aria-label="Cobranza de los últimos 6 meses, cobrado y pendiente por mes">
+        <svg
+          viewBox={`0 0 ${anchoTotal} ${alto}`}
+          width={anchoTotal}
+          height={alto}
+          role="img"
+          aria-label={`Cobranza de los últimos ${meses.length} meses, cobrado y pendiente por mes`}
+        >
           {pasos.map((p) => (
             <g key={p}>
               <line

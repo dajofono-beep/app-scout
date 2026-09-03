@@ -224,3 +224,8 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - **Familias al día / Familias con deuda**: agrupa el saldo por familia. Se corrigió en el camino un bug real: la primera versión comparaba el saldo total acumulado (que incluye cuotas futuras ya cargadas) contra cero, dando casi siempre "en deuda" a todo el mundo — se corrigió para mirar solo los cargos cuya fecha ya venció.
 - **Actividad reciente**: reemplaza "Últimos 5 pagos realizados" por un feed con hora real de carga y un desplegable para elegir ver los últimos 3 (por defecto), 5 o 10 movimientos.
 - **Más deuda / Menos deuda**: mismos rankings de siempre, ahora numerados.
+
+## 2026-08-21 — Ajustes de identidad visual y filtro de meses en el Resumen
+
+- Los títulos de todas las tarjetas del dashboard pasaron de gris a celeste (`sky-700`), y la dona de "Medios de pago" ahora usa distintos tonos de azul en vez de mezclar colores — los colores que indican estado (verde/ámbar/rojo en deuda, familias al día, etc.) se dejaron sin tocar a propósito, porque ahí el color transmite información real.
+- **Cobranza mensual** ahora tiene su propio desplegable para elegir ver los últimos 3 (por defecto), 6 o 10 meses. Se corrigió en el camino un bug: el gráfico cambiaba de alto según la cantidad de meses elegida (por estar armado con un `viewBox` que se escalaba proporcionalmente al ancho) — ahora el ancho crece en píxeles fijos por mes y el alto queda siempre constante, apareciendo scroll horizontal solo cuando hace falta.

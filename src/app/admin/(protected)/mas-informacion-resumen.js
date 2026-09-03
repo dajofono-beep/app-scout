@@ -12,7 +12,7 @@ export default function MasInformacionResumen({ familiasEnRiesgo, pagosPendiente
         <div className="space-y-4 mb-3">
           <div className="bg-white rounded-2xl shadow-sm p-5 flex items-center justify-between gap-4 flex-wrap">
             <div>
-              <p className="text-sm font-bold text-slate-400 mb-1">
+              <p className="text-sm font-bold text-sky-700 mb-1">
                 Riesgo de no poder participar del próximo evento
               </p>
               <p className="text-2xl font-bold text-amber-600">
@@ -33,7 +33,7 @@ export default function MasInformacionResumen({ familiasEnRiesgo, pagosPendiente
             href="/admin/pagos?estado=pendiente"
             className="bg-white rounded-2xl shadow-sm p-5 flex flex-col"
           >
-            <p className="text-sm font-bold text-slate-400 min-h-[2.5rem]">
+            <p className="text-sm font-bold text-sky-700 min-h-[2.5rem]">
               Pagos pendientes de revisión
             </p>
             <p className="text-2xl font-bold text-slate-800">{pagosPendientesCount}</p>

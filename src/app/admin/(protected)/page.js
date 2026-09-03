@@ -4,7 +4,7 @@ import { calcularVencimientos } from "@/app/mi-cuenta/proximo-vencimiento";
 import MasInformacionResumen from "./mas-informacion-resumen";
 import DonutChart from "./donut-chart";
 import SituacionCobranza from "./situacion-cobranza";
-import CobranzaMensualChart from "./cobranza-mensual-chart";
+import CobranzaMensualCard from "./cobranza-mensual-card";
 import { calcularProximosVencimientos } from "./calcular-proximos-vencimientos";
 import { calcularFamiliasAlDia } from "./calcular-familias-al-dia";
 import ActividadReciente from "./actividad-reciente";
@@ -32,7 +32,7 @@ const COLOR_DEFAULT = {
   chip: "bg-slate-50 text-slate-700",
   ring: "ring-slate-400",
 };
-const COLORES_MEDIOS_PAGO = ["#0284c7", "#8b5cf6", "#f59e0b", "#94a3b8"];
+const COLORES_MEDIOS_PAGO = ["#0284c7", "#38bdf8", "#7dd3fc", "#bae6fd"];
 
 const formatoMoneda = (n) =>
   Number(n).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
@@ -154,11 +154,13 @@ export default async function AdminDashboardPage({ searchParams }) {
     0
   );
 
-  // Últimos 6 meses (incluyendo el actual), cobrado vs. pendiente de
-  // acreditación por mes, según la fecha del pago.
+  // Últimos 10 meses (incluyendo el actual), cobrado vs. pendiente de
+  // acreditación por mes, según la fecha del pago. Se traen 10 —
+  // el máximo que ofrece el desplegable de la tarjeta — y el
+  // componente cliente recorta a los últimos 3/6/10 según lo elegido.
   const hoy = new Date();
-  const cobranzaMensual = Array.from({ length: 6 }, (_, i) => {
-    const fecha = new Date(hoy.getFullYear(), hoy.getMonth() - (5 - i), 1);
+  const cobranzaMensual = Array.from({ length: 10 }, (_, i) => {
+    const fecha = new Date(hoy.getFullYear(), hoy.getMonth() - (9 - i), 1);
     const anio = fecha.getFullYear();
     const mes = fecha.getMonth();
     const pagosDelMes = pagosFiltrados.filter((p) => {
@@ -230,7 +232,7 @@ export default async function AdminDashboardPage({ searchParams }) {
             !ramaSeleccionada ? "ring-2 ring-sky-500" : ""
           }`}
         >
-          <p className="text-sm font-bold text-slate-400">Miembros totales</p>
+          <p className="text-sm font-bold text-sky-700">Miembros totales</p>
           <p className="text-3xl font-bold text-slate-800">{totalMiembros}</p>
           {diferenciaMiembros !== 0 && (
             <p
@@ -245,7 +247,7 @@ export default async function AdminDashboardPage({ searchParams }) {
         </Link>
 
         <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2">
-          <p className="text-sm font-bold text-slate-400 mb-3">Participación por rama</p>
+          <p className="text-sm font-bold text-sky-700 mb-3">Participación por rama</p>
           <DonutChart
             labels={porRama.map((r) => r.nombre)}
             valores={porRama.map((r) => r.cantidad)}
@@ -255,7 +257,7 @@ export default async function AdminDashboardPage({ searchParams }) {
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-3">
-          <p className="text-sm font-bold text-slate-400 mb-3">Filtrar por rama</p>
+          <p className="text-sm font-bold text-sky-700 mb-3">Filtrar por rama</p>
           <div className="grid grid-cols-3 gap-2">
             <Link
               href="/admin"
@@ -295,12 +297,9 @@ export default async function AdminDashboardPage({ searchParams }) {
             totalFaltante={totalSaldo - totalPendiente - totalAcreditado}
           />
         </div>
-        <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-3 h-full">
-          <p className="text-sm font-bold text-slate-400 mb-3">Cobranza últimos 6 meses</p>
-          <CobranzaMensualChart meses={cobranzaMensual} />
-        </div>
+        <CobranzaMensualCard mesesCompletos={cobranzaMensual} />
         <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2 h-full">
-          <p className="text-sm font-bold text-slate-400 mb-3">Medios de pago</p>
+          <p className="text-sm font-bold text-sky-700 mb-3">Medios de pago</p>
           <DonutChart
             vertical
             labels={acreditadoPorMedioOrdenado.map(([medio]) => medio)}
@@ -324,7 +323,7 @@ export default async function AdminDashboardPage({ searchParams }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
         <div className="bg-white rounded-2xl shadow-sm p-5">
-          <p className="text-sm font-bold text-slate-600 mb-3">Próximos vencimientos</p>
+          <p className="text-sm font-bold text-sky-700 mb-3">Próximos vencimientos</p>
           <div className="space-y-3">
             {proximosVencimientos.map((v) => {
               const dias = Math.ceil(
@@ -358,7 +357,7 @@ export default async function AdminDashboardPage({ searchParams }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2">
-          <p className="text-sm font-bold text-slate-600 mb-3">Más deuda</p>
+          <p className="text-sm font-bold text-sky-700 mb-3">Más deuda</p>
           <div className="space-y-2">
             {masDeuda.map((m, i) => (
               <div key={m.miembro_id} className="flex items-center gap-2 text-sm">
@@ -372,7 +371,7 @@ export default async function AdminDashboardPage({ searchParams }) {
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2">
-          <p className="text-sm font-bold text-slate-600 mb-3">Menos deuda</p>
+          <p className="text-sm font-bold text-sky-700 mb-3">Menos deuda</p>
           <div className="space-y-2">
             {menosDeuda.map((m, i) => (
               <div key={m.miembro_id} className="flex items-center gap-2 text-sm">
@@ -389,7 +388,7 @@ export default async function AdminDashboardPage({ searchParams }) {
 
         <div className="flex flex-col gap-4">
           <div className="bg-white rounded-2xl shadow-sm p-5">
-            <p className="text-sm font-bold text-slate-600 mb-3">Familias al día</p>
+            <p className="text-sm font-bold text-sky-700 mb-3">Familias al día</p>
             <p className="text-2xl font-bold text-slate-800">
               {familiasAlDia}{" "}
               <span className="text-sm font-semibold text-slate-400">/ {totalFamilias}</span>
@@ -405,7 +404,7 @@ export default async function AdminDashboardPage({ searchParams }) {
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm p-5">
-            <p className="text-sm font-bold text-slate-600 mb-3">Familias con deuda</p>
+            <p className="text-sm font-bold text-sky-700 mb-3">Familias con deuda</p>
             <p className="text-2xl font-bold text-slate-800">
               {familiasConDeuda}{" "}
               <span className="text-sm font-semibold text-slate-400">/ {totalFamilias}</span>
