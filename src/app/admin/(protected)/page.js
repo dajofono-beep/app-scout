@@ -2,29 +2,37 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { calcularVencimientos } from "@/app/mi-cuenta/proximo-vencimiento";
 import MasInformacionResumen from "./mas-informacion-resumen";
+import DonutChart from "./donut-chart";
+import SituacionCobranza from "./situacion-cobranza";
+import CobranzaMensualChart from "./cobranza-mensual-chart";
+import { calcularProximosVencimientos } from "./calcular-proximos-vencimientos";
+import { calcularFamiliasAlDia } from "./calcular-familias-al-dia";
+import ActividadReciente from "./actividad-reciente";
 
 const COLOR_RAMA = {
-  Manada: { dot: "bg-yellow-400", chip: "bg-yellow-50 text-yellow-700", ring: "ring-yellow-400" },
+  Manada: { dot: "bg-yellow-400", hex: "#facc15", chip: "bg-yellow-50 text-yellow-700", ring: "ring-yellow-400" },
   "Unidad Scout": {
     dot: "bg-green-400",
+    hex: "#4ade80",
     chip: "bg-green-50 text-green-700",
     ring: "ring-green-400",
   },
-  Caminantes: { dot: "bg-sky-400", chip: "bg-sky-50 text-sky-700", ring: "ring-sky-400" },
-  Rovers: { dot: "bg-red-400", chip: "bg-red-50 text-red-700", ring: "ring-red-400" },
-  Adultos: { dot: "bg-violet-400", chip: "bg-violet-50 text-violet-700", ring: "ring-violet-400" },
+  Caminantes: { dot: "bg-sky-400", hex: "#38bdf8", chip: "bg-sky-50 text-sky-700", ring: "ring-sky-400" },
+  Rovers: { dot: "bg-red-400", hex: "#f87171", chip: "bg-red-50 text-red-700", ring: "ring-red-400" },
+  Adultos: {
+    dot: "bg-violet-400",
+    hex: "#a78bfa",
+    chip: "bg-violet-50 text-violet-700",
+    ring: "ring-violet-400",
+  },
 };
 const COLOR_DEFAULT = {
   dot: "bg-slate-400",
+  hex: "#94a3b8",
   chip: "bg-slate-50 text-slate-700",
   ring: "ring-slate-400",
 };
-
-const ETIQUETA_ESTADO = {
-  pendiente: { texto: "Pendiente", clase: "bg-amber-50 text-amber-700" },
-  acreditado: { texto: "Acreditado", clase: "bg-emerald-50 text-emerald-700" },
-  cancelado: { texto: "Cancelado", clase: "bg-slate-100 text-slate-500" },
-};
+const COLORES_MEDIOS_PAGO = ["#0284c7", "#8b5cf6", "#f59e0b", "#94a3b8"];
 
 const formatoMoneda = (n) =>
   Number(n).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
@@ -39,10 +47,22 @@ export default async function AdminDashboardPage({ searchParams }) {
 
   const { data: miembrosActivos } = await supabase
     .from("miembros")
-    .select("id, nombre, apellido, rama_id, familia_id, ramas(nombre)")
+    .select("id, nombre, apellido, rama_id, familia_id, created_at, ramas(nombre)")
     .eq("activo", true);
 
   const totalMiembros = miembrosActivos?.length ?? 0;
+
+  // Aproximación de "vs. mes anterior": cuántos de los miembros
+  // activos de hoy ya existían antes de este mes. No contempla bajas
+  // (no hay un registro histórico de eso), pero da una tendencia útil
+  // sin necesitar una tabla nueva.
+  const inicioMes = new Date();
+  inicioMes.setDate(1);
+  inicioMes.setHours(0, 0, 0, 0);
+  const miembrosMesAnterior = (miembrosActivos ?? []).filter(
+    (m) => new Date(m.created_at) < inicioMes
+  ).length;
+  const diferenciaMiembros = totalMiembros - miembrosMesAnterior;
 
   const porRama = (ramas ?? []).map((r) => ({
     ...r,
@@ -105,7 +125,13 @@ export default async function AdminDashboardPage({ searchParams }) {
       .in("miembro_id", idsFiltrados);
     cargosFiltrados = dataCargos ?? [];
   }
-  const ultimosPagos = pagosFiltrados.slice(0, 5);
+  // "Actividad reciente": los últimos pagos registrados, ordenados por
+  // el momento real en que se cargaron (no por la fecha de pago que
+  // eligió la familia, que puede ser de días atrás). Se traen hasta 10
+  // — el máximo que ofrece el desplegable de "Actividad reciente".
+  const actividadReciente = [...pagosFiltrados]
+    .sort((a, b) => (b.created_at < a.created_at ? -1 : 1))
+    .slice(0, 10);
 
   const pagosPendientesCount = pagosFiltrados.filter(
     (p) => p.estado_efectivo === "pendiente"
@@ -123,10 +149,34 @@ export default async function AdminDashboardPage({ searchParams }) {
   const acreditadoPorMedioOrdenado = Object.entries(acreditadoPorMedio).sort(
     (a, b) => b[1] - a[1]
   );
+  const totalAcreditadoPorMedio = acreditadoPorMedioOrdenado.reduce(
+    (acc, [, monto]) => acc + monto,
+    0
+  );
+
+  // Últimos 6 meses (incluyendo el actual), cobrado vs. pendiente de
+  // acreditación por mes, según la fecha del pago.
+  const hoy = new Date();
+  const cobranzaMensual = Array.from({ length: 6 }, (_, i) => {
+    const fecha = new Date(hoy.getFullYear(), hoy.getMonth() - (5 - i), 1);
+    const anio = fecha.getFullYear();
+    const mes = fecha.getMonth();
+    const pagosDelMes = pagosFiltrados.filter((p) => {
+      const [a, m] = p.fecha_pago.split("-").map(Number);
+      return a === anio && m - 1 === mes;
+    });
+    const cobrado = pagosDelMes
+      .filter((p) => p.estado_efectivo === "acreditado")
+      .reduce((acc, p) => acc + Number(p.importe), 0);
+    const pendiente = pagosDelMes
+      .filter((p) => p.estado_efectivo === "pendiente")
+      .reduce((acc, p) => acc + Number(p.importe), 0);
+    return { label: `${anio}-${mes}`, anio, mes, cobrado, pendiente };
+  });
 
   const { data: productosVencimiento } = await supabase
     .from("productos")
-    .select("id, fecha_vencimiento, alerta_vencimiento");
+    .select("id, nombre, fecha_vencimiento, alerta_vencimiento");
 
   const familiaIdPorMiembro = Object.fromEntries(
     (miembrosActivos ?? []).map((m) => [m.id, m.familia_id])
@@ -148,6 +198,24 @@ export default async function AdminDashboardPage({ searchParams }) {
     vencimientosFiltrados.map((v) => familiaIdPorMiembro[v.miembroId] ?? v.miembroId)
   ).size;
 
+  const hoyIso = hoy.toISOString().slice(0, 10);
+  const proximosVencimientos = calcularProximosVencimientos({
+    miembroIds: idsFiltrados,
+    cargos: cargosFiltrados,
+    pagosAcreditados: pagosAcreditadosFiltrados,
+    productos: productosVencimiento ?? [],
+    familiaIdPorMiembro,
+    hoyIso,
+  }).slice(0, 4);
+
+  const { totalFamilias, familiasAlDia, familiasConDeuda } = calcularFamiliasAlDia({
+    miembroIds: idsFiltrados,
+    cargos: cargosFiltrados,
+    pagosAcreditados: pagosAcreditadosFiltrados,
+    familiaIdPorMiembro,
+    hoyIso,
+  });
+
   return (
     <div>
       <h1 className="text-2xl font-bold text-slate-800 mb-1">Resumen</h1>
@@ -155,35 +223,63 @@ export default async function AdminDashboardPage({ searchParams }) {
         Mostrando: {ramaActual ? ramaActual.nombre : "Todo el grupo"}
       </p>
 
-      <div className="flex flex-col sm:flex-row gap-4 mb-4">
+      <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 mb-4">
         <Link
           href="/admin"
-          className={`bg-white rounded-2xl shadow-sm p-5 sm:w-44 shrink-0 block ${
+          className={`bg-white rounded-2xl shadow-sm p-5 block lg:col-span-1 ${
             !ramaSeleccionada ? "ring-2 ring-sky-500" : ""
           }`}
         >
-          <p className="text-sm font-bold text-slate-400">Miembros activos</p>
+          <p className="text-sm font-bold text-slate-400">Miembros totales</p>
           <p className="text-3xl font-bold text-slate-800">{totalMiembros}</p>
+          {diferenciaMiembros !== 0 && (
+            <p
+              className={`text-xs font-semibold mt-1 ${
+                diferenciaMiembros > 0 ? "text-emerald-600" : "text-red-500"
+              }`}
+            >
+              {diferenciaMiembros > 0 ? "↗" : "↘"} {diferenciaMiembros > 0 ? "+" : ""}
+              {diferenciaMiembros} vs. mes anterior
+            </p>
+          )}
         </Link>
-        <div className="bg-white rounded-2xl shadow-sm p-5 flex-1">
-          <p className="text-sm font-bold text-slate-400 mb-3">Miembros por rama</p>
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-            {porRama.map((r) => {
-              const color = COLOR_RAMA[r.nombre] ?? COLOR_DEFAULT;
+
+        <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2">
+          <p className="text-sm font-bold text-slate-400 mb-3">Participación por rama</p>
+          <DonutChart
+            labels={porRama.map((r) => r.nombre)}
+            valores={porRama.map((r) => r.cantidad)}
+            colores={porRama.map((r) => (COLOR_RAMA[r.nombre] ?? COLOR_DEFAULT).hex)}
+            etiquetasValor={porRama.map((r) => String(r.cantidad))}
+          />
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-3">
+          <p className="text-sm font-bold text-slate-400 mb-3">Filtrar por rama</p>
+          <div className="grid grid-cols-3 gap-2">
+            <Link
+              href="/admin"
+              className={`text-sm font-semibold px-3 py-2 rounded-full border text-center ${
+                !ramaSeleccionada
+                  ? "bg-sky-600 border-sky-600 text-white"
+                  : "bg-white border-slate-200 text-slate-600"
+              }`}
+            >
+              Todas
+            </Link>
+            {(ramas ?? []).map((r) => {
               const activa = ramaSeleccionada === r.id;
               return (
                 <Link
                   key={r.id}
                   href={`/admin?rama_id=${r.id}`}
-                  className={`flex flex-col items-center justify-center gap-1 text-sm font-semibold px-3 py-2 rounded-2xl text-center ${color.chip} ${
-                    activa ? `ring-2 ${color.ring}` : ""
+                  className={`text-sm font-semibold px-3 py-2 rounded-full border text-center ${
+                    activa
+                      ? "bg-sky-600 border-sky-600 text-white"
+                      : "bg-white border-slate-200 text-slate-600"
                   }`}
                 >
-                  <span className="flex items-center gap-1.5">
-                    <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${color.dot}`} />
-                    {r.nombre}
-                  </span>
-                  <span className="text-lg font-bold">{r.cantidad}</span>
+                  {r.nombre}
                 </Link>
               );
             })}
@@ -191,73 +287,97 @@ export default async function AdminDashboardPage({ searchParams }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-        <div className="bg-white rounded-2xl shadow-sm p-5 flex flex-col">
-          <p className="text-sm font-bold text-slate-400 min-h-[2.5rem]">Saldo total</p>
-          <p className="text-2xl font-bold text-slate-800">{formatoMoneda(totalSaldo)}</p>
+      <div className="grid grid-cols-1 lg:grid-cols-8 gap-4 mb-4 lg:items-stretch">
+        <div className="lg:col-span-3">
+          <SituacionCobranza
+            totalAcreditado={totalAcreditado}
+            totalPendiente={totalPendiente}
+            totalFaltante={totalSaldo - totalPendiente - totalAcreditado}
+          />
         </div>
-        <div className="bg-white rounded-2xl shadow-sm p-5 flex flex-col">
-          <p className="text-sm font-bold text-slate-400 min-h-[2.5rem]">Pagos acreditados</p>
-          <p className="text-2xl font-bold text-emerald-600">{formatoMoneda(totalAcreditado)}</p>
+        <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-3 h-full">
+          <p className="text-sm font-bold text-slate-400 mb-3">Cobranza últimos 6 meses</p>
+          <CobranzaMensualChart meses={cobranzaMensual} />
         </div>
-        <div className="bg-white rounded-2xl shadow-sm p-5 flex flex-col">
-          <p className="text-sm font-bold text-slate-400 min-h-[2.5rem]">
-            Pagos Pendientes de Acreditarse
-          </p>
-          <p className="text-2xl font-bold text-amber-600">{formatoMoneda(totalPendiente)}</p>
-        </div>
-        <div className="bg-white rounded-2xl shadow-sm p-5 flex flex-col">
-          <p className="text-sm font-bold text-slate-400 min-h-[2.5rem]">Pagos Faltantes</p>
-          <p className="text-2xl font-bold text-red-500">
-            {formatoMoneda(totalSaldo - totalPendiente - totalAcreditado)}
-          </p>
+        <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2 h-full">
+          <p className="text-sm font-bold text-slate-400 mb-3">Medios de pago</p>
+          <DonutChart
+            vertical
+            labels={acreditadoPorMedioOrdenado.map(([medio]) => medio)}
+            valores={acreditadoPorMedioOrdenado.map(([, monto]) => monto)}
+            colores={acreditadoPorMedioOrdenado.map(
+              (_, i) => COLORES_MEDIOS_PAGO[i % COLORES_MEDIOS_PAGO.length]
+            )}
+            etiquetasValor={acreditadoPorMedioOrdenado.map(([, monto]) =>
+              totalAcreditadoPorMedio > 0
+                ? `${((monto / totalAcreditadoPorMedio) * 100).toLocaleString("es-AR", { maximumFractionDigits: 1 })}%`
+                : "0%"
+            )}
+          />
         </div>
       </div>
 
       <MasInformacionResumen
         familiasEnRiesgo={familiasEnRiesgo}
         pagosPendientesCount={pagosPendientesCount}
-        acreditadoPorMedioOrdenado={acreditadoPorMedioOrdenado}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
         <div className="bg-white rounded-2xl shadow-sm p-5">
-          <p className="text-sm font-bold text-slate-600 mb-3">
-            Últimos 5 pagos realizados
-          </p>
+          <p className="text-sm font-bold text-slate-600 mb-3">Próximos vencimientos</p>
           <div className="space-y-3">
-            {ultimosPagos.map((p) => (
-              <div key={p.id} className="flex items-center justify-between text-sm gap-2">
-                <div className="min-w-0">
-                  <p className="font-semibold text-slate-800 truncate">
-                    {p.miembros?.apellido}, {p.miembros?.nombre}
-                  </p>
-                  <p className="text-xs text-slate-400">{p.fecha_pago}</p>
-                </div>
-                <div className="text-right shrink-0">
-                  <p className="font-bold text-slate-800">{formatoMoneda(p.importe)}</p>
-                  <span
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${ETIQUETA_ESTADO[p.estado_efectivo].clase}`}
-                  >
-                    {ETIQUETA_ESTADO[p.estado_efectivo].texto}
+            {proximosVencimientos.map((v) => {
+              const dias = Math.ceil(
+                (new Date(v.fechaVencimiento) - new Date(hoyIso)) / 86400000
+              );
+              return (
+                <div key={v.productoId} className="flex items-center gap-3 text-sm">
+                  <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
+                  <span className="font-semibold text-slate-800 flex-1 min-w-0 truncate">
+                    {v.nombre}
+                  </span>
+                  <span className="text-slate-500 shrink-0">
+                    {v.familias} {v.familias === 1 ? "familia" : "familias"}
+                  </span>
+                  <span className="text-slate-400 text-xs shrink-0">
+                    vence en {dias} {dias === 1 ? "día" : "días"}
                   </span>
                 </div>
-              </div>
-            ))}
-            {ultimosPagos.length === 0 && (
-              <p className="text-sm text-slate-400">Todavía no hay pagos.</p>
+              );
+            })}
+            {proximosVencimientos.length === 0 && (
+              <p className="text-sm text-slate-400">
+                No hay conceptos marcados con vencimiento próximo.
+              </p>
             )}
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm p-5">
-          <p className="text-sm font-bold text-slate-600 mb-3">
-            Los 5 miembros con menos deuda
-          </p>
+        <ActividadReciente movimientos={actividadReciente} />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+        <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2">
+          <p className="text-sm font-bold text-slate-600 mb-3">Más deuda</p>
           <div className="space-y-2">
-            {menosDeuda.map((m) => (
-              <div key={m.miembro_id} className="flex items-center justify-between text-sm gap-2">
-                <span className="text-slate-700 truncate">{m.nombre}</span>
+            {masDeuda.map((m, i) => (
+              <div key={m.miembro_id} className="flex items-center gap-2 text-sm">
+                <span className="text-slate-400 font-bold w-4 shrink-0">{i + 1}</span>
+                <span className="text-slate-700 truncate flex-1">{m.nombre}</span>
+                <span className="font-bold text-red-500 shrink-0">{formatoMoneda(m.saldo)}</span>
+              </div>
+            ))}
+            {masDeuda.length === 0 && <p className="text-sm text-slate-400">Sin datos.</p>}
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2">
+          <p className="text-sm font-bold text-slate-600 mb-3">Menos deuda</p>
+          <div className="space-y-2">
+            {menosDeuda.map((m, i) => (
+              <div key={m.miembro_id} className="flex items-center gap-2 text-sm">
+                <span className="text-slate-400 font-bold w-4 shrink-0">{i + 1}</span>
+                <span className="text-slate-700 truncate flex-1">{m.nombre}</span>
                 <span className="font-bold text-emerald-600 shrink-0">
                   {formatoMoneda(m.saldo)}
                 </span>
@@ -267,18 +387,37 @@ export default async function AdminDashboardPage({ searchParams }) {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm p-5">
-          <p className="text-sm font-bold text-slate-600 mb-3">
-            Los 5 miembros con más deuda
-          </p>
-          <div className="space-y-2">
-            {masDeuda.map((m) => (
-              <div key={m.miembro_id} className="flex items-center justify-between text-sm gap-2">
-                <span className="text-slate-700 truncate">{m.nombre}</span>
-                <span className="font-bold text-red-500 shrink-0">{formatoMoneda(m.saldo)}</span>
-              </div>
-            ))}
-            {masDeuda.length === 0 && <p className="text-sm text-slate-400">Sin datos.</p>}
+        <div className="flex flex-col gap-4">
+          <div className="bg-white rounded-2xl shadow-sm p-5">
+            <p className="text-sm font-bold text-slate-600 mb-3">Familias al día</p>
+            <p className="text-2xl font-bold text-slate-800">
+              {familiasAlDia}{" "}
+              <span className="text-sm font-semibold text-slate-400">/ {totalFamilias}</span>
+            </p>
+            <div className="h-2 rounded-full bg-slate-100 overflow-hidden mt-2">
+              <div
+                className="h-full bg-emerald-500"
+                style={{
+                  width: `${totalFamilias > 0 ? (familiasAlDia / totalFamilias) * 100 : 0}%`,
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm p-5">
+            <p className="text-sm font-bold text-slate-600 mb-3">Familias con deuda</p>
+            <p className="text-2xl font-bold text-slate-800">
+              {familiasConDeuda}{" "}
+              <span className="text-sm font-semibold text-slate-400">/ {totalFamilias}</span>
+            </p>
+            <div className="h-2 rounded-full bg-slate-100 overflow-hidden mt-2">
+              <div
+                className="h-full bg-red-500"
+                style={{
+                  width: `${totalFamilias > 0 ? (familiasConDeuda / totalFamilias) * 100 : 0}%`,
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>

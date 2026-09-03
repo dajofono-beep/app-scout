@@ -211,3 +211,16 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 
 - Nueva solapa **Pagos** en la ficha de un miembro: lista fecha, importe, medio de pago, estado (Pendiente/Acreditado/Cancelado) y el link al comprobante cuando lo hay, con el total pagado al pie.
 - La solapa **Cargos** también suma un total al pie, con los cargos activos (sin contar los cancelados).
+
+## 2026-08-21 — Rediseño del panel de Resumen (admin)
+
+- Rediseño completo del dashboard principal de Administración, en base a una referencia visual, sin agregar funcionalidad nueva — todo con datos que la app ya calculaba, solo reorganizados y con gráficos.
+- **Miembros totales** con la tendencia contra el mes anterior, y **Participación por rama** como dona (nuevo componente `DonutChart`, reutilizable, hecho a mano con SVG/CSS sin librerías).
+- **Filtrar por rama** como botones, separado del gráfico de participación.
+- **Situación de cobranza**: reemplaza las 4 tarjetas sueltas de antes (Saldo/Acreditados/Pendientes/Faltantes) por una barra segmentada con leyenda y porcentajes.
+- **Cobranza últimos 6 meses**: gráfico nuevo de barras apiladas (Cobrado/Pendiente) + línea de tendencia, agrupando los pagos por mes.
+- **Medios de pago** como dona con porcentajes, ahora siempre visible (antes escondido en "Más información").
+- **Próximos vencimientos**: agrupa por concepto marcado (no por miembro, como antes) cuántas familias tienen ese concepto puntual sin cubrir y en cuántos días vence.
+- **Familias al día / Familias con deuda**: agrupa el saldo por familia. Se corrigió en el camino un bug real: la primera versión comparaba el saldo total acumulado (que incluye cuotas futuras ya cargadas) contra cero, dando casi siempre "en deuda" a todo el mundo — se corrigió para mirar solo los cargos cuya fecha ya venció.
+- **Actividad reciente**: reemplaza "Últimos 5 pagos realizados" por un feed con hora real de carga y un desplegable para elegir ver los últimos 3 (por defecto), 5 o 10 movimientos.
+- **Más deuda / Menos deuda**: mismos rankings de siempre, ahora numerados.
