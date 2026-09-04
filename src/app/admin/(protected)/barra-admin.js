@@ -36,7 +36,7 @@ export default function BarraAdmin({ nombreAdmin }) {
   const [menuAbierto, setMenuAbierto] = useState(false);
 
   return (
-    <div className="md:hidden bg-white border-b border-sky-100">
+    <div className="md:hidden print:hidden bg-white border-b border-sky-100">
       <div className="flex items-center justify-between p-4">
         <button
           type="button"

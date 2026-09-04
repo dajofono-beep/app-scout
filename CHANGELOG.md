@@ -244,3 +244,9 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-09-04 — Íconos en las tarjetas del Resumen (admin)
 
 - Se agregó un ícono junto al título de cada una de las tarjetas del dashboard "Resumen": Miembros totales, Participación por rama, Filtrar por rama, Situación de cobranza, Cobranza mensual, Medios de pago, Próximos vencimientos, Actividad reciente, Más deuda, Menos deuda, Familias al día y Familias con deuda.
+
+## 2026-09-04 — Botón de Imprimir en el Resumen (admin)
+
+- Se agregó un botón "Imprimir" arriba a la derecha del panel de Resumen, a la altura de "Mostrando: ...", que abre el diálogo de impresión del navegador (desde ahí se puede imprimir en papel o guardar como PDF).
+- Se armaron estilos de impresión en tamaño A4: se ocultan el menú lateral, la barra superior mobile y el propio botón; las tarjetas mantienen la misma distribución en columnas que se ve en pantalla (sin esto, al imprimir se apilaban en una sola columna); se fuerza la impresión de los colores de fondo (donas, barra de situación de cobranza) que los navegadores omiten por defecto para ahorrar tinta.
+- Si la sección "Más información" está desplegada al momento de imprimir, sale incluida en el PDF; si está oculta, no sale (se imprime lo mismo que se ve en pantalla).

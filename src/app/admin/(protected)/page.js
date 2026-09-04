@@ -8,6 +8,7 @@ import CobranzaMensualCard from "./cobranza-mensual-card";
 import { calcularProximosVencimientos } from "./calcular-proximos-vencimientos";
 import { calcularFamiliasAlDia } from "./calcular-familias-al-dia";
 import ActividadReciente from "./actividad-reciente";
+import BotonImprimir from "./boton-imprimir";
 
 const COLOR_RAMA = {
   Manada: { dot: "bg-yellow-400", hex: "#facc15", chip: "bg-yellow-50 text-yellow-700", ring: "ring-yellow-400" },
@@ -219,16 +220,19 @@ export default async function AdminDashboardPage({ searchParams }) {
   });
 
   return (
-    <div>
+    <div id="resumen-imprimible">
       <h1 className="text-2xl font-bold text-slate-800 mb-1">Resumen</h1>
-      <p className="text-sm text-slate-400 mb-6">
-        Mostrando: {ramaActual ? ramaActual.nombre : "Todo el grupo"}
-      </p>
+      <div className="flex items-center justify-between gap-3 mb-6">
+        <p className="text-sm text-slate-400">
+          Mostrando: {ramaActual ? ramaActual.nombre : "Todo el grupo"}
+        </p>
+        <BotonImprimir />
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 mb-4">
+      <div className="grid grid-cols-1 lg:grid-cols-6 print:grid-cols-6 gap-4 mb-4">
         <Link
           href="/admin"
-          className={`bg-white rounded-2xl shadow-sm p-5 block lg:col-span-1 ${
+          className={`bg-white rounded-2xl shadow-sm p-5 block lg:col-span-1 print:col-span-1 ${
             !ramaSeleccionada ? "ring-2 ring-sky-500" : ""
           }`}
         >
@@ -253,7 +257,7 @@ export default async function AdminDashboardPage({ searchParams }) {
           )}
         </Link>
 
-        <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2">
+        <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2 print:col-span-2">
           <div className="flex items-center gap-2 mb-3">
             <img
               src="/Dashboard/Participación por rama.png"
@@ -270,7 +274,7 @@ export default async function AdminDashboardPage({ searchParams }) {
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-3">
+        <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-3 print:col-span-3">
           <div className="flex items-center gap-2 mb-3">
             <img
               src="/Dashboard/Filtrar por rama.png"
@@ -310,8 +314,8 @@ export default async function AdminDashboardPage({ searchParams }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-8 gap-4 mb-4 lg:items-stretch">
-        <div className="lg:col-span-3">
+      <div className="grid grid-cols-1 lg:grid-cols-8 print:grid-cols-8 gap-4 mb-4 lg:items-stretch print:items-stretch">
+        <div className="lg:col-span-3 print:col-span-3">
           <SituacionCobranza
             totalAcreditado={totalAcreditado}
             totalPendiente={totalPendiente}
@@ -319,7 +323,7 @@ export default async function AdminDashboardPage({ searchParams }) {
           />
         </div>
         <CobranzaMensualCard mesesCompletos={cobranzaMensual} />
-        <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2 h-full">
+        <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2 print:col-span-2 h-full">
           <div className="flex items-center gap-2 mb-3">
             <img
               src="/Dashboard/Medios de pago.png"
@@ -349,7 +353,7 @@ export default async function AdminDashboardPage({ searchParams }) {
         pagosPendientesCount={pagosPendientesCount}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 print:grid-cols-2 gap-4 mb-4">
         <div className="bg-white rounded-2xl shadow-sm p-5">
           <div className="flex items-center gap-2 mb-3">
             <img
@@ -390,8 +394,8 @@ export default async function AdminDashboardPage({ searchParams }) {
         <ActividadReciente movimientos={actividadReciente} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-        <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2">
+      <div className="grid grid-cols-1 lg:grid-cols-5 print:grid-cols-5 gap-4">
+        <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2 print:col-span-2">
           <div className="flex items-center gap-2 mb-3">
             <img
               src="/Dashboard/Más deuda.png"
@@ -412,7 +416,7 @@ export default async function AdminDashboardPage({ searchParams }) {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2">
+        <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2 print:col-span-2">
           <div className="flex items-center gap-2 mb-3">
             <img
               src="/Dashboard/Menos deuda.png"

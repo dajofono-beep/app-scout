@@ -45,7 +45,7 @@ export default function MasInformacionResumen({ familiasEnRiesgo, pagosPendiente
       <button
         type="button"
         onClick={() => setAbierto((v) => !v)}
-        className="flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-sky-600"
+        className="print:hidden flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-sky-600"
       >
         {abierto ? "Ocultar" : "Más información"}
         <span

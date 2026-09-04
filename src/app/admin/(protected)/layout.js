@@ -39,7 +39,7 @@ export default async function AdminLayout({ children }) {
     <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-sky-100 to-sky-50">
       <BarraAdmin nombreAdmin={admin.nombre} />
       <nav
-        className="hidden md:flex md:w-56 shrink-0 md:border-r border-sky-100 md:flex-col relative overflow-hidden"
+        className="hidden md:flex print:hidden md:w-56 shrink-0 md:border-r border-sky-100 md:flex-col relative overflow-hidden"
         style={{
           backgroundImage: "url('/fondo-sidebar.png')",
           backgroundSize: "cover",
@@ -73,7 +73,9 @@ export default async function AdminLayout({ children }) {
           <LogoutButton />
         </div>
       </nav>
-      <main className="flex-1 p-4 md:p-8 bg-sky-100">{children}</main>
+      <main className="flex-1 p-4 md:p-8 print:p-0 bg-sky-100 print:bg-white">
+        {children}
+      </main>
     </div>
   );
 }
