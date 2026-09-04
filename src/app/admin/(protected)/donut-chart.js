@@ -25,7 +25,7 @@ export default function DonutChart({ labels, valores, colores, etiquetasValor, v
     .join(". ");
 
   const dona = (
-    <div className={`relative w-24 h-24 shrink-0 ${vertical ? "mx-auto" : ""}`}>
+    <div className={`relative w-24 h-24 shrink-0 ${vertical ? "mx-auto" : "print:mx-auto"}`}>
       <div
         role="img"
         aria-label={descripcion}
@@ -63,7 +63,7 @@ export default function DonutChart({ labels, valores, colores, etiquetasValor, v
   }
 
   return (
-    <div className="flex items-center gap-5">
+    <div className="flex items-center gap-5 print:flex-col print:items-stretch print:gap-2">
       {dona}
       {leyenda}
     </div>

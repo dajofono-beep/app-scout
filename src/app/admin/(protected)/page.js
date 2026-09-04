@@ -236,7 +236,7 @@ export default async function AdminDashboardPage({ searchParams }) {
             !ramaSeleccionada ? "ring-2 ring-sky-500" : ""
           }`}
         >
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 print:flex-col print:items-start print:gap-1">
             <img
               src="/Dashboard/Miembros Totales.png"
               alt=""

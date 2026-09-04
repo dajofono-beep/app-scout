@@ -25,11 +25,11 @@ export default function CobranzaMensualCard({ mesesCompletos }) {
         <select
           value={cantidad}
           onChange={(e) => setCantidad(Number(e.target.value))}
-          className="text-xs font-semibold text-slate-600 border border-slate-200 rounded-full px-2 py-1"
+          className="text-xs font-semibold text-slate-600 border border-slate-200 rounded-full px-2 py-1 shrink-0"
         >
-          <option value={3}>Últimos 3 meses</option>
-          <option value={6}>Últimos 6 meses</option>
-          <option value={10}>Últimos 10 meses</option>
+          <option value={3}>3 meses</option>
+          <option value={6}>6 meses</option>
+          <option value={10}>10 meses</option>
         </select>
       </div>
       <CobranzaMensualChart meses={meses} />
