@@ -235,3 +235,8 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - La barra lateral del panel de administración ahora tiene de fondo una imagen de montañas con la marca Azimut, con un velo blanco semitransparente encima para que el menú se siga leyendo bien.
 - El ícono y el nombre del administrador se movieron a la derecha de la barra.
 - La pantalla principal quedó con un celeste plano simple (`sky-100`). Se probaron varias formas de que el color de fondo de la pantalla principal se fundiera con la imagen de la barra lateral (degradé fijo, degradé calculado a partir de la imagen, un difuminado de la propia imagen como transición) pero ninguna terminó de verse bien — queda pendiente retomarlo más adelante.
+
+## 2026-09-03 — Corrección: acreditación automática de pagos por fecha equivocada
+
+- Corregido un bug: la regla de "se acredita solo a los 4 días" contaba esos días desde la fecha de pago elegida por la familia (que se puede cargar retroactiva), en vez de contar desde el momento real en que se registró el pago. Un pago en efectivo o transferencia cargado con una fecha de 4-5 días atrás quedaba acreditado al instante, sin pasar por el período de revisión.
+- Se corrigió para contar siempre desde el momento real de carga (`created_at`), sin importar qué fecha de pago se haya indicado.
