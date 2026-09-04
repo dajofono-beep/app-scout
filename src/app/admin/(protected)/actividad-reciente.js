@@ -31,7 +31,14 @@ export default function ActividadReciente({ movimientos }) {
   return (
     <div className="bg-white rounded-2xl shadow-sm p-5">
       <div className="flex items-center justify-between gap-3 mb-3">
-        <p className="text-sm font-bold text-sky-700">Actividad reciente</p>
+        <div className="flex items-center gap-2">
+          <img
+            src="/Dashboard/Actividad reciente.png"
+            alt=""
+            className="w-7 h-7 object-contain"
+          />
+          <p className="text-sm font-bold text-sky-700">Actividad reciente</p>
+        </div>
         <select
           value={cantidad}
           onChange={(e) => setCantidad(Number(e.target.value))}

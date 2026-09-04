@@ -232,7 +232,14 @@ export default async function AdminDashboardPage({ searchParams }) {
             !ramaSeleccionada ? "ring-2 ring-sky-500" : ""
           }`}
         >
-          <p className="text-sm font-bold text-sky-700">Miembros totales</p>
+          <div className="flex items-center gap-2">
+            <img
+              src="/Dashboard/Miembros Totales.png"
+              alt=""
+              className="w-7 h-7 object-contain"
+            />
+            <p className="text-sm font-bold text-sky-700">Miembros totales</p>
+          </div>
           <p className="text-3xl font-bold text-slate-800">{totalMiembros}</p>
           {diferenciaMiembros !== 0 && (
             <p
@@ -247,7 +254,14 @@ export default async function AdminDashboardPage({ searchParams }) {
         </Link>
 
         <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2">
-          <p className="text-sm font-bold text-sky-700 mb-3">Participación por rama</p>
+          <div className="flex items-center gap-2 mb-3">
+            <img
+              src="/Dashboard/Participación por rama.png"
+              alt=""
+              className="w-7 h-7 object-contain"
+            />
+            <p className="text-sm font-bold text-sky-700">Participación por rama</p>
+          </div>
           <DonutChart
             labels={porRama.map((r) => r.nombre)}
             valores={porRama.map((r) => r.cantidad)}
@@ -257,7 +271,14 @@ export default async function AdminDashboardPage({ searchParams }) {
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-3">
-          <p className="text-sm font-bold text-sky-700 mb-3">Filtrar por rama</p>
+          <div className="flex items-center gap-2 mb-3">
+            <img
+              src="/Dashboard/Filtrar por rama.png"
+              alt=""
+              className="w-7 h-7 object-contain"
+            />
+            <p className="text-sm font-bold text-sky-700">Filtrar por rama</p>
+          </div>
           <div className="grid grid-cols-3 gap-2">
             <Link
               href="/admin"
@@ -299,7 +320,14 @@ export default async function AdminDashboardPage({ searchParams }) {
         </div>
         <CobranzaMensualCard mesesCompletos={cobranzaMensual} />
         <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2 h-full">
-          <p className="text-sm font-bold text-sky-700 mb-3">Medios de pago</p>
+          <div className="flex items-center gap-2 mb-3">
+            <img
+              src="/Dashboard/Medios de pago.png"
+              alt=""
+              className="w-7 h-7 object-contain"
+            />
+            <p className="text-sm font-bold text-sky-700">Medios de pago</p>
+          </div>
           <DonutChart
             vertical
             labels={acreditadoPorMedioOrdenado.map(([medio]) => medio)}
@@ -323,7 +351,14 @@ export default async function AdminDashboardPage({ searchParams }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
         <div className="bg-white rounded-2xl shadow-sm p-5">
-          <p className="text-sm font-bold text-sky-700 mb-3">Próximos vencimientos</p>
+          <div className="flex items-center gap-2 mb-3">
+            <img
+              src="/Dashboard/Próximos vencimientos.png"
+              alt=""
+              className="w-7 h-7 object-contain"
+            />
+            <p className="text-sm font-bold text-sky-700">Próximos vencimientos</p>
+          </div>
           <div className="space-y-3">
             {proximosVencimientos.map((v) => {
               const dias = Math.ceil(
@@ -357,7 +392,14 @@ export default async function AdminDashboardPage({ searchParams }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2">
-          <p className="text-sm font-bold text-sky-700 mb-3">Más deuda</p>
+          <div className="flex items-center gap-2 mb-3">
+            <img
+              src="/Dashboard/Más deuda.png"
+              alt=""
+              className="w-7 h-7 object-contain"
+            />
+            <p className="text-sm font-bold text-sky-700">Más deuda</p>
+          </div>
           <div className="space-y-2">
             {masDeuda.map((m, i) => (
               <div key={m.miembro_id} className="flex items-center gap-2 text-sm">
@@ -371,7 +413,14 @@ export default async function AdminDashboardPage({ searchParams }) {
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2">
-          <p className="text-sm font-bold text-sky-700 mb-3">Menos deuda</p>
+          <div className="flex items-center gap-2 mb-3">
+            <img
+              src="/Dashboard/Menos deuda.png"
+              alt=""
+              className="w-7 h-7 object-contain"
+            />
+            <p className="text-sm font-bold text-sky-700">Menos deuda</p>
+          </div>
           <div className="space-y-2">
             {menosDeuda.map((m, i) => (
               <div key={m.miembro_id} className="flex items-center gap-2 text-sm">
@@ -388,7 +437,14 @@ export default async function AdminDashboardPage({ searchParams }) {
 
         <div className="flex flex-col gap-4">
           <div className="bg-white rounded-2xl shadow-sm p-5">
-            <p className="text-sm font-bold text-sky-700 mb-3">Familias al día</p>
+            <div className="flex items-center gap-2 mb-3">
+              <img
+                src="/Dashboard/Familias al día.png"
+                alt=""
+                className="w-7 h-7 object-contain"
+              />
+              <p className="text-sm font-bold text-sky-700">Familias al día</p>
+            </div>
             <p className="text-2xl font-bold text-slate-800">
               {familiasAlDia}{" "}
               <span className="text-sm font-semibold text-slate-400">/ {totalFamilias}</span>
@@ -404,7 +460,14 @@ export default async function AdminDashboardPage({ searchParams }) {
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm p-5">
-            <p className="text-sm font-bold text-sky-700 mb-3">Familias con deuda</p>
+            <div className="flex items-center gap-2 mb-3">
+              <img
+                src="/Dashboard/Familias con deuda.png"
+                alt=""
+                className="w-7 h-7 object-contain"
+              />
+              <p className="text-sm font-bold text-sky-700">Familias con deuda</p>
+            </div>
             <p className="text-2xl font-bold text-slate-800">
               {familiasConDeuda}{" "}
               <span className="text-sm font-semibold text-slate-400">/ {totalFamilias}</span>

@@ -21,7 +21,14 @@ export default function SituacionCobranza({ totalAcreditado, totalPendiente, tot
   return (
     <div className="bg-white rounded-2xl shadow-sm p-5 h-full flex flex-col">
       <div className="flex items-start justify-between gap-3 mb-3">
-        <p className="text-sm font-bold text-sky-700">Situación de cobranza</p>
+        <div className="flex items-center gap-2">
+          <img
+            src="/Dashboard/Situación de cobranza.png"
+            alt=""
+            className="w-7 h-7 object-contain"
+          />
+          <p className="text-sm font-bold text-sky-700">Situación de cobranza</p>
+        </div>
         <p className="text-xs text-slate-400 text-right shrink-0">
           Total a pagar
           <span className="block font-bold text-slate-700 text-sm">

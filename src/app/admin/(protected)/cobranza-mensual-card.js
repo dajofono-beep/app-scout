@@ -14,7 +14,14 @@ export default function CobranzaMensualCard({ mesesCompletos }) {
   return (
     <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-3 h-full">
       <div className="flex items-center justify-between gap-3 mb-3">
-        <p className="text-sm font-bold text-sky-700">Cobranza mensual</p>
+        <div className="flex items-center gap-2">
+          <img
+            src="/Dashboard/Cobranza mensual.png"
+            alt=""
+            className="w-7 h-7 object-contain"
+          />
+          <p className="text-sm font-bold text-sky-700">Cobranza mensual</p>
+        </div>
         <select
           value={cantidad}
           onChange={(e) => setCantidad(Number(e.target.value))}

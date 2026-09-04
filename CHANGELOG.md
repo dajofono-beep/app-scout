@@ -240,3 +240,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 
 - Corregido un bug: la regla de "se acredita solo a los 4 días" contaba esos días desde la fecha de pago elegida por la familia (que se puede cargar retroactiva), en vez de contar desde el momento real en que se registró el pago. Un pago en efectivo o transferencia cargado con una fecha de 4-5 días atrás quedaba acreditado al instante, sin pasar por el período de revisión.
 - Se corrigió para contar siempre desde el momento real de carga (`created_at`), sin importar qué fecha de pago se haya indicado.
+
+## 2026-09-04 — Íconos en las tarjetas del Resumen (admin)
+
+- Se agregó un ícono junto al título de cada una de las tarjetas del dashboard "Resumen": Miembros totales, Participación por rama, Filtrar por rama, Situación de cobranza, Cobranza mensual, Medios de pago, Próximos vencimientos, Actividad reciente, Más deuda, Menos deuda, Familias al día y Familias con deuda.
