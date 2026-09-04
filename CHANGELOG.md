@@ -251,3 +251,8 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - Se armaron estilos de impresión en tamaño A4: se ocultan el menú lateral, la barra superior mobile y el propio botón; las tarjetas mantienen la misma distribución en columnas que se ve en pantalla (sin esto, al imprimir se apilaban en una sola columna); se fuerza la impresión de los colores de fondo (donas, barra de situación de cobranza) que los navegadores omiten por defecto para ahorrar tinta.
 - Si la sección "Más información" está desplegada al momento de imprimir, sale incluida en el PDF; si está oculta, no sale (se imprime lo mismo que se ve en pantalla).
 - Ajustes para que ninguna tarjeta se vea rota al imprimir en las columnas angostas: la leyenda de las donas (ej. "Participación por rama") pasa a mostrarse debajo de la dona en vez de al lado, el título de "Miembros totales" se apila con el ícono arriba en vez de al lado, y el filtro de "Cobranza mensual" pasa de "Últimos 3 meses" a "3 meses" para no pisarse con el título.
+
+## 2026-09-04 — Paginación en el listado de Miembros
+
+- Se agregó un selector "25 por página / 50 por página / Todos" (25 por defecto) y un pie de tabla con "Mostrando X de Y miembros" + botones Anterior/Siguiente.
+- Cambiar cualquier otro filtro (nombre, DNI, rama, familia, estado) vuelve automáticamente a la página 1, pero conserva el tamaño de página elegido.

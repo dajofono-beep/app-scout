@@ -2,6 +2,8 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import ImportarMiembrosForm from "./importar-form";
 import FiltrosMiembros from "./filtros";
+import SelectorPorPagina from "./selector-por-pagina";
+import PaginacionFooter from "./paginacion-footer";
 import { iniciales, colorParaRama } from "./avatar";
 
 export default async function MiembrosPage({ searchParams }) {
@@ -14,6 +16,9 @@ export default async function MiembrosPage({ searchParams }) {
     activo: params?.activo ?? "",
   };
   const hayFiltros = Object.values(valores).some(Boolean);
+
+  const porPagina = params?.porPagina ?? "25";
+  const paginaParam = Number(params?.pagina ?? "1");
 
   const supabase = await createClient();
 
@@ -44,6 +49,18 @@ export default async function MiembrosPage({ searchParams }) {
 
   const { data: miembros } = await query;
 
+  const total = (miembros ?? []).length;
+  const totalPaginas =
+    porPagina === "todos" ? 1 : Math.max(1, Math.ceil(total / Number(porPagina)));
+  const paginaActual = Math.min(Math.max(paginaParam, 1), totalPaginas);
+  const miembrosPagina =
+    porPagina === "todos"
+      ? miembros ?? []
+      : (miembros ?? []).slice(
+          (paginaActual - 1) * Number(porPagina),
+          paginaActual * Number(porPagina)
+        );
+
   return (
     <div className="max-w-6xl">
       <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
@@ -57,6 +74,7 @@ export default async function MiembrosPage({ searchParams }) {
               Limpiar filtros
             </Link>
           )}
+          <SelectorPorPagina valores={valores} porPagina={porPagina} />
           <Link
             href="/admin/miembros/nuevo"
             className="bg-sky-600 text-white rounded-full px-4 py-2 text-sm font-bold"
@@ -90,10 +108,11 @@ export default async function MiembrosPage({ searchParams }) {
               ramas={ramas ?? []}
               familias={familias ?? []}
               valores={valores}
+              porPagina={porPagina}
             />
           </thead>
           <tbody>
-            {(miembros ?? []).map((m) => (
+            {miembrosPagina.map((m) => (
               <tr key={m.id} className="border-b last:border-0 hover:bg-slate-50">
                 <td className="p-3">
                   <Link
@@ -142,10 +161,20 @@ export default async function MiembrosPage({ searchParams }) {
             ))}
           </tbody>
         </table>
-        {(miembros ?? []).length === 0 && (
+        {total === 0 && (
           <p className="text-slate-500 text-sm p-4">
             No hay miembros para este filtro.
           </p>
+        )}
+        {total > 0 && (
+          <PaginacionFooter
+            valores={valores}
+            porPagina={porPagina}
+            paginaActual={paginaActual}
+            totalPaginas={totalPaginas}
+            total={total}
+            cantidadEnPagina={miembrosPagina.length}
+          />
         )}
       </div>
     </div>

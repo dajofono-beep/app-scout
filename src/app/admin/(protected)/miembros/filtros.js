@@ -2,15 +2,18 @@
 
 import { useRouter } from "next/navigation";
 
-export default function FiltrosMiembros({ ramas, familias, valores }) {
+export default function FiltrosMiembros({ ramas, familias, valores, porPagina }) {
   const router = useRouter();
 
+  // Cambiar un filtro vuelve siempre a la página 1 (no se incluye
+  // `pagina` acá a propósito), pero conserva el tamaño de página elegido.
   function actualizar(cambios) {
     const nuevos = { ...valores, ...cambios };
     const params = new URLSearchParams();
     for (const [clave, valor] of Object.entries(nuevos)) {
       if (valor) params.set(clave, valor);
     }
+    if (porPagina && porPagina !== "25") params.set("porPagina", porPagina);
     const query = params.toString();
     router.push(query ? `/admin/miembros?${query}` : "/admin/miembros");
   }
