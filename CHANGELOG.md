@@ -229,3 +229,9 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 
 - Los títulos de todas las tarjetas del dashboard pasaron de gris a celeste (`sky-700`), y la dona de "Medios de pago" ahora usa distintos tonos de azul en vez de mezclar colores — los colores que indican estado (verde/ámbar/rojo en deuda, familias al día, etc.) se dejaron sin tocar a propósito, porque ahí el color transmite información real.
 - **Cobranza mensual** ahora tiene su propio desplegable para elegir ver los últimos 3 (por defecto), 6 o 10 meses. Se corrigió en el camino un bug: el gráfico cambiaba de alto según la cantidad de meses elegida (por estar armado con un `viewBox` que se escalaba proporcionalmente al ancho) — ahora el ancho crece en píxeles fijos por mes y el alto queda siempre constante, apareciendo scroll horizontal solo cuando hace falta.
+
+## 2026-09-03 — Barra lateral del admin con imagen de fondo
+
+- La barra lateral del panel de administración ahora tiene de fondo una imagen de montañas con la marca Azimut, con un velo blanco semitransparente encima para que el menú se siga leyendo bien.
+- El ícono y el nombre del administrador se movieron a la derecha de la barra.
+- La pantalla principal quedó con un celeste plano simple (`sky-100`). Se probaron varias formas de que el color de fondo de la pantalla principal se fundiera con la imagen de la barra lateral (degradé fijo, degradé calculado a partir de la imagen, un difuminado de la propia imagen como transición) pero ninguna terminó de verse bien — queda pendiente retomarlo más adelante.
