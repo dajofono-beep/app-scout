@@ -256,3 +256,8 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 
 - Se agregó un selector "25 por página / 50 por página / Todos" (25 por defecto) y un pie de tabla con "Mostrando X de Y miembros" + botones Anterior/Siguiente.
 - Cambiar cualquier otro filtro (nombre, DNI, rama, familia, estado) vuelve automáticamente a la página 1, pero conserva el tamaño de página elegido.
+
+## 2026-09-04 — Paginación en el listado de Pagos
+
+- Misma lógica que en Miembros: selector "25 por página / 50 por página / Todos" (25 por defecto) y pie de tabla con "Mostrando X de Y pagos" + Anterior/Siguiente, conservando los filtros.
+- Se encontró y sacó un límite fijo de 100 resultados que tenía la consulta (sin aviso ni relación con la paginación); ahora "Todos" trae realmente todos los pagos.

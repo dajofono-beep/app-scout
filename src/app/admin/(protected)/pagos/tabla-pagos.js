@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { confirmarPago, confirmarPagos } from "./actions";
 import FiltrosPagos from "./filtros";
+import PaginacionFooter from "./paginacion-footer";
 import { iniciales, colorPara } from "../miembros/avatar";
 
 const ETIQUETA_ESTADO = {
@@ -15,7 +16,14 @@ const ETIQUETA_ESTADO = {
 const formatoMoneda = (n) =>
   Number(n).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
 
-export default function TablaPagos({ pagos, valores }) {
+export default function TablaPagos({
+  pagos,
+  valores,
+  porPagina,
+  paginaActual,
+  totalPaginas,
+  total,
+}) {
   const [seleccionados, setSeleccionados] = useState(() => new Set());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -95,7 +103,7 @@ export default function TablaPagos({ pagos, valores }) {
               <th className="p-3 font-bold">Estado</th>
               <th className="p-3"></th>
             </tr>
-            <FiltrosPagos valores={valores} />
+            <FiltrosPagos valores={valores} porPagina={porPagina} />
           </thead>
           <tbody>
             {pagos.map((p) => (
@@ -155,10 +163,20 @@ export default function TablaPagos({ pagos, valores }) {
             ))}
           </tbody>
         </table>
-        {pagos.length === 0 && (
+        {total === 0 && (
           <p className="text-slate-500 text-sm p-4">
             No hay pagos para este filtro.
           </p>
+        )}
+        {total > 0 && (
+          <PaginacionFooter
+            valores={valores}
+            porPagina={porPagina}
+            paginaActual={paginaActual}
+            totalPaginas={totalPaginas}
+            total={total}
+            cantidadEnPagina={pagos.length}
+          />
         )}
       </div>
     </div>
