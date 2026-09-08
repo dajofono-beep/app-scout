@@ -76,7 +76,7 @@ export default function FiltrosMiembros({ ramas, familias, valores, porPagina })
           onChange={(e) => actualizar({ activo: e.target.value })}
           className="border border-slate-200 rounded-lg px-3 py-1.5 text-sm w-full"
         >
-          <option value="">Todos</option>
+          <option value="todos">Todos</option>
           <option value="activos">Activos</option>
           <option value="inactivos">Inactivos</option>
         </select>

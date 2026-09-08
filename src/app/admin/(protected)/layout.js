@@ -2,17 +2,9 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import LogoutButton from "./logout-button";
-import NavAdminGroup from "./nav-admin-group";
+import NavGroup from "./nav-group";
 import BarraAdmin from "./barra-admin";
-
-const NAV_ITEMS = [
-  { href: "/admin", label: "Resumen" },
-  { href: "/admin/miembros", label: "Miembros" },
-  { href: "/admin/pagos", label: "Pagos" },
-  { href: "/admin/cargos", label: "Cargos" },
-  { href: "/admin/productos", label: "Conceptos" },
-  { href: "/admin/exportar", label: "Exportar" },
-];
+import { NAV_ITEMS, ITEMS_COMUNICACION, ITEMS_ADMINISTRACION } from "./nav-items";
 
 export default async function AdminLayout({ children }) {
   const supabase = await createClient();
@@ -68,7 +60,8 @@ export default async function AdminLayout({ children }) {
               </Link>
             ))}
 
-            <NavAdminGroup />
+            <NavGroup titulo="Comunicación" items={ITEMS_COMUNICACION} />
+            <NavGroup titulo="Administración" items={ITEMS_ADMINISTRACION} />
           </div>
           <LogoutButton />
         </div>

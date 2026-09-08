@@ -25,7 +25,7 @@ export default async function FechasImportantesPage({ searchParams }) {
   const { data: fechasImportantes } = await query;
 
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-3xl">
       <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
         <h1 className="text-2xl font-bold">Fechas importantes</h1>
         <div className="flex items-center gap-3">
@@ -71,7 +71,7 @@ export default async function FechasImportantesPage({ searchParams }) {
                 </td>
                 <td className="p-3">
                   <span
-                    className={`text-xs px-2 py-1 rounded-full ${ETIQUETA_TIPO[f.tipo]?.clase ?? "bg-slate-100 text-slate-500"}`}
+                    className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${ETIQUETA_TIPO[f.tipo]?.clase ?? "bg-slate-100 text-slate-500"}`}
                   >
                     {ETIQUETA_TIPO[f.tipo]?.texto ?? f.tipo}
                   </span>

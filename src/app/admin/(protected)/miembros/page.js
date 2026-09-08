@@ -13,9 +13,11 @@ export default async function MiembrosPage({ searchParams }) {
     dni: params?.dni ?? "",
     rama_id: params?.rama_id ?? "",
     familia_id: params?.familia_id ?? "",
-    activo: params?.activo ?? "",
+    activo: params?.activo ?? "activos",
   };
-  const hayFiltros = Object.values(valores).some(Boolean);
+  const hayFiltros =
+    Boolean(valores.nombre || valores.dni || valores.rama_id || valores.familia_id) ||
+    valores.activo !== "activos";
 
   const porPagina = params?.porPagina ?? "25";
   const paginaParam = Number(params?.pagina ?? "1");

@@ -3,16 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import LogoutButton from "./logout-button";
-import NavAdminGroup from "./nav-admin-group";
-
-const NAV_ITEMS = [
-  { href: "/admin", label: "Resumen" },
-  { href: "/admin/miembros", label: "Miembros" },
-  { href: "/admin/pagos", label: "Pagos" },
-  { href: "/admin/cargos", label: "Cargos" },
-  { href: "/admin/productos", label: "Conceptos" },
-  { href: "/admin/exportar", label: "Exportar" },
-];
+import NavGroup from "./nav-group";
+import { NAV_ITEMS, ITEMS_COMUNICACION, ITEMS_ADMINISTRACION } from "./nav-items";
 
 function IconoMenu({ className }) {
   return (
@@ -74,7 +66,8 @@ export default function BarraAdmin({ nombreAdmin }) {
                 {item.label}
               </Link>
             ))}
-            <NavAdminGroup />
+            <NavGroup titulo="Comunicación" items={ITEMS_COMUNICACION} />
+            <NavGroup titulo="Administración" items={ITEMS_ADMINISTRACION} />
             <LogoutButton />
           </div>
         </div>

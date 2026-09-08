@@ -2,6 +2,8 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { crearCargoManual } from "./actions";
 import FiltrosCargos from "./filtros";
+import SelectorPorPagina from "./selector-por-pagina";
+import PaginacionFooter from "./paginacion-footer";
 import AsignarCargoForm from "./asignar-cargo-form";
 import CancelarCargosForm from "./cancelar-cargos-form";
 import { formatoMoneda } from "./utils";
@@ -18,6 +20,9 @@ export default async function CargosPage({ searchParams }) {
     estado: params?.estado ?? "activo",
   };
   const hayFiltros = Boolean(valoresFiltro.miembro) || valoresFiltro.estado !== "activo";
+
+  const porPagina = params?.porPagina ?? "25";
+  const paginaParam = Number(params?.pagina ?? "1");
 
   const supabase = await createClient();
 
@@ -52,8 +57,7 @@ export default async function CargosPage({ searchParams }) {
   let cargosQuery = supabase
     .from("cargos")
     .select("*, miembros(id, nombre, apellido, rama_id)")
-    .order("fecha", { ascending: false })
-    .limit(100);
+    .order("fecha", { ascending: false });
 
   if (miembroIds) cargosQuery = cargosQuery.in("miembro_id", miembroIds);
   if (valoresFiltro.estado && valoresFiltro.estado !== "todos") {
@@ -61,6 +65,18 @@ export default async function CargosPage({ searchParams }) {
   }
 
   const { data: cargos } = await cargosQuery;
+
+  const totalCargos = (cargos ?? []).length;
+  const totalPaginas =
+    porPagina === "todos" ? 1 : Math.max(1, Math.ceil(totalCargos / Number(porPagina)));
+  const paginaActual = Math.min(Math.max(paginaParam, 1), totalPaginas);
+  const cargosPagina =
+    porPagina === "todos"
+      ? cargos ?? []
+      : (cargos ?? []).slice(
+          (paginaActual - 1) * Number(porPagina),
+          paginaActual * Number(porPagina)
+        );
 
   const sinDatos = (ramas ?? []).length === 0 || (productos ?? []).length === 0;
 
@@ -122,16 +138,19 @@ export default async function CargosPage({ searchParams }) {
       </section>
 
       <section>
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-3 gap-3 flex-wrap">
           <h2 className="font-bold">Cargos</h2>
-          {hayFiltros && (
-            <Link
-              href="/admin/cargos"
-              className="text-sm text-slate-500 font-semibold"
-            >
-              Limpiar filtros
-            </Link>
-          )}
+          <div className="flex items-center gap-3">
+            {hayFiltros && (
+              <Link
+                href="/admin/cargos"
+                className="text-sm text-slate-500 font-semibold"
+              >
+                Limpiar filtros
+              </Link>
+            )}
+            <SelectorPorPagina valores={valoresFiltro} porPagina={porPagina} />
+          </div>
         </div>
 
         <div className="overflow-x-auto bg-white rounded-2xl shadow-sm">
@@ -146,10 +165,10 @@ export default async function CargosPage({ searchParams }) {
                 <th className="p-3 font-bold">Estado</th>
                 <th className="p-3"></th>
               </tr>
-              <FiltrosCargos valores={valoresFiltro} />
+              <FiltrosCargos valores={valoresFiltro} porPagina={porPagina} />
             </thead>
             <tbody>
-              {(cargos ?? []).map((c) => (
+              {cargosPagina.map((c) => (
                 <tr key={c.id} className="border-b last:border-0 hover:bg-slate-50">
                   <td className="p-3">
                     <Link
@@ -200,10 +219,20 @@ export default async function CargosPage({ searchParams }) {
               ))}
             </tbody>
           </table>
-          {(cargos ?? []).length === 0 && (
+          {totalCargos === 0 && (
             <p className="text-slate-500 text-sm p-4">
               No hay cargos para este filtro.
             </p>
+          )}
+          {totalCargos > 0 && (
+            <PaginacionFooter
+              valores={valoresFiltro}
+              porPagina={porPagina}
+              paginaActual={paginaActual}
+              totalPaginas={totalPaginas}
+              total={totalCargos}
+              cantidadEnPagina={cargosPagina.length}
+            />
           )}
         </div>
       </section>

@@ -4,20 +4,12 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const ITEMS = [
-  { href: "/admin/familias", label: "Hermanos" },
-  { href: "/admin/descuentos", label: "Descuentos" },
-  { href: "/admin/ramas", label: "Ramas" },
-  { href: "/admin/fechas-importantes", label: "Fechas importantes" },
-  { href: "/admin/mensajes", label: "Mensajes" },
-  { href: "/admin/grupos-padres", label: "Grupos de Padres" },
-  { href: "/admin/medios-pago", label: "Medios de Pago" },
-  { href: "/admin/administradores", label: "Administradores" },
-];
-
-export default function NavAdminGroup() {
+// Grupo de links colapsable para el menú del admin (usado para
+// "Comunicación" y "Administración"). Arranca abierto si la página
+// actual pertenece al grupo.
+export default function NavGroup({ titulo, items }) {
   const pathname = usePathname();
-  const activo = ITEMS.some((item) => pathname.startsWith(item.href));
+  const activo = items.some((item) => pathname.startsWith(item.href));
   const [abierto, setAbierto] = useState(activo);
 
   return (
@@ -27,7 +19,7 @@ export default function NavAdminGroup() {
         onClick={() => setAbierto((v) => !v)}
         className="flex items-center justify-between w-full text-xs font-bold text-slate-400 uppercase tracking-wide mb-1"
       >
-        <span>Administración</span>
+        <span>{titulo}</span>
         <span
           className={`inline-block transition-transform ${abierto ? "rotate-90" : ""}`}
         >
@@ -36,7 +28,7 @@ export default function NavAdminGroup() {
       </button>
       {abierto && (
         <div className="flex flex-col gap-1 md:pl-2">
-          {ITEMS.map((item) => (
+          {items.map((item) => (
             <Link
               key={item.href}
               href={item.href}

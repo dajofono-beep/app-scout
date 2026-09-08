@@ -46,7 +46,7 @@ export default async function MensajesPage() {
   }
 
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-3xl">
       <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
         <h1 className="text-2xl font-bold">Mensajes</h1>
         <Link
@@ -80,7 +80,7 @@ export default async function MensajesPage() {
                   </Link>
                 </td>
                 <td className="p-3 text-slate-600">{etiquetaDestinatario(m)}</td>
-                <td className="p-3 text-slate-600">
+                <td className="p-3 text-slate-600 whitespace-nowrap">
                   {formatoVigencia(m.fecha_inicio, m.fecha_fin)}
                 </td>
                 <td className="p-3">

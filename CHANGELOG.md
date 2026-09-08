@@ -261,3 +261,10 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 
 - Misma lógica que en Miembros: selector "25 por página / 50 por página / Todos" (25 por defecto) y pie de tabla con "Mostrando X de Y pagos" + Anterior/Siguiente, conservando los filtros.
 - Se encontró y sacó un límite fijo de 100 resultados que tenía la consulta (sin aviso ni relación con la paginación); ahora "Todos" trae realmente todos los pagos.
+
+## 2026-09-08 — Paginación en Cargos, filtro por defecto y sección Comunicación
+
+- El filtro de estado en Miembros ahora arranca en "Activos" por defecto (antes mostraba todos); sigue pudiéndose cambiar a "Todos" o "Inactivos".
+- Se agregó paginación al listado de Cargos con la misma lógica que Miembros y Pagos: selector "25 por página / 50 por página / Todos" (25 por defecto) en la misma línea que el título "Cargos", y pie de tabla con Anterior/Siguiente. Se sacó otro límite fijo de 100 resultados que tenía esta consulta.
+- Se creó una nueva sección colapsable "Comunicación" en el menú del admin (arriba de "Administración", en escritorio y mobile), con Mensajes, Grupos de Padres y Fechas importantes — se sacaron de "Administración".
+- Ajustes visuales menores: la etiqueta "Fecha scout" en Fechas importantes y el rango de fechas en "Vigencia" de Mensajes ya no cortan en dos líneas; se ensancharon un poco esas dos tarjetas para que entren cómodas.
