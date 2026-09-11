@@ -17,7 +17,7 @@ export default function NavGroup({ titulo, items }) {
       <button
         type="button"
         onClick={() => setAbierto((v) => !v)}
-        className="flex items-center justify-between w-full text-xs font-bold text-slate-400 uppercase tracking-wide mb-1"
+        className="flex items-center justify-between w-full text-xs font-bold text-slate-900 [filter:drop-shadow(0_1px_2px_rgba(255,255,255,0.9))] uppercase tracking-wide mb-1 transition hover:[filter:drop-shadow(0_0_6px_rgba(14,165,233,0.9))]"
       >
         <span>{titulo}</span>
         <span
@@ -33,7 +33,7 @@ export default function NavGroup({ titulo, items }) {
               key={item.href}
               href={item.href}
               prefetch={false}
-              className="text-sm font-semibold text-slate-600 hover:text-sky-600"
+              className="text-sm font-semibold text-slate-900 [filter:drop-shadow(0_1px_2px_rgba(255,255,255,0.9))] rounded-lg px-2 py-1 -mx-2 transition hover:[filter:drop-shadow(0_0_6px_rgba(14,165,233,0.9))]"
             >
               {item.label}
             </Link>

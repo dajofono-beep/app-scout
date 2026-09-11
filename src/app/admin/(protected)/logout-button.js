@@ -23,7 +23,7 @@ export default function LogoutButton() {
       <button
         type="button"
         onClick={() => setConfirmando(true)}
-        className="text-xs font-semibold text-slate-500 border border-slate-200 rounded-full px-3 py-1.5 hover:text-slate-700 hover:border-slate-300"
+        className="text-xs font-semibold text-slate-900 [filter:drop-shadow(0_1px_2px_rgba(255,255,255,0.9))] border border-white/60 rounded-full px-3 py-1.5 transition hover:[filter:drop-shadow(0_0_6px_rgba(14,165,233,0.9))]"
       >
         Cerrar sesión
       </button>

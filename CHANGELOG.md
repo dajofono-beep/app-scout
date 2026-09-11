@@ -268,3 +268,8 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - Se agregó paginación al listado de Cargos con la misma lógica que Miembros y Pagos: selector "25 por página / 50 por página / Todos" (25 por defecto) en la misma línea que el título "Cargos", y pie de tabla con Anterior/Siguiente. Se sacó otro límite fijo de 100 resultados que tenía esta consulta.
 - Se creó una nueva sección colapsable "Comunicación" en el menú del admin (arriba de "Administración", en escritorio y mobile), con Mensajes, Grupos de Padres y Fechas importantes — se sacaron de "Administración".
 - Ajustes visuales menores: la etiqueta "Fecha scout" en Fechas importantes y el rango de fechas en "Vigencia" de Mensajes ya no cortan en dos líneas; se ensancharon un poco esas dos tarjetas para que entren cómodas.
+
+## 2026-09-11 — Ajustes de la imagen de fondo del menú lateral
+
+- Se reemplazó la imagen de fondo de la barra lateral por una versión de colores sólidos (sin degradé) y se sacó el velo blanco que la atenuaba, para que combine mejor con el celeste del resto del panel.
+- Las opciones del menú (Comunicación, Administración, Cerrar sesión) ahora se ven en texto negro con una sombra clara detrás, para que se lean bien tanto sobre la parte clara de la imagen como sobre la montaña oscura. Al pasar el mouse, se resaltan con una sombra celeste.

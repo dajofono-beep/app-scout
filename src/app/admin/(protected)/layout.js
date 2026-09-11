@@ -38,7 +38,6 @@ export default async function AdminLayout({ children }) {
           backgroundPosition: "top left",
         }}
       >
-        <div className="absolute inset-0 bg-white/70" />
         <div className="relative flex flex-col gap-3 p-4 flex-1">
           <div className="flex items-center justify-end gap-2 md:mb-2">
             <p className="text-sm text-slate-400">Hola, {admin.nombre}</p>
@@ -54,7 +53,7 @@ export default async function AdminLayout({ children }) {
                 key={item.href}
                 href={item.href}
                 prefetch={false}
-                className="text-sm font-semibold text-slate-600 hover:text-sky-600"
+                className="text-sm font-semibold text-slate-900 [filter:drop-shadow(0_1px_2px_rgba(255,255,255,0.9))] rounded-lg px-2 py-1 -mx-2 transition hover:[filter:drop-shadow(0_0_6px_rgba(14,165,233,0.9))]"
               >
                 {item.label}
               </Link>
