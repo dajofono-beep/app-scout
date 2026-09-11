@@ -40,6 +40,7 @@ export async function crearAdministrador(formData) {
   const nombre = formData.get("nombre")?.toString().trim();
   const email = formData.get("email")?.toString().trim();
   const password = formData.get("password")?.toString();
+  const recibe_notificaciones_pagos = formData.get("recibe_notificaciones_pagos") === "on";
 
   if (!nombre) return { ok: false, error: "Elegí un miembro de la lista" };
   if (!email) return { ok: false, error: "El email es obligatorio" };
@@ -63,7 +64,11 @@ export async function crearAdministrador(formData) {
 
   const { error } = await admin
     .from("administradores")
-    .insert({ auth_user_id: nuevoUsuario.user.id, nombre });
+    .insert({
+      auth_user_id: nuevoUsuario.user.id,
+      nombre,
+      recibe_notificaciones_pagos,
+    });
   if (error) {
     // Si falla el alta en `administradores`, deshacer el usuario recién
     // creado para no dejar una cuenta huérfana sin ningún acceso.
@@ -81,6 +86,7 @@ export async function actualizarAdministrador(formData) {
   const auth_user_id = formData.get("auth_user_id")?.toString();
   const nombre = formData.get("nombre")?.toString().trim();
   const nuevaPassword = formData.get("nueva_password")?.toString().trim();
+  const recibe_notificaciones_pagos = formData.get("recibe_notificaciones_pagos") === "on";
 
   if (!auth_user_id) return { ok: false, error: "Falta el administrador" };
   if (!nombre) return { ok: false, error: "Elegí un miembro de la lista" };
@@ -92,7 +98,7 @@ export async function actualizarAdministrador(formData) {
 
   const { error } = await admin
     .from("administradores")
-    .update({ nombre })
+    .update({ nombre, recibe_notificaciones_pagos })
     .eq("auth_user_id", auth_user_id);
   if (error) return { ok: false, error: error.message };
 

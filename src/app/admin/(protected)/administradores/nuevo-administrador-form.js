@@ -91,6 +91,11 @@ export default function NuevoAdministradorForm({ miembros }) {
         />
       </div>
 
+      <label className="flex items-center gap-2 text-sm">
+        <input type="checkbox" name="recibe_notificaciones_pagos" defaultChecked />
+        Recibir notificaciones de pagos por mail
+      </label>
+
       {error && <p className="text-sm text-red-500 font-semibold">{error}</p>}
 
       <button

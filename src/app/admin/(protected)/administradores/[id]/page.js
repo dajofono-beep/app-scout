@@ -15,7 +15,7 @@ export default async function FichaAdministradorPage({ params }) {
   const admin = createAdminClient();
   const { data: administrador } = await admin
     .from("administradores")
-    .select("auth_user_id, nombre")
+    .select("auth_user_id, nombre, recibe_notificaciones_pagos")
     .eq("auth_user_id", id)
     .maybeSingle();
   if (!administrador) notFound();

@@ -1,5 +1,6 @@
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { notificarPagoAAdmins } from "@/lib/email/notificar-pago";
 
 // Mercado Pago avisa acá cuando cambia el estado de un pago. Nunca hay
 // que confiar en los datos que manda el aviso en sí (podrían falsificarse):
@@ -94,6 +95,12 @@ export async function POST(request) {
     }
     return new Response("ok", { status: 200 });
   }
+
+  await notificarPagoAAdmins({
+    partes: datosPago.partes,
+    medioPago: "Mercado Pago",
+    origen: "mercadopago",
+  });
 
   revalidatePath("/mi-cuenta");
   revalidatePath("/admin");

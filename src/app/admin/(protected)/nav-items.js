@@ -18,5 +18,6 @@ export const ITEMS_ADMINISTRACION = [
   { href: "/admin/descuentos", label: "Descuentos" },
   { href: "/admin/ramas", label: "Ramas" },
   { href: "/admin/medios-pago", label: "Medios de Pago" },
+  { href: "/admin/notificaciones-pagos", label: "Notificaciones Pagos" },
   { href: "/admin/administradores", label: "Administradores" },
 ];

@@ -273,3 +273,10 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 
 - Se reemplazó la imagen de fondo de la barra lateral por una versión de colores sólidos (sin degradé) y se sacó el velo blanco que la atenuaba, para que combine mejor con el celeste del resto del panel.
 - Las opciones del menú (Comunicación, Administración, Cerrar sesión) ahora se ven en texto negro con una sombra clara detrás, para que se lean bien tanto sobre la parte clara de la imagen como sobre la montaña oscura. Al pasar el mouse, se resaltan con una sombra celeste.
+
+## 2026-09-11 — Aviso por mail a los administradores cuando se registra un pago
+
+- Nueva pantalla **Notificaciones Pagos** (dentro de Administración): permite cargar la cuenta de Gmail y la contraseña de aplicación que envía los avisos, y un interruptor general para activar/desactivar el envío. Si el día de mañana cambia la cuenta de correo, se actualiza ahí, sin tocar código.
+- Cada vez que se registra un pago (Efectivo, Transferencia o Mercado Pago), se manda un mail a los administradores con el detalle (miembro, importe, medio de pago) y si queda pendiente de revisión o ya se acreditó solo. Se envía por SMTP con una cuenta de Gmail del Grupo (`gs1284libertador@gmail.com`), ya que hoy no hay un dominio propio para usar un servicio de mail transaccional. Si el envío falla por lo que sea, el pago se registra igual — nunca depende del mail.
+- Se agregó un checkbox **"Recibir notificaciones de pagos por mail"** al alta y a la edición de un administrador (tildado por defecto), para que cada uno pueda optar por no recibir estos avisos.
+- Probado en producción: el primer mail cayó en Spam (esperable en una cuenta que recién empieza a mandar correos automáticos) — se corrige marcándolo como "no es spam" desde el mail recibido.

@@ -82,6 +82,15 @@ export default function EditarAdministradorForm({ administrador, miembros }) {
         <CampoPassword name="confirmar_password" minLength={6} autoComplete="new-password" />
       </div>
 
+      <label className="flex items-center gap-2 text-sm">
+        <input
+          type="checkbox"
+          name="recibe_notificaciones_pagos"
+          defaultChecked={administrador.recibe_notificaciones_pagos ?? true}
+        />
+        Recibir notificaciones de pagos por mail
+      </label>
+
       {error && <p className="text-sm text-red-500 font-semibold">{error}</p>}
 
       <button

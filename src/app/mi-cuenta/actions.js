@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { subirComprobante } from "@/lib/supabase/comprobantes";
+import { notificarPagoAAdmins } from "@/lib/email/notificar-pago";
 
 // Reparte un importe en N partes de 2 decimales; la última parte absorbe
 // el resto del redondeo para que la suma dé exacto al importe original.
@@ -99,6 +100,12 @@ export async function crearPago(formData) {
       return { ok: false, error: err.message };
     }
 
+    await notificarPagoAAdmins({
+      partes: pagos.map((p) => ({ miembro_id: p.miembro_id, importe: p.importe })),
+      medioPago: medio_pago || "—",
+      origen: "manual",
+    });
+
     revalidatePath("/mi-cuenta");
     return { ok: true };
   }
@@ -125,6 +132,12 @@ export async function crearPago(formData) {
     await createAdminClient().from("pagos").delete().eq("id", pago.id);
     return { ok: false, error: err.message };
   }
+
+  await notificarPagoAAdmins({
+    partes: [{ miembro_id: pago.miembro_id, importe: pago.importe }],
+    medioPago: medio_pago || "—",
+    origen: "manual",
+  });
 
   revalidatePath("/mi-cuenta");
   return { ok: true };
