@@ -33,6 +33,15 @@ export default function NotificacionesPagosForm({ config }) {
       className="bg-white rounded-2xl shadow-sm p-5 space-y-4"
     >
       <div>
+        <h2 className="font-bold">Notificaciones Pagos</h2>
+        <p className="text-sm text-slate-500 mt-1">
+          Cuando una familia registra un pago, se manda un mail de aviso a los
+          administradores que tengan activado &quot;Recibir notificaciones de
+          pagos&quot; en su ficha (sección Administradores).
+        </p>
+      </div>
+
+      <div>
         <label className="block text-sm font-semibold text-slate-600 mb-1">
           Cuenta de Gmail que envía los avisos
         </label>

@@ -280,3 +280,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - Cada vez que se registra un pago (Efectivo, Transferencia o Mercado Pago), se manda un mail a los administradores con el detalle (miembro, importe, medio de pago) y si queda pendiente de revisión o ya se acreditó solo. Se envía por SMTP con una cuenta de Gmail del Grupo (`gs1284libertador@gmail.com`), ya que hoy no hay un dominio propio para usar un servicio de mail transaccional. Si el envío falla por lo que sea, el pago se registra igual — nunca depende del mail.
 - Se agregó un checkbox **"Recibir notificaciones de pagos por mail"** al alta y a la edición de un administrador (tildado por defecto), para que cada uno pueda optar por no recibir estos avisos.
 - Probado en producción: el primer mail cayó en Spam (esperable en una cuenta que recién empieza a mandar correos automáticos) — se corrige marcándolo como "no es spam" desde el mail recibido.
+
+## 2026-09-11 — Notificaciones Pagos pasa a ser parte de Medios de Pago
+
+- Se sacó "Notificaciones Pagos" del menú como pantalla propia y ahora es una tarjeta más dentro de Medios de Pago, debajo de los interruptores de medios habilitados.

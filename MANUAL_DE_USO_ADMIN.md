@@ -111,20 +111,18 @@ ABM de las ramas del Grupo (Manada, Unidad Scout, Caminantes, Rovers, Adultos), 
 
 Interruptores para elegir qué medios de pago pueden usar las familias al cargar un pago (Efectivo, Transferencia, Mercado Pago). Desde acá, **Configurar →** en Mercado Pago lleva a cargar el titular de referencia, las credenciales (de prueba y de producción, nunca se muestran a las familias) y el ambiente activo (Prueba/Producción).
 
-### 9.5 Notificaciones Pagos
-
-Configura el aviso por mail que se manda a los administradores cada vez que una familia registra un pago (Efectivo, Transferencia o Mercado Pago) — con el detalle de miembro, importe, medio de pago, y si queda pendiente de revisión o ya se acreditó solo.
+Debajo, la tarjeta **Notificaciones Pagos** configura el aviso por mail que se manda a los administradores cada vez que una familia registra un pago — con el detalle de miembro, importe, medio de pago, y si queda pendiente de revisión o ya se acreditó solo.
 
 - **Cuenta de Gmail que envía los avisos** y su **contraseña de aplicación** (no es la contraseña normal de esa cuenta — se genera desde la cuenta de Google en Seguridad → Verificación en dos pasos → Contraseñas de aplicaciones). Si el día de mañana cambia la cuenta de correo del Grupo, se actualiza acá.
 - Interruptor **"Enviar los avisos por mail"** para activar o desactivar el envío sin perder la configuración cargada — los pagos se siguen registrando igual, esté activado o no.
-- Qué administradores reciben estos avisos se define individualmente en cada ficha (ver 9.6).
+- Qué administradores reciben estos avisos se define individualmente en cada ficha (ver 9.5).
 - Si el primer mail cae en la carpeta de Spam del destinatario, alcanza con marcarlo como "no es spam" — es esperable en una cuenta que recién empieza a mandar correos automáticos.
 
-### 9.6 Administradores
+### 9.5 Administradores
 
 ABM de quiénes pueden entrar al panel de administración.
 
-- **+ Nuevo administrador**: se elige el nombre de una lista de miembros activos del Grupo, más email y contraseña (con confirmación), y el checkbox **"Recibir notificaciones de pagos por mail"** (tildado por defecto — ver 9.5).
+- **+ Nuevo administrador**: se elige el nombre de una lista de miembros activos del Grupo, más email y contraseña (con confirmación), y el checkbox **"Recibir notificaciones de pagos por mail"** (tildado por defecto — ver 9.4).
 - Se puede editar o quitar un administrador existente (no se puede quitar a uno mismo ni dejar el Grupo sin ningún administrador). Desde la edición también se puede destildar el checkbox de notificaciones si alguien no quiere recibirlas.
 - Quitar un administrador solo borra su acceso al panel — si hace falta borrar la cuenta por completo, se hace aparte desde Supabase.
 
