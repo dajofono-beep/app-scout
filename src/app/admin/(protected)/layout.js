@@ -1,10 +1,6 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import LogoutButton from "./logout-button";
-import NavGroup from "./nav-group";
-import BarraAdmin from "./barra-admin";
-import { NAV_ITEMS, ITEMS_COMUNICACION, ITEMS_ADMINISTRACION } from "./nav-items";
+import BarraLateral from "./barra-lateral";
 
 export default async function AdminLayout({ children }) {
   const supabase = await createClient();
@@ -28,44 +24,9 @@ export default async function AdminLayout({ children }) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-sky-100 to-sky-50">
-      <BarraAdmin nombreAdmin={admin.nombre} />
-      <nav
-        className="hidden md:flex print:hidden md:w-56 shrink-0 md:border-r border-sky-100 md:flex-col relative overflow-hidden"
-        style={{
-          backgroundImage: "url('/fondo-sidebar.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "top left",
-        }}
-      >
-        <div className="relative flex flex-col gap-3 p-4 flex-1">
-          <div className="flex items-center justify-end gap-2 md:mb-2">
-            <p className="text-sm text-slate-400">Hola, {admin.nombre}</p>
-            <img
-              src="/icono-azimut.png"
-              alt="Azimut"
-              className="w-9 h-9 rounded-lg shrink-0"
-            />
-          </div>
-          <div className="flex flex-wrap md:flex-col gap-2 md:gap-1 flex-1">
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                prefetch={false}
-                className="text-sm font-semibold text-slate-900 [filter:drop-shadow(0_1px_2px_rgba(255,255,255,0.9))] rounded-lg px-2 py-1 -mx-2 transition hover:[filter:drop-shadow(0_0_6px_rgba(14,165,233,0.9))]"
-              >
-                {item.label}
-              </Link>
-            ))}
-
-            <NavGroup titulo="Comunicación" items={ITEMS_COMUNICACION} />
-            <NavGroup titulo="Administración" items={ITEMS_ADMINISTRACION} />
-          </div>
-          <LogoutButton />
-        </div>
-      </nav>
-      <main className="flex-1 p-4 md:p-8 print:p-0 bg-sky-100 print:bg-white">
+    <div className="min-h-screen flex bg-gradient-to-br from-sky-100 to-sky-50">
+      <BarraLateral nombreAdmin={admin.nombre} />
+      <main className="flex-1 min-w-0 p-4 md:p-8 print:p-0 bg-sky-100 print:bg-white">
         {children}
       </main>
     </div>

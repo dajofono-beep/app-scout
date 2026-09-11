@@ -11,6 +11,8 @@ Guía rápida para los administradores del Grupo Scout Libertador San Martín. C
 
 El acceso lo da otro administrador desde la sección **Administradores** (ver sección 9.5) — no hay registro propio.
 
+Una vez adentro, el menú de la izquierda tiene un ícono para cada sección. Tocando el ícono de Azimut (arriba de todo, junto a tu nombre) se minimiza o expande todo el menú, para dejar más lugar a la pantalla principal — minimizado se ven solo los íconos, y pasando el mouse por encima aparece el nombre de la sección. Desde el celular, el menú arranca minimizado por defecto.
+
 ## 2. Resumen
 
 Es la pantalla principal al ingresar. Muestra de un vistazo el estado del Grupo:

@@ -284,3 +284,10 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-09-11 — Notificaciones Pagos pasa a ser parte de Medios de Pago
 
 - Se sacó "Notificaciones Pagos" del menú como pantalla propia y ahora es una tarjeta más dentro de Medios de Pago, debajo de los interruptores de medios habilitados.
+
+## 2026-09-11 — Barra lateral del admin con íconos, minimizable
+
+- Se unificó la barra lateral de escritorio y el menú de celular (antes eran dos componentes distintos: un menú fijo en escritorio y una barra superior con hamburguesa en celular) en una sola barra lateral, presente en cualquier tamaño de pantalla.
+- Se agregó un ícono al lado de cada ítem del menú (Resumen, Miembros, Pagos, Cargos, Conceptos, Exportar, Comunicación, Administración).
+- Tocando el ícono de Azimut (ahora a la izquierda, con el nombre del administrador al lado) se minimiza/expande toda la barra: minimizada solo se ven los íconos, con el nombre de cada sección como tooltip al pasar el mouse.
+- En celular arranca minimizada por defecto, para no robarle espacio a la pantalla principal.

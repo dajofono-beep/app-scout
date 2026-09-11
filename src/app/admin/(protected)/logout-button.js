@@ -4,7 +4,25 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export default function LogoutButton() {
+function IconoSalir({ className }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <polyline points="16 17 21 12 16 7" />
+      <line x1="21" y1="12" x2="9" y2="12" />
+    </svg>
+  );
+}
+
+export default function LogoutButton({ colapsado = false }) {
   const router = useRouter();
   const [confirmando, setConfirmando] = useState(false);
 
@@ -23,9 +41,12 @@ export default function LogoutButton() {
       <button
         type="button"
         onClick={() => setConfirmando(true)}
-        className="text-xs font-semibold text-slate-900 [filter:drop-shadow(0_1px_2px_rgba(255,255,255,0.9))] border border-white/60 rounded-full px-3 py-1.5 transition hover:[filter:drop-shadow(0_0_6px_rgba(14,165,233,0.9))]"
+        title="Cerrar sesión"
+        className={`text-xs font-semibold text-slate-900 [filter:drop-shadow(0_1px_2px_rgba(255,255,255,0.9))] border border-white/60 rounded-full transition hover:[filter:drop-shadow(0_0_6px_rgba(14,165,233,0.9))] ${
+          colapsado ? "w-9 h-9 flex items-center justify-center mx-auto" : "px-3 py-1.5"
+        }`}
       >
-        Cerrar sesión
+        {colapsado ? <IconoSalir className="w-4 h-4" /> : "Cerrar sesión"}
       </button>
 
       {confirmando && (
