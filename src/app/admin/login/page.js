@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { ingresarAdmin } from "./actions";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -16,16 +16,12 @@ export default function AdminLoginPage() {
     setLoading(true);
     setError(null);
 
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const resultado = await ingresarAdmin(email, password);
 
     setLoading(false);
 
-    if (error) {
-      setError("Email o contraseña incorrectos.");
+    if (!resultado.ok) {
+      setError(resultado.error);
       return;
     }
 

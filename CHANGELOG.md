@@ -292,3 +292,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - Tocando el ícono de Azimut (ahora a la izquierda, con el nombre del administrador al lado) se minimiza/expande toda la barra: minimizada solo se ven los íconos, con el nombre de cada sección como tooltip al pasar el mouse.
 - En celular arranca minimizada por defecto, para no robarle espacio a la pantalla principal.
 - Con la barra minimizada, tocar el ícono de Comunicación o Administración abre un menú flotante al lado con las opciones de ese grupo (se cierra tocando afuera o eligiendo una opción). Se corrigió en el camino un bug: el primer intento cerraba el menú flotante antes de que el clic en una opción llegara a navegar, porque el detector de "clic afuera" no distinguía un clic dentro del propio menú flotante.
+
+## 2026-09-14 — Límite de intentos de ingreso para administradores
+
+- El login de administrador ahora bloquea el email por 3 minutos después de 3 intentos fallidos seguidos, mismo mecanismo que ya tenía el login familiar (ahí son 5 intentos y 5 minutos). El login pasó a resolverse en el servidor (antes se hacía directo desde el navegador) para poder llevar la cuenta de intentos de forma confiable.
