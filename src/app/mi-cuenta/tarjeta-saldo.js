@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const formatoMoneda = (n) =>
   Number(n).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
@@ -27,23 +27,63 @@ export default function TarjetaSaldo({
 }) {
   const [abierto, setAbierto] = useState(false);
 
+  // Cada vez que la tarjeta vuelve a hacerse visible (al entrar a
+  // Principal desde otra sección, o al cargar la página), cada valor
+  // hace un ligero movimiento descendente. Se detecta con un
+  // IntersectionObserver en vez de un prop, porque esta tarjeta queda
+  // montada todo el tiempo (las secciones de Mi Cuenta no se
+  // desmontan al cambiar de pestaña). `generacion` cambia en cada
+  // aparición y se usa como `key` de los valores para forzar que
+  // React los vuelva a montar — así la animación CSS se repite.
+  const [generacion, setGeneracion] = useState(0);
+  const seccionRef = useRef(null);
+
+  useEffect(() => {
+    const elemento = seccionRef.current;
+    if (!elemento) return;
+
+    const observador = new IntersectionObserver(
+      ([entrada]) => {
+        if (entrada.isIntersecting) setGeneracion((g) => g + 1);
+      },
+      { threshold: 0 }
+    );
+
+    observador.observe(elemento);
+    return () => observador.disconnect();
+  }, []);
+
   return (
-    <section className="bg-gradient-to-br from-sky-600 to-sky-400 text-white rounded-3xl shadow-md p-5">
+    <section
+      ref={seccionRef}
+      className="bg-gradient-to-br from-sky-600 to-sky-400 text-white rounded-3xl shadow-md p-5"
+    >
       <p className="text-sm text-white/90">
         {esFamiliaConVarios ? "Saldo total entre hermanos" : "Saldo actual"}
       </p>
-      <p className="text-3xl font-bold">{formatoMoneda(saldoTotal)}</p>
+      <p key={`total-${generacion}`} className="text-3xl font-bold valor-animado">
+        {formatoMoneda(saldoTotal)}
+      </p>
       <div className="flex gap-4 mt-3 text-xs text-white/80">
         <span>
-          Deuda total <span className="font-bold text-white">{formatoMoneda(totalCargos)}</span>
+          Deuda total{" "}
+          <span key={`deuda-${generacion}`} className="font-bold text-white valor-animado">
+            {formatoMoneda(totalCargos)}
+          </span>
         </span>
         <span>
-          Total Pagos <span className="font-bold text-white">{formatoMoneda(pagosRealizados)}</span>
+          Total Pagos{" "}
+          <span key={`pagos-${generacion}`} className="font-bold text-white valor-animado">
+            {formatoMoneda(pagosRealizados)}
+          </span>
         </span>
       </div>
       {pendienteTotal > 0 && (
         <p className="text-xs bg-white/20 rounded-full px-3 py-1 inline-block mt-2">
-          {formatoMoneda(pendienteTotal)} en pagos pendientes de acreditar
+          <span key={`pendiente-${generacion}`} className="valor-animado">
+            {formatoMoneda(pendienteTotal)}
+          </span>{" "}
+          en pagos pendientes de acreditar
         </p>
       )}
 
@@ -52,7 +92,9 @@ export default function TarjetaSaldo({
           {saldosOrdenados.map((s) => (
             <div key={s.miembro_id} className="flex justify-between text-sm">
               <span className="text-white/85">{nombrePorId[s.miembro_id]}</span>
-              <span className="font-bold">{formatoMoneda(s.saldo)}</span>
+              <span key={`${s.miembro_id}-${generacion}`} className="font-bold valor-animado">
+                {formatoMoneda(s.saldo)}
+              </span>
             </div>
           ))}
         </div>
