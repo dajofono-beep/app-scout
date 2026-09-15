@@ -231,12 +231,13 @@ export default function MovimientosPanel({
   function renderMovimientos(lista, mensajeVacio) {
     return (
       <section className="space-y-2.5">
-        {lista.map((m) => {
+        {lista.map((m, i) => {
           const estilo = estiloMovimiento(m);
           return (
             <div
               key={m.id}
-              className="bg-white rounded-2xl shadow-sm p-4 flex items-center gap-3"
+              className="movimiento-animado bg-white rounded-2xl shadow-sm p-4 flex items-center gap-3"
+              style={{ animationDelay: `${Math.min(i, 12) * 40}ms` }}
             >
               <span
                 className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${estilo.iconoClase}`}

@@ -30,7 +30,9 @@ export default function MovimientosTabs({ panelListado, panelCobertura, panelDet
         ))}
       </div>
 
-      <div className={vista === "listado" ? "" : "hidden"}>{panelListado}</div>
+      <div className={vista === "listado" ? "" : "hidden"}>
+        {vista === "listado" && panelListado}
+      </div>
       <div className={vista === "cobertura" ? "" : "hidden"}>
         {cloneElement(panelCobertura, { activo: vista === "cobertura" })}
       </div>

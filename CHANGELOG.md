@@ -305,3 +305,4 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 
 - La torta de "Detalle de cargos" ahora se dibuja con un barrido animado (como un reloj) cada vez que se entra a esa solapa, en vez de aparecer directo con todas las porciones ya dibujadas.
 - Las dos barras de "Pagos/Cargos" (cargos y pagos) ahora crecen juntas desde vacías hasta su tamaño real al entrar a esa solapa, para mostrar movimiento. El resto (la guía de fecha, los montos y el control deslizante) sigue funcionando igual, sin animación.
+- Cada movimiento de la solapa "Listado" cae desde arriba en cascada al entrar a la sección, uno detrás del otro con un pequeño retraso escalonado, en vez de aparecer todos de golpe. Como contrapartida, el filtro interno (Todos/Cargos/Pagos) vuelve a "Todos" cada vez que se reingresa a la solapa.
