@@ -318,3 +318,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 
 - Al guardar cambios de Perfil (foto, teléfono, redes sociales) o cambiar la contraseña desde ahí, un error real quedaba escondido detrás del mensaje genérico de Next.js en producción ("An error occurred in the Server Components render..."), en vez de mostrar el motivo real. Se corrigió con el mismo patrón ya usado en el resto de la app (las acciones devuelven el error en vez de lanzarlo).
 - Se probó de nuevo y no tiraba error, pero la foto tampoco se veía actualizada — la causa real era otra: la pantalla no le pedía a Next.js que refresque los datos después de guardar (se quedaba mostrando la foto vieja hasta recargar a mano), y además cada foto se guardaba con el mismo nombre de archivo, así que el navegador podía seguir mostrando la versión en caché aunque el archivo ya hubiera cambiado. Se corrigieron las dos cosas.
+
+## 2026-09-15 — Foto de perfil ampliable
+
+- Tocando la foto de perfil (en la barra superior mobile, en la barra lateral de escritorio, o en la ficha de un miembro dentro del buscador de Social) la imagen viaja animada hasta el centro de la pantalla y se agranda para verse completa, con un fondo oscuro detrás. Tocando cualquier parte fuera de la foto ampliada, vuelve a achicarse a su lugar original. No funciona sobre el logo de relleno que se muestra cuando alguien todavía no cargó una foto propia.

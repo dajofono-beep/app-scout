@@ -59,7 +59,9 @@ Ahí aparecen los avisos que manda el Grupo — generales, para tu rama, para tu
 
 ## 7. Social
 
-Calendario con los **cumpleaños** de la rama y las **fechas importantes** del Grupo (campamentos, salidas, reuniones), cada una con su ícono según el tipo de evento.
+Calendario con los **cumpleaños** de la rama y las **fechas importantes** del Grupo (campamentos, salidas, reuniones), cada una con su ícono según el tipo de evento. Con la lupa se puede buscar a cualquier miembro del Grupo por nombre o filtrar por rama, y ver su ficha (cumpleaños, teléfono, redes sociales y foto, si las cargó).
+
+Tocando la foto de perfil de cualquier miembro (acá, en Perfil, o en la barra superior/lateral con tu propia foto), se agranda animada al centro de la pantalla — tocando afuera, vuelve a achicarse.
 
 ## 8. Descargas
 

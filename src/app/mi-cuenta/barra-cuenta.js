@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import LogoutButton from "./logout-button";
+import FotoPerfilZoom from "./foto-perfil-zoom";
 
 const ITEMS = [
   { id: "principal", texto: "Principal" },
@@ -65,9 +66,9 @@ export default function BarraCuenta({
             <p className="font-bold text-slate-800 leading-tight">{nombreCompleto}</p>
             <p className="text-sm text-slate-400 leading-tight">{ramaNombre}</p>
           </div>
-          <img
-            src={fotoUrl || "/icono-azimut.png"}
-            alt={fotoUrl ? nombreCompleto : "Azimut"}
+          <FotoPerfilZoom
+            fotoUrl={fotoUrl}
+            nombreCompleto={nombreCompleto}
             className="w-10 h-10 rounded-xl shrink-0 object-cover"
           />
         </div>

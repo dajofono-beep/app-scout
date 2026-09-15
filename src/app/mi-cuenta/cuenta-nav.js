@@ -7,6 +7,7 @@ import Descargas from "./descargas";
 import Consultas from "./consultas";
 import TituloSeccion from "./titulo-seccion";
 import BarraCuenta from "./barra-cuenta";
+import FotoPerfilZoom from "./foto-perfil-zoom";
 
 const ITEMS = [
   { id: "principal", texto: "Principal" },
@@ -117,9 +118,9 @@ export default function CuentaNav({
       <nav className="shrink-0 bg-white md:border-r border-sky-100 md:w-56 md:p-4 flex flex-col md:gap-3">
         {/* Barra lateral en desktop: sin cambios */}
         <div className="hidden md:flex items-center gap-3 md:mb-2">
-          <img
-            src={fotoUrl || "/icono-azimut.png"}
-            alt={fotoUrl ? nombreCompleto : "Azimut"}
+          <FotoPerfilZoom
+            fotoUrl={fotoUrl}
+            nombreCompleto={nombreCompleto}
             className="w-10 h-10 rounded-xl shrink-0 object-cover"
           />
           <div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import FotoPerfilZoom from "./foto-perfil-zoom";
 
 const MESES = [
   "enero",
@@ -129,9 +130,9 @@ export default function BuscadorMiembros({ directorio, ramas }) {
                   ← Volver a la búsqueda
                 </button>
                 <div className="text-center">
-                  <img
-                    src={seleccionado.fotoUrl || "/icono-azimut.png"}
-                    alt={seleccionado.nombre}
+                  <FotoPerfilZoom
+                    fotoUrl={seleccionado.fotoUrl}
+                    nombreCompleto={seleccionado.nombre}
                     className="w-24 h-24 rounded-full object-cover mx-auto mb-3"
                   />
                   <p className="font-bold text-lg text-slate-800">{seleccionado.nombre}</p>
