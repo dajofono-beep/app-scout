@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { cloneElement, useState } from "react";
 
 const BOTONES = [
   { id: "listado", texto: "Listado" },
@@ -31,9 +31,13 @@ export default function MovimientosTabs({ panelListado, panelCobertura, panelDet
       </div>
 
       <div className={vista === "listado" ? "" : "hidden"}>{panelListado}</div>
-      <div className={vista === "cobertura" ? "" : "hidden"}>{panelCobertura}</div>
+      <div className={vista === "cobertura" ? "" : "hidden"}>
+        {cloneElement(panelCobertura, { activo: vista === "cobertura" })}
+      </div>
       <div className={vista === "detalle" ? "" : "hidden"}>
-        <div className="bg-white rounded-2xl shadow-sm p-5">{panelDetalle}</div>
+        <div className="bg-white rounded-2xl shadow-sm p-5">
+          {cloneElement(panelDetalle, { activo: vista === "detalle" })}
+        </div>
       </div>
     </div>
   );

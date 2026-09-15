@@ -300,3 +300,8 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-09-14 — Menú mobile de Mi Cuenta como cajón deslizable
 
 - El menú del celular en Mi Cuenta pasó de ser un panel que empujaba la pantalla hacia abajo a un cajón que se desliza desde la izquierda por encima de todo el contenido, con un fondo oscuro detrás que lo cierra al tocar cualquier parte de la pantalla.
+
+## 2026-09-14 — Animaciones en los gráficos de Movimientos
+
+- La torta de "Detalle de cargos" ahora se dibuja con un barrido animado (como un reloj) cada vez que se entra a esa solapa, en vez de aparecer directo con todas las porciones ya dibujadas.
+- Las dos barras de "Pagos/Cargos" (cargos y pagos) ahora crecen juntas desde vacías hasta su tamaño real al entrar a esa solapa, para mostrar movimiento. El resto (la guía de fecha, los montos y el control deslizante) sigue funcionando igual, sin animación.

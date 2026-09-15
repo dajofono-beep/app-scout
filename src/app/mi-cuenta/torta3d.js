@@ -1,24 +1,61 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
 const formatoMoneda = (n) =>
   Number(n).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
 
+const DURACION_MS = 900;
+const facilitarSalida = (t) => 1 - Math.pow(1 - t, 3);
+
 // Torta "3D" hecha con dos círculos apilados (uno oscurecido y desplazado
-// para simular el lateral) más un conic-gradient. No requiere JS ni canvas.
-export default function Torta3D({ titulo, labels, valores, colores }) {
+// para simular el lateral) más un conic-gradient. No requiere JS ni canvas
+// para dibujarse, pero sí para el barrido animado: `progreso` va de 0 a 1
+// y escala dónde termina cada porción, dejando el resto sin dibujar (con
+// un relleno neutro) hasta que le toca su turno — así cada cargo "crece"
+// hasta su tamaño final en vez de aparecer directo. Se reinicia cada vez
+// que `activo` pasa a true (por ejemplo, al volver a esta solapa).
+export default function Torta3D({ titulo, labels, valores, colores, activo = true }) {
   const total = valores.reduce((a, b) => a + b, 0);
+  const [progreso, setProgreso] = useState(0);
+  const frameRef = useRef(null);
+
+  useEffect(() => {
+    if (!activo || total <= 0) {
+      setProgreso(activo ? 0 : 1);
+      return;
+    }
+
+    setProgreso(0);
+    const inicio = performance.now();
+
+    function animar(ahora) {
+      const t = Math.min(1, (ahora - inicio) / DURACION_MS);
+      setProgreso(facilitarSalida(t));
+      if (t < 1) frameRef.current = requestAnimationFrame(animar);
+    }
+    frameRef.current = requestAnimationFrame(animar);
+
+    return () => {
+      if (frameRef.current) cancelAnimationFrame(frameRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activo, total]);
 
   if (total <= 0) {
     return <p className="text-gray-500 text-sm">Todavía no hay datos para mostrar.</p>;
   }
 
   let acumulado = 0;
-  const gradiente = `conic-gradient(${valores
-    .map((v, i) => {
-      const inicio = (acumulado / total) * 100;
-      acumulado += v;
-      const fin = (acumulado / total) * 100;
-      return `${colores[i]} ${inicio}% ${fin}%`;
-    })
-    .join(", ")})`;
+  const paradas = valores.map((v, i) => {
+    const inicio = (acumulado / total) * 100;
+    acumulado += v;
+    const fin = (acumulado / total) * 100;
+    return { color: colores[i], inicio: inicio * progreso, fin: fin * progreso };
+  });
+  const gradiente = `conic-gradient(${paradas
+    .map((p) => `${p.color} ${p.inicio}% ${p.fin}%`)
+    .join(", ")}, #f8fafc ${100 * progreso}% 100%)`;
 
   const descripcion = labels
     .map(

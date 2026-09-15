@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const MESES_LARGO = [
   "enero",
@@ -19,6 +19,9 @@ const MESES_LARGO = [
 
 const formatoMoneda = (n) =>
   Number(n).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
+
+const DURACION_MS = 900;
+const facilitarSalida = (t) => 1 - Math.pow(1 - t, 3);
 
 function formatoFecha(iso) {
   const [, mes, dia] = iso.split("-").map(Number);
@@ -47,9 +50,38 @@ export default function LineaTiempoPagos({
   pagosLinea,
   pagosRealizados,
   hoyIso,
+  activo = true,
 }) {
   const pasoInicial = conceptos.filter((c) => c.fechaOrden <= hoyIso).length;
   const [paso, setPaso] = useState(pasoInicial);
+
+  // Barrido de crecimiento de las barras cada vez que `activo` pasa a
+  // true (por ejemplo, al volver a esta solapa) — no afecta el resto
+  // de los datos (guía, montos, slider), que siguen siendo los reales.
+  const [progreso, setProgreso] = useState(0);
+  const frameRef = useRef(null);
+
+  useEffect(() => {
+    if (!activo || totalCargos <= 0) {
+      setProgreso(activo ? 0 : 1);
+      return;
+    }
+
+    setProgreso(0);
+    const inicio = performance.now();
+
+    function animar(ahora) {
+      const t = Math.min(1, (ahora - inicio) / DURACION_MS);
+      setProgreso(facilitarSalida(t));
+      if (t < 1) frameRef.current = requestAnimationFrame(animar);
+    }
+    frameRef.current = requestAnimationFrame(animar);
+
+    return () => {
+      if (frameRef.current) cancelAnimationFrame(frameRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activo, totalCargos]);
 
   if (totalCargos <= 0) {
     return (
@@ -129,7 +161,7 @@ export default function LineaTiempoPagos({
               key={s.label}
               title={`Vence el ${formatoFecha(s.fechaOrden)}\n${s.label} · ${formatoMoneda(s.importe)}`}
               style={{
-                width: `${s.fin - s.inicio}%`,
+                width: `${(s.fin - s.inicio) * progreso}%`,
                 background: colorPorConcepto[s.label] ?? "#94a3b8",
               }}
             />
@@ -169,7 +201,7 @@ export default function LineaTiempoPagos({
                 <div
                   key={s.label}
                   title={`${s.fechas}\n${s.label} · ${formatoMoneda(s.importe)}`}
-                  style={{ width: `${s.fin - s.inicio}%`, background: s.color }}
+                  style={{ width: `${(s.fin - s.inicio) * progreso}%`, background: s.color }}
                 />
               )
           )}
