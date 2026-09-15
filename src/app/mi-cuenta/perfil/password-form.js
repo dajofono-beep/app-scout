@@ -31,12 +31,16 @@ export default function PasswordForm() {
     formData.set("confirmacion", confirmacion);
 
     try {
-      await actualizarContrasena(formData);
+      const resultado = await actualizarContrasena(formData);
+      if (!resultado.ok) {
+        setError(resultado.error);
+        return;
+      }
       setOk(true);
       setPassword("");
       setConfirmacion("");
-    } catch (err) {
-      setError(err.message);
+    } catch {
+      setError("Ocurrió un error inesperado. Intentá de nuevo.");
     } finally {
       setLoading(false);
     }

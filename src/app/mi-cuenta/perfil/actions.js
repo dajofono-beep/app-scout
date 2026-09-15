@@ -22,6 +22,13 @@ async function requireMiembro() {
   return { supabase, miembroId: miembro.id };
 }
 
+// Devuelven { ok: true } o { ok: false, error } en vez de tirar una
+// excepción: Next.js borra el mensaje de cualquier error lanzado con
+// `throw` desde un Server Action en producción (queda un mensaje
+// genérico tipo "An error occurred in the Server Components render"),
+// así que un valor de retorno normal es la única forma de que el
+// motivo real (p. ej. "La foto debe ser JPG, PNG o WEBP") llegue tal
+// cual al formulario.
 export async function actualizarPerfil(formData) {
   const { supabase, miembroId } = await requireMiembro();
 
@@ -39,20 +46,25 @@ export async function actualizarPerfil(formData) {
     red_social_3,
     updated_at: new Date().toISOString(),
   });
-  if (error) throw new Error(error.message);
+  if (error) return { ok: false, error: error.message };
 
   if (foto && typeof foto !== "string" && foto.size > 0) {
     const admin = createAdminClient();
-    const url = await subirFotoPerfil(admin, miembroId, foto);
-    const { error: updateError } = await admin
-      .from("perfiles")
-      .update({ foto_url: url })
-      .eq("miembro_id", miembroId);
-    if (updateError) throw new Error(updateError.message);
+    try {
+      const url = await subirFotoPerfil(admin, miembroId, foto);
+      const { error: updateError } = await admin
+        .from("perfiles")
+        .update({ foto_url: url })
+        .eq("miembro_id", miembroId);
+      if (updateError) return { ok: false, error: updateError.message };
+    } catch (err) {
+      return { ok: false, error: err.message };
+    }
   }
 
   revalidatePath("/mi-cuenta/perfil");
   revalidatePath("/mi-cuenta");
+  return { ok: true };
 }
 
 export async function actualizarContrasena(formData) {
@@ -62,12 +74,14 @@ export async function actualizarContrasena(formData) {
   const confirmacion = formData.get("confirmacion")?.toString();
 
   if (!password || password.length < 6) {
-    throw new Error("La contraseña debe tener al menos 6 caracteres.");
+    return { ok: false, error: "La contraseña debe tener al menos 6 caracteres." };
   }
   if (password !== confirmacion) {
-    throw new Error("Las contraseñas no coinciden.");
+    return { ok: false, error: "Las contraseñas no coinciden." };
   }
 
   const { error } = await supabase.auth.updateUser({ password });
-  if (error) throw new Error(error.message);
+  if (error) return { ok: false, error: error.message };
+
+  return { ok: true };
 }

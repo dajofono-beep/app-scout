@@ -22,10 +22,14 @@ export default function PerfilForm({
 
     const formData = new FormData(e.currentTarget);
     try {
-      await actualizarPerfil(formData);
+      const resultado = await actualizarPerfil(formData);
+      if (!resultado.ok) {
+        setError(resultado.error);
+        return;
+      }
       setExito(true);
-    } catch (err) {
-      setError(err.message);
+    } catch {
+      setError("Ocurrió un error inesperado. Intentá de nuevo.");
     } finally {
       setLoading(false);
     }

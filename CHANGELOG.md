@@ -313,3 +313,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - Dentro de "Más información" de la tarjeta de saldo, se agregó una barra de progreso con efecto 3D (celeste, con brillo arriba y sombra abajo) que muestra el pagado vs. la deuda total, y se anima creciendo desde 0 cada vez que se abre esa sección.
 - El aviso de próximo vencimiento ahora se muestra en dos líneas: "Próximo evento: [nombre]" y "Vencimiento: [fecha]" (antes iba todo junto en una sola línea).
 - El panel de "Más información" ahora se abre y se cierra con un colapso de altura animado (como un acordeón), en vez de aparecer/desaparecer de golpe.
+
+## 2026-09-15 — Corrección: mensaje de error al actualizar el Perfil
+
+- Al guardar cambios de Perfil (foto, teléfono, redes sociales) o cambiar la contraseña desde ahí, un error real quedaba escondido detrás del mensaje genérico de Next.js en producción ("An error occurred in the Server Components render..."), en vez de mostrar el motivo real. Se corrigió con el mismo patrón ya usado en el resto de la app (las acciones devuelven el error en vez de lanzarlo). Pendiente de confirmar con quien reportó el problema cuál es la causa exacta de que falle subir la foto, ahora que el mensaje real va a ser visible.
