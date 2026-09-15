@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { actualizarPerfil } from "./actions";
 
 export default function PerfilForm({
@@ -10,6 +11,7 @@ export default function PerfilForm({
   redSocial2,
   redSocial3,
 }) {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [exito, setExito] = useState(false);
@@ -28,6 +30,11 @@ export default function PerfilForm({
         return;
       }
       setExito(true);
+      // Sin esto, la foto/datos nuevos no se ven hasta recargar la
+      // página a mano: `revalidatePath` solo invalida el caché, no
+      // fuerza a este Server Component ya montado a volver a pedir
+      // los datos.
+      router.refresh();
     } catch {
       setError("Ocurrió un error inesperado. Intentá de nuevo.");
     } finally {

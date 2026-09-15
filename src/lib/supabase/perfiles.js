@@ -21,5 +21,9 @@ export async function subirFotoPerfil(admin, miembroId, archivo) {
   if (error) throw new Error("No se pudo subir la foto: " + error.message);
 
   const { data } = admin.storage.from(BUCKET).getPublicUrl(ruta);
-  return data.publicUrl;
+  // Como el nombre de archivo es siempre el mismo por miembro (se
+  // sobrescribe con upsert), sin esto el navegador puede seguir
+  // mostrando la foto vieja en caché aunque el archivo ya haya
+  // cambiado — el parámetro fuerza a pedirla de nuevo.
+  return `${data.publicUrl}?v=${Date.now()}`;
 }
