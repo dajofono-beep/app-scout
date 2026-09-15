@@ -307,3 +307,9 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - Las dos barras de "Pagos/Cargos" (cargos y pagos) ahora crecen juntas desde vacías hasta su tamaño real al entrar a esa solapa, para mostrar movimiento. El resto (la guía de fecha, los montos y el control deslizante) sigue funcionando igual, sin animación.
 - Cada movimiento de la solapa "Listado" cae desde arriba en cascada al entrar a la sección, uno detrás del otro con un pequeño retraso escalonado, en vez de aparecer todos de golpe. Como contrapartida, el filtro interno (Todos/Cargos/Pagos) vuelve a "Todos" cada vez que se reingresa a la solapa.
 - Los valores de la tarjeta principal de saldo (saldo, deuda total, total pagos, pendiente de acreditar y el desglose por hermano) hacen un ligero movimiento descendente cada vez que la tarjeta vuelve a mostrarse (al entrar a Mi Cuenta o al volver a Principal desde otra sección).
+
+## 2026-09-15 — Barra de "Progreso de pago" en la tarjeta de saldo
+
+- Dentro de "Más información" de la tarjeta de saldo, se agregó una barra de progreso con efecto 3D (celeste, con brillo arriba y sombra abajo) que muestra el pagado vs. la deuda total, y se anima creciendo desde 0 cada vez que se abre esa sección.
+- El aviso de próximo vencimiento ahora se muestra en dos líneas: "Próximo evento: [nombre]" y "Vencimiento: [fecha]" (antes iba todo junto en una sola línea).
+- El panel de "Más información" ahora se abre y se cierra con un colapso de altura animado (como un acordeón), en vez de aparecer/desaparecer de golpe.

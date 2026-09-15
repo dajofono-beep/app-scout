@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import BarraProgreso3D from "./barra-progreso-3d";
 
 const formatoMoneda = (n) =>
   Number(n).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
@@ -26,6 +27,15 @@ export default function TarjetaSaldo({
   vencimientos,
 }) {
   const [abierto, setAbierto] = useState(false);
+  // Cuántas veces se abrió el panel — cambia solo al abrir, y se usa
+  // como `key` del contenido para forzar que se vuelva a montar (y así
+  // BarraProgreso3D repita su animación) cada vez que se abre.
+  const [aperturas, setAperturas] = useState(0);
+
+  function alternarInfo() {
+    if (!abierto) setAperturas((a) => a + 1);
+    setAbierto((v) => !v);
+  }
 
   // Cada vez que la tarjeta vuelve a hacerse visible (al entrar a
   // Principal desde otra sección, o al cargar la página), cada valor
@@ -100,45 +110,55 @@ export default function TarjetaSaldo({
         </div>
       )}
 
-      {abierto && (
-        <div className="mt-3 pt-3 border-t border-white/20 space-y-3">
-          {vencimientos.length > 0 ? (
-            vencimientos.map((v) => (
-              <div key={v.miembroId}>
-                {v.estado === "vencido" ? (
-                  <>
-                    <p className="text-xs text-white/80 mb-1">
-                      {esFamiliaConVarios ? `${v.nombreCompleto} · ` : ""}
-                      Conceptos ya vencidos sin pagar
-                    </p>
-                    <span className="inline-block rounded-full px-3 py-1 text-xs font-bold bg-amber-200 text-amber-900">
-                      {formatoMoneda(v.monto)} sin pagar — no vas a poder participar del
-                      próximo evento
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-xs text-white/80 mb-1">
-                      {esFamiliaConVarios ? `${v.nombreCompleto} · ` : ""}
-                      {v.concepto} · vence el {formatoFechaCorta(v.fecha)}
-                    </p>
-                    <span className="inline-block rounded-full px-3 py-1 text-xs font-bold bg-amber-200 text-amber-900">
-                      Sin pagar — no vas a poder participar del próximo evento
-                    </span>
-                  </>
-                )}
-              </div>
-            ))
-          ) : (
-            <span className="inline-block rounded-full px-3 py-1 text-xs font-bold bg-emerald-200 text-emerald-900">
-              Estás al día para participar del próximo evento
-            </span>
-          )}
+      <div
+        className={`grid transition-all duration-300 ease-in-out ${
+          abierto ? "grid-rows-[1fr] opacity-100 mt-3" : "grid-rows-[0fr] opacity-0"
+        }`}
+      >
+        <div className="overflow-hidden">
+          <div key={aperturas} className="pt-3 border-t border-white/20 space-y-3">
+            <BarraProgreso3D totalCargos={totalCargos} pagosRealizados={pagosRealizados} />
+            {vencimientos.length > 0 ? (
+              vencimientos.map((v) => (
+                <div key={v.miembroId}>
+                  {v.estado === "vencido" ? (
+                    <>
+                      <p className="text-xs text-white/80 mb-1">
+                        {esFamiliaConVarios ? `${v.nombreCompleto} · ` : ""}
+                        Conceptos ya vencidos sin pagar
+                      </p>
+                      <span className="inline-block rounded-full px-3 py-1 text-xs font-bold bg-amber-200 text-amber-900">
+                        {formatoMoneda(v.monto)} sin pagar — no vas a poder participar del
+                        próximo evento
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-xs text-white/80">
+                        Próximo evento: {esFamiliaConVarios ? `${v.nombreCompleto} · ` : ""}
+                        {v.concepto}
+                      </p>
+                      <p className="text-xs text-white/80 mb-1">
+                        Vencimiento: {formatoFechaCorta(v.fecha)}
+                      </p>
+                      <span className="inline-block rounded-full px-3 py-1 text-xs font-bold bg-amber-200 text-amber-900">
+                        Sin pagar — no vas a poder participar del próximo evento
+                      </span>
+                    </>
+                  )}
+                </div>
+              ))
+            ) : (
+              <span className="inline-block rounded-full px-3 py-1 text-xs font-bold bg-emerald-200 text-emerald-900">
+                Estás al día para participar del próximo evento
+              </span>
+            )}
+          </div>
         </div>
-      )}
+      </div>
       <button
         type="button"
-        onClick={() => setAbierto((v) => !v)}
+        onClick={alternarInfo}
         className="flex items-center gap-1 mt-3 text-xs font-semibold text-white/90"
       >
         {abierto ? "Ocultar" : "Más información"}
