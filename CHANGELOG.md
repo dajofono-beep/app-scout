@@ -296,3 +296,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-09-14 — Límite de intentos de ingreso para administradores
 
 - El login de administrador ahora bloquea el email por 3 minutos después de 3 intentos fallidos seguidos, mismo mecanismo que ya tenía el login familiar (ahí son 5 intentos y 5 minutos). El login pasó a resolverse en el servidor (antes se hacía directo desde el navegador) para poder llevar la cuenta de intentos de forma confiable.
+
+## 2026-09-14 — Menú mobile de Mi Cuenta como cajón deslizable
+
+- El menú del celular en Mi Cuenta pasó de ser un panel que empujaba la pantalla hacia abajo a un cajón que se desliza desde la izquierda por encima de todo el contenido, con un fondo oscuro detrás que lo cierra al tocar cualquier parte de la pantalla.

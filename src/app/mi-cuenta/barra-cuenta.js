@@ -30,6 +30,11 @@ function IconoMenu({ className }) {
 // Barra superior mobile (menú + nombre/rama), compartida entre CuentaNav
 // (donde "onSeleccionar" cambia de pestaña sin navegar) y páginas aparte
 // como Perfil (sin "onSeleccionar", los ítems navegan a /mi-cuenta).
+//
+// El menú es un cajón que se desliza desde la izquierda por encima de
+// todo el contenido (no empuja la pantalla hacia abajo como un panel
+// desplegable normal), con un fondo oscuro detrás que lo cierra al
+// tocar cualquier parte de la pantalla.
 export default function BarraCuenta({
   nombreCompleto,
   ramaNombre,
@@ -68,45 +73,55 @@ export default function BarraCuenta({
         </div>
       </div>
 
-      {menuAbierto && (
-        <div className="border-t border-sky-100 p-4">
-          <div className="flex flex-col gap-3">
-            {ITEMS.map((item) =>
-              onSeleccionar ? (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => elegir(item.id)}
-                  className={`text-left text-base font-semibold ${
-                    activa === item.id
-                      ? "text-sky-600"
-                      : "text-slate-600 hover:text-sky-600"
-                  }`}
-                >
-                  {item.texto}
-                </button>
-              ) : (
-                <Link
-                  key={item.id}
-                  href="/mi-cuenta"
-                  onClick={() => setMenuAbierto(false)}
-                  className="text-base font-semibold text-slate-600 hover:text-sky-600"
-                >
-                  {item.texto}
-                </Link>
-              )
-            )}
-            <Link
-              href="/mi-cuenta/perfil"
-              onClick={() => setMenuAbierto(false)}
-              className="text-base font-semibold text-slate-600 hover:text-sky-600"
-            >
-              Perfil
-            </Link>
-            <LogoutButton className="text-left text-base font-semibold text-slate-600 hover:text-sky-600" />
-          </div>
+      <div
+        aria-hidden={!menuAbierto}
+        onClick={() => setMenuAbierto(false)}
+        className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 ${
+          menuAbierto ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      />
+
+      <div
+        className={`fixed inset-y-0 left-0 z-50 w-72 max-w-[80vw] bg-white shadow-xl transition-transform duration-300 ease-in-out ${
+          menuAbierto ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex flex-col gap-3 p-4">
+          {ITEMS.map((item) =>
+            onSeleccionar ? (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => elegir(item.id)}
+                className={`text-left text-base font-semibold ${
+                  activa === item.id
+                    ? "text-sky-600"
+                    : "text-slate-600 hover:text-sky-600"
+                }`}
+              >
+                {item.texto}
+              </button>
+            ) : (
+              <Link
+                key={item.id}
+                href="/mi-cuenta"
+                onClick={() => setMenuAbierto(false)}
+                className="text-base font-semibold text-slate-600 hover:text-sky-600"
+              >
+                {item.texto}
+              </Link>
+            )
+          )}
+          <Link
+            href="/mi-cuenta/perfil"
+            onClick={() => setMenuAbierto(false)}
+            className="text-base font-semibold text-slate-600 hover:text-sky-600"
+          >
+            Perfil
+          </Link>
+          <LogoutButton className="text-left text-base font-semibold text-slate-600 hover:text-sky-600" />
         </div>
-      )}
+      </div>
     </div>
   );
 }
