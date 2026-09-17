@@ -1,0 +1,170 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-16T00:00:00.000Z",
+  "title": "Design System: Azimut",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Celeste Azimut",
+        "canonical": "#0284c7",
+        "tonalRamp": ["#f0f9ff", "#e0f2fe", "#bae6fd", "#7dd3fc", "#38bdf8", "#0ea5e9", "#0284c7", "#0369a1"]
+      },
+      "primary-light": {
+        "role": "primary",
+        "displayName": "Celeste Azimut Claro",
+        "canonical": "#38bdf8",
+        "tonalRamp": ["#f0f9ff", "#e0f2fe", "#bae6fd", "#7dd3fc", "#38bdf8", "#0ea5e9", "#0284c7", "#0369a1"]
+      },
+      "tertiary": {
+        "role": "tertiary",
+        "displayName": "Violeta Informativo",
+        "canonical": "#8b5cf6",
+        "tonalRamp": ["#f5f3ff", "#ede9fe", "#ddd6fe", "#c4b5fd", "#a78bfa", "#8b5cf6", "#7c3aed", "#6d28d9"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Tinta",
+        "canonical": "#1e293b",
+        "tonalRamp": ["#f8fafc", "#f1f5f9", "#e2e8f0", "#cbd5e1", "#94a3b8", "#64748b", "#475569", "#1e293b"]
+      },
+      "neutral-bg": {
+        "role": "neutral",
+        "displayName": "Gris Suave",
+        "canonical": "#f8fafc",
+        "tonalRamp": ["#f8fafc", "#f1f5f9", "#e2e8f0", "#cbd5e1", "#94a3b8", "#64748b", "#475569", "#1e293b"]
+      },
+      "warning-strong": {
+        "role": "warning",
+        "displayName": "Ámbar de Alerta",
+        "canonical": "#fde68a",
+        "tonalRamp": ["#fffbeb", "#fef3c7", "#fde68a", "#fcd34d", "#fbbf24", "#f59e0b", "#b45309", "#78350f"]
+      },
+      "success-strong": {
+        "role": "success",
+        "displayName": "Esmeralda al Día",
+        "canonical": "#a7f3d0",
+        "tonalRamp": ["#ecfdf5", "#d1fae5", "#a7f3d0", "#6ee7b7", "#34d399", "#10b981", "#047857", "#064e3b"]
+      },
+      "danger": {
+        "role": "danger",
+        "displayName": "Rojo de Error",
+        "canonical": "#ef4444",
+        "tonalRamp": ["#fef2f2", "#fee2e2", "#fecaca", "#fca5a5", "#f87171", "#ef4444", "#dc2626", "#7f1d1d"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "El monto de saldo en la tarjeta hero de Mi Cuenta." },
+      "headline": { "displayName": "Headline", "purpose": "Títulos de tarjeta y de sección." },
+      "body": { "displayName": "Body", "purpose": "Texto general, descripciones, ayuda." },
+      "label": { "displayName": "Label", "purpose": "Badges de estado, navegación colapsada, montos secundarios." }
+    },
+    "shadows": [
+      { "name": "sutil", "value": "0 1px 2px rgba(0,0,0,0.05)", "purpose": "Tarjeta de contenido estándar (shadow-sm) — separa del fondo, no eleva." },
+      { "name": "media", "value": "0 4px 6px rgba(0,0,0,0.07)", "purpose": "Tarjeta protagonista de pantalla: saldo, login (shadow-md)." },
+      { "name": "alta", "value": "0 10px 15px rgba(0,0,0,0.1)", "purpose": "Elementos flotantes puntuales: toast, disco del gráfico 3D (shadow-lg)." },
+      { "name": "maxima", "value": "0 20px 25px rgba(0,0,0,0.1)", "purpose": "Menú deslizable de celular, único panel superpuesto real (shadow-xl)." }
+    ],
+    "motion": [
+      { "name": "caer-desde-arriba", "value": "translateY(-16px) -> translateY(0), opacity 0->1, 0.4s ease-out", "purpose": "Entrada de movimientos/listas recién cargados." },
+      { "name": "descender-suave", "value": "translateY(-6px) -> translateY(0), opacity 0->1, 0.35s ease-out", "purpose": "Los valores numéricos (saldo, deuda, pagos) al reaparecer o actualizarse." }
+    ],
+    "breakpoints": [
+      { "name": "md", "value": "768px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botón Primario",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Acción principal de un formulario o pantalla (registrar pago, ingresar, guardar).",
+      "html": "<button class=\"ds-btn-primary\">Registrar pago</button>",
+      "css": ".ds-btn-primary { background: #0284c7; color: #ffffff; border: none; border-radius: 9999px; padding: 10px 24px; font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 0.9375rem; transition: opacity 0.15s; } .ds-btn-primary:hover { background: #0369a1; } .ds-btn-primary:disabled { opacity: 0.5; }"
+    },
+    {
+      "name": "Tarjeta Estándar",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Contenedor blanco de contenido — la unidad de layout más repetida del sistema.",
+      "html": "<div class=\"ds-card\"><h2 class=\"ds-card-title\">Cargar un pago</h2><p class=\"ds-card-body\">Completá el importe y elegí el medio de pago.</p></div>",
+      "css": ".ds-card { background: #ffffff; border-radius: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); padding: 20px; font-family: 'Quicksand', sans-serif; } .ds-card-title { font-weight: 700; color: #1e293b; margin-bottom: 12px; } .ds-card-body { font-weight: 500; color: #64748b; font-size: 0.875rem; }"
+    },
+    {
+      "name": "Tarjeta de Saldo (hero)",
+      "kind": "custom",
+      "refersTo": "card-hero",
+      "description": "Tarjeta protagonista de Mi Cuenta: degradé celeste, muestra el saldo — el número más importante de la app.",
+      "html": "<section class=\"ds-hero-card\"><p class=\"ds-hero-label\">Saldo actual</p><p class=\"ds-hero-amount\">$ 12.500</p></section>",
+      "css": ".ds-hero-card { background: linear-gradient(to bottom right, #0284c7, #38bdf8); color: #ffffff; border-radius: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.07); padding: 20px; font-family: 'Quicksand', sans-serif; } .ds-hero-label { font-size: 0.875rem; color: rgba(255,255,255,0.9); font-weight: 500; } .ds-hero-amount { font-size: 1.875rem; font-weight: 700; }"
+    },
+    {
+      "name": "Campo de texto",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Input/select estándar de formulario.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Importe\" />",
+      "css": ".ds-input { border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 16px; font-family: 'Quicksand', sans-serif; font-weight: 500; color: #1e293b; background: #ffffff; } .ds-input:focus { outline: 2px solid #38bdf8; outline-offset: 1px; }"
+    },
+    {
+      "name": "Chip de Alerta/Pendiente",
+      "kind": "chip",
+      "refersTo": "chip-warning",
+      "description": "Badge de estado para pagos pendientes o vencimientos próximos.",
+      "html": "<span class=\"ds-chip-warning\">Sin pagar</span>",
+      "css": ".ds-chip-warning { display: inline-block; background: #fde68a; color: #78350f; border-radius: 9999px; padding: 4px 12px; font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 0.75rem; }"
+    },
+    {
+      "name": "Chip de Al Día",
+      "kind": "chip",
+      "refersTo": "chip-success",
+      "description": "Badge de estado positivo — familia al día con sus conceptos.",
+      "html": "<span class=\"ds-chip-success\">Al día</span>",
+      "css": ".ds-chip-success { display: inline-block; background: #a7f3d0; color: #064e3b; border-radius: 9999px; padding: 4px 12px; font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 0.75rem; }"
+    },
+    {
+      "name": "Avatar de Iniciales",
+      "kind": "custom",
+      "refersTo": "avatar",
+      "description": "Círculo con iniciales cuando el miembro no tiene foto — color determinístico por rama o por hash de id.",
+      "html": "<div class=\"ds-avatar\">JP</div>",
+      "css": ".ds-avatar { width: 40px; height: 40px; border-radius: 9999px; background: #0ea5e9; color: #ffffff; display: flex; align-items: center; justify-content: center; font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 0.875rem; }"
+    },
+    {
+      "name": "Link de Navegación",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Ítem de navegación de texto (Mi Cuenta desktop) — sin fondo, se distingue por color.",
+      "html": "<a class=\"ds-nav-link ds-nav-link--active\">Principal</a>",
+      "css": ".ds-nav-link { font-family: 'Quicksand', sans-serif; font-weight: 600; font-size: 0.875rem; color: #475569; text-decoration: none; } .ds-nav-link:hover { color: #0284c7; } .ds-nav-link--active { color: #0284c7; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "La Brújula",
+    "overview": "Azimut existe para que una familia sepa, de un vistazo y sin llamar a nadie, exactamente dónde está parada con el Grupo: cuánto debe, cuánto pagó, qué le falta. Como una brújula, el sistema visual no decora — orienta. Cada pantalla resuelve la misma pregunta (\"¿cómo estoy?\") con la mínima fricción posible, en un lenguaje visual claro y directo, pero nunca frío: los botones son píldoras celestes bien redondeadas, la tipografía es geométrica y amable (Quicksand), y el tono general es el de una herramienta cálida y cercana, hecha por el Grupo para sus propias familias — no una fintech corporativa.\n\nEl celeste domina como un cielo despejado de día de campamento: es el color de la marca, de los botones, del fondo general de Mi Cuenta y del degradé de la tarjeta de saldo. El resto de la paleta (ámbar, esmeralda, rojo) aparece solo para señalar estado — pendiente, al día, vencido — nunca como decoración.\n\nLa elevación es intencionalmente plana y liviana: las tarjetas blancas se apoyan sobre el fondo celeste claro con una sombra casi imperceptible (shadow-sm), sin bordes marcados. Nada \"flota\" con fuerza salvo lo que realmente necesita separarse del contenido de fondo (un menú deslizable, un toast, el gráfico 3D).",
+    "keyCharacteristics": [
+      "Botones y pills siempre rounded-full; tarjetas siempre rounded-2xl o más grandes — nunca esquinas rectas.",
+      "Un solo acento dominante (Celeste Azimut); el resto de la paleta es puramente semántica (estado), no decorativa.",
+      "Sombras casi ausentes (shadow-sm por defecto); la separación entre superficies viene del color de fondo, no de la profundidad.",
+      "Tipografía Quicksand en toda la app — geométrica, redondeada, consistente con la forma de los botones.",
+      "Mobile-first en Mi Cuenta; desktop-first en Admin."
+    ],
+    "rules": [
+      { "name": "La Regla del Acento Único", "body": "El celeste es el único color con permiso para significar \"acción\" (botón primario, link activo, ícono de sección). Ningún otro color reemplaza esa función, ni siquiera en Admin.", "section": "colors" },
+      { "name": "La Regla del Color con Propósito", "body": "Ámbar, esmeralda y rojo no son variedad decorativa: ámbar = pendiente/alerta, esmeralda = al día/positivo, rojo = error/vencido.", "section": "colors" },
+      { "name": "La Regla del Número Protagonista", "body": "El saldo siempre es el elemento tipográficamente más grande y con más peso de la pantalla en la que aparece — nunca compite con un título de sección.", "section": "typography" },
+      { "name": "La Regla de la Sombra Contenida", "body": "Una sombra más fuerte que shadow-sm es siempre una señal de jerarquía real (protagonista de la pantalla o panel superpuesto), nunca un efecto decorativo aplicado por default.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do usar rounded-full en absolutamente todo elemento de acción (botón, chip, avatar) — es la firma de forma más consistente del sistema.",
+      "Do reservar shadow-md o superior para el único elemento protagonista de la pantalla; todo lo demás va en shadow-sm.",
+      "Do usar color de estado (ámbar/esmeralda/rojo) solo para comunicar situación real, nunca como acento decorativo.",
+      "Do mantener Quicksand como tipografía de toda superficie nueva — es lo que efectivamente se renderiza hoy, no Geist."
+    ],
+    "donts": [
+      "Don't introducir esquinas rectas en botones, chips o tarjetas — rompe la firma de forma más reconocible de Azimut.",
+      "Don't usar el violeta (acento de Admin) como color de acción o como reemplazo del celeste — es puramente informativo y de uso acotado.",
+      "Don't agregar sombras fuertes (shadow-lg/shadow-xl) a tarjetas de contenido regular — esa intensidad está reservada a paneles realmente superpuestos."
+    ]
+  }
+}
