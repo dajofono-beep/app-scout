@@ -66,7 +66,13 @@ export default function TarjetaSaldo({
   return (
     <section
       ref={seccionRef}
-      className="bg-gradient-to-br from-sky-600 to-sky-400 text-white rounded-3xl shadow-md p-5"
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(2, 132, 199, 0.3), rgba(2, 132, 199, 0.3)), url('/TarjetaSaldo.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "right center",
+      }}
+      className="text-white rounded-3xl shadow-md p-5"
     >
       <p className="text-sm text-white/90">
         {esFamiliaConVarios ? "Saldo total entre hermanos" : "Saldo actual"}

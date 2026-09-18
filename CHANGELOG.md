@@ -322,3 +322,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-09-15 — Foto de perfil ampliable
 
 - Tocando la foto de perfil (en la barra superior mobile, en la barra lateral de escritorio, o en la ficha de un miembro dentro del buscador de Social) la imagen viaja animada hasta el centro de la pantalla y se agranda para verse completa, con un fondo oscuro detrás. Tocando cualquier parte fuera de la foto ampliada, vuelve a achicarse a su lugar original. No funciona sobre el logo de relleno que se muestra cuando alguien todavía no cargó una foto propia.
+
+## 2026-09-18 — Fondo ilustrado en la tarjeta de saldo
+
+- La tarjeta de saldo de Mi Cuenta (Principal) ahora usa como fondo una ilustración de montañas en tonos azules, en vez del degradado liso que tenía antes, cubierta con un velo celeste semitransparente para que los datos sigan leyéndose bien. El tamaño y el contenido de la tarjeta no cambiaron.
