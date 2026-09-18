@@ -74,13 +74,13 @@ export default function TarjetaSaldo({
       }}
       className="text-white rounded-3xl shadow-md p-5"
     >
-      <p className="text-sm text-white/90">
+      <p className="text-base text-white/90">
         {esFamiliaConVarios ? "Saldo total entre hermanos" : "Saldo actual"}
       </p>
       <p key={`total-${generacion}`} className="text-3xl font-bold valor-animado">
         {formatoMoneda(saldoTotal)}
       </p>
-      <div className="flex gap-4 mt-3 text-xs text-white/80">
+      <div className="flex gap-4 mt-3 text-sm text-white/80">
         <span>
           Deuda total{" "}
           <span key={`deuda-${generacion}`} className="font-bold text-white valor-animado">
@@ -95,7 +95,7 @@ export default function TarjetaSaldo({
         </span>
       </div>
       {pendienteTotal > 0 && (
-        <p className="text-xs bg-white/20 rounded-full px-3 py-1 inline-block mt-2">
+        <p className="text-sm bg-white/20 rounded-full px-3 py-1 inline-block mt-2">
           <span key={`pendiente-${generacion}`} className="valor-animado">
             {formatoMoneda(pendienteTotal)}
           </span>{" "}

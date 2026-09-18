@@ -326,3 +326,4 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-09-18 — Fondo ilustrado en la tarjeta de saldo
 
 - La tarjeta de saldo de Mi Cuenta (Principal) ahora usa como fondo una ilustración de montañas en tonos azules, en vez del degradado liso que tenía antes, cubierta con un velo celeste semitransparente para que los datos sigan leyéndose bien. El tamaño y el contenido de la tarjeta no cambiaron.
+- Se agrandaron un poco los textos "Saldo actual"/"Saldo total entre hermanos", "Deuda total", "Total Pagos" y el aviso de pagos pendientes de acreditar, dentro de esa misma tarjeta.
