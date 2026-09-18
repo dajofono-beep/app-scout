@@ -68,7 +68,7 @@ export default function TarjetaSaldo({
       ref={seccionRef}
       style={{
         backgroundImage:
-          "linear-gradient(rgba(2, 132, 199, 0.3), rgba(2, 132, 199, 0.3)), url('/TarjetaSaldo.png')",
+          "linear-gradient(rgba(2, 132, 199, 0.7), rgba(2, 132, 199, 0.7)), url('/TarjetaSaldo.png')",
         backgroundSize: "cover",
         backgroundPosition: "right center",
       }}
