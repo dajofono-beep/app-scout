@@ -327,3 +327,8 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 
 - La tarjeta de saldo de Mi Cuenta (Principal) ahora usa como fondo una ilustración de montañas en tonos azules, en vez del degradado liso que tenía antes, cubierta con un velo celeste semitransparente para que los datos sigan leyéndose bien. El tamaño y el contenido de la tarjeta no cambiaron.
 - Se agrandaron un poco los textos "Saldo actual"/"Saldo total entre hermanos", "Deuda total", "Total Pagos" y el aviso de pagos pendientes de acreditar, dentro de esa misma tarjeta.
+
+## 2026-09-19 — Fondo ilustrado en el menú de Mi Cuenta (celular)
+
+- El menú lateral que se desliza desde el ícono de hamburguesa (en la vista de celular de Mi Cuenta) ahora tiene de fondo la misma línea gráfica de montañas de la app, con un velo celeste, en vez de quedar blanco liso.
+- Se achicó un poco su ancho (de 288px, hasta 80% de la pantalla, a 240px, hasta 65%) para que no tape tanto el contenido en celulares chicos.
