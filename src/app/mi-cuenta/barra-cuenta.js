@@ -87,7 +87,7 @@ export default function BarraCuenta({
           backgroundImage:
             "linear-gradient(rgba(2, 132, 199, 0.2), rgba(2, 132, 199, 0.2)), url('/fondo-sidebar_Micuenta.png')",
           backgroundSize: "auto 130%",
-          backgroundPosition: "right 55%",
+          backgroundPosition: "right bottom",
           backgroundRepeat: "no-repeat",
         }}
         className={`fixed inset-y-0 left-0 z-50 w-60 max-w-[65vw] shadow-xl transition-transform duration-300 ease-in-out ${
