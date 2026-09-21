@@ -83,23 +83,18 @@ export default function BarraCuenta({
       />
 
       <div
-        className={`fixed inset-y-0 left-0 z-50 w-60 max-w-[65vw] shadow-xl overflow-hidden transition-transform duration-300 ease-in-out ${
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(2, 132, 199, 0.2), rgba(2, 132, 199, 0.2)), url('/fondo-sidebar_Micuenta.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "right bottom",
+          backgroundRepeat: "no-repeat",
+        }}
+        className={`fixed inset-y-0 left-0 z-50 w-60 max-w-[65vw] shadow-xl transition-transform duration-300 ease-in-out ${
           menuAbierto ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(2, 132, 199, 0.2), rgba(2, 132, 199, 0.2)), url('/fondo-sidebar_Micuenta.png')",
-            backgroundSize: "cover",
-            backgroundPosition: "right bottom",
-            backgroundRepeat: "no-repeat",
-            transform: "scale(1.3)",
-            transformOrigin: "bottom right",
-          }}
-          className="absolute inset-0"
-        />
-        <div className="relative flex flex-col gap-3 p-4">
+        <div className="flex flex-col gap-3 p-4">
           {ITEMS.map((item) =>
             onSeleccionar ? (
               <button
