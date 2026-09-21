@@ -332,3 +332,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 
 - El menú lateral que se desliza desde el ícono de hamburguesa (en la vista de celular de Mi Cuenta) ahora tiene de fondo la misma línea gráfica de montañas de la app, con un velo celeste, en vez de quedar blanco liso.
 - Se achicó un poco su ancho (de 288px, hasta 80% de la pantalla, a 240px, hasta 65%) para que no tape tanto el contenido en celulares chicos.
+
+## 2026-09-21 — Íconos en el menú de Mi Cuenta
+
+- Cada opción del menú de Mi Cuenta (Principal, Social, Mensajes, Descargas, Consultas, Perfil y Salir) ahora tiene su ícono, tanto en el menú deslizable de celular como en la barra lateral de escritorio — antes eran solo texto.

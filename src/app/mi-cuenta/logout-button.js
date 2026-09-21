@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 const CLASE_DEFECTO =
   "text-xs font-semibold text-slate-500 border border-slate-200 rounded-full px-3 py-1.5 hover:text-slate-700 hover:border-slate-300";
 
-export default function LogoutButton({ className }) {
+export default function LogoutButton({ className, icono, iconoClassName = "w-4 h-4" }) {
   const router = useRouter();
   const [confirmando, setConfirmando] = useState(false);
 
@@ -28,6 +28,7 @@ export default function LogoutButton({ className }) {
         onClick={() => setConfirmando(true)}
         className={className ?? CLASE_DEFECTO}
       >
+        {icono && <img src={icono} alt="" className={`${iconoClassName} shrink-0`} />}
         Salir
       </button>
 

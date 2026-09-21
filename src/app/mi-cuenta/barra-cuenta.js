@@ -6,11 +6,11 @@ import LogoutButton from "./logout-button";
 import FotoPerfilZoom from "./foto-perfil-zoom";
 
 const ITEMS = [
-  { id: "principal", texto: "Principal" },
-  { id: "social", texto: "Social" },
-  { id: "mensajes", texto: "Mensajes" },
-  { id: "descargas", texto: "Descargas" },
-  { id: "consultas", texto: "Consultas" },
+  { id: "principal", texto: "Principal", icono: "/Barra Lateral Familias/Principal.png" },
+  { id: "social", texto: "Social", icono: "/Barra Lateral Familias/Social.png" },
+  { id: "mensajes", texto: "Mensajes", icono: "/Barra Lateral Familias/Mensajes.png" },
+  { id: "descargas", texto: "Descargas", icono: "/Barra Lateral Familias/Descargas.png" },
+  { id: "consultas", texto: "Consultas", icono: "/Barra Lateral Familias/Consultas III.png" },
 ];
 
 function IconoMenu({ className }) {
@@ -101,12 +101,13 @@ export default function BarraCuenta({
                 key={item.id}
                 type="button"
                 onClick={() => elegir(item.id)}
-                className={`text-left text-base font-semibold ${
+                className={`flex items-center gap-2.5 text-left text-base font-semibold ${
                   activa === item.id
                     ? "text-sky-600"
                     : "text-slate-600 hover:text-sky-600"
                 }`}
               >
+                <img src={item.icono} alt="" className="w-[22px] h-[22px] shrink-0" />
                 {item.texto}
               </button>
             ) : (
@@ -114,8 +115,9 @@ export default function BarraCuenta({
                 key={item.id}
                 href="/mi-cuenta"
                 onClick={() => setMenuAbierto(false)}
-                className="text-base font-semibold text-slate-600 hover:text-sky-600"
+                className="flex items-center gap-2.5 text-base font-semibold text-slate-600 hover:text-sky-600"
               >
+                <img src={item.icono} alt="" className="w-[22px] h-[22px] shrink-0" />
                 {item.texto}
               </Link>
             )
@@ -123,11 +125,20 @@ export default function BarraCuenta({
           <Link
             href="/mi-cuenta/perfil"
             onClick={() => setMenuAbierto(false)}
-            className="text-base font-semibold text-slate-600 hover:text-sky-600"
+            className="flex items-center gap-2.5 text-base font-semibold text-slate-600 hover:text-sky-600"
           >
+            <img
+              src="/Barra Lateral Familias/Perfil.png"
+              alt=""
+              className="w-[22px] h-[22px] shrink-0"
+            />
             Perfil
           </Link>
-          <LogoutButton className="text-left text-base font-semibold text-slate-600 hover:text-sky-600" />
+          <LogoutButton
+            className="flex items-center gap-2.5 text-left text-base font-semibold text-slate-600 hover:text-sky-600"
+            icono="/Barra Lateral Familias/Salir.png"
+            iconoClassName="w-[22px] h-[22px]"
+          />
         </div>
       </div>
     </div>

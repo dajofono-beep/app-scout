@@ -10,11 +10,11 @@ import BarraCuenta from "./barra-cuenta";
 import FotoPerfilZoom from "./foto-perfil-zoom";
 
 const ITEMS = [
-  { id: "principal", texto: "Principal" },
-  { id: "social", texto: "Social" },
-  { id: "mensajes", texto: "Mensajes" },
-  { id: "descargas", texto: "Descargas" },
-  { id: "consultas", texto: "Consultas" },
+  { id: "principal", texto: "Principal", icono: "/Barra Lateral Familias/Principal.png" },
+  { id: "social", texto: "Social", icono: "/Barra Lateral Familias/Social.png" },
+  { id: "mensajes", texto: "Mensajes", icono: "/Barra Lateral Familias/Mensajes.png" },
+  { id: "descargas", texto: "Descargas", icono: "/Barra Lateral Familias/Descargas.png" },
+  { id: "consultas", texto: "Consultas", icono: "/Barra Lateral Familias/Consultas III.png" },
 ];
 
 export default function CuentaNav({
@@ -135,12 +135,13 @@ export default function CuentaNav({
               key={item.id}
               type="button"
               onClick={() => setActiva(item.id)}
-              className={`text-left text-sm font-semibold ${
+              className={`flex items-center gap-2 text-left text-sm font-semibold ${
                 activa === item.id
                   ? "text-sky-600"
                   : "text-slate-600 hover:text-sky-600"
               }`}
             >
+              <img src={item.icono} alt="" className="w-[17px] h-[17px] shrink-0" />
               {item.texto}
             </button>
           ))}
@@ -149,11 +150,20 @@ export default function CuentaNav({
         <div className="hidden md:flex md:flex-col gap-2 items-start">
           <Link
             href="/mi-cuenta/perfil"
-            className="text-xs font-semibold text-sky-600 hover:text-sky-700"
+            className="flex items-center gap-2 text-xs font-semibold text-sky-600 hover:text-sky-700"
           >
+            <img
+              src="/Barra Lateral Familias/Perfil.png"
+              alt=""
+              className="w-4 h-4 shrink-0"
+            />
             Perfil
           </Link>
-          <LogoutButton />
+          <LogoutButton
+            className="flex items-center gap-2 text-xs font-semibold text-slate-500 border border-slate-200 rounded-full px-3 py-1.5 hover:text-slate-700 hover:border-slate-300"
+            icono="/Barra Lateral Familias/Salir.png"
+            iconoClassName="w-4 h-4"
+          />
         </div>
       </nav>
 
