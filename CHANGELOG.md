@@ -336,3 +336,10 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-09-21 — Íconos en el menú de Mi Cuenta
 
 - Cada opción del menú de Mi Cuenta (Principal, Social, Mensajes, Descargas, Consultas, Perfil y Salir) ahora tiene su ícono, tanto en el menú deslizable de celular como en la barra lateral de escritorio — antes eran solo texto.
+
+## 2026-09-21 — Encuestas
+
+- Nueva sección "Encuestas", tanto en Administración como en Mi Cuenta. El admin arma una encuesta (título, descripción, opción única o texto libre, vigencia) dirigida a Todos / una Rama / Hermanos / un Participante — mismo esquema que Mensajes — y elige si se responde una vez por chico o una sola vez por familia.
+- Cada encuesta se puede compartir con un link corto (`app.azimut-scout.ar/e/<código>`) para mandar por WhatsApp: quien lo abre sin haber iniciado sesión pasa primero por el login de siempre (rama, nombre y contraseña) y cae directo en esa encuesta al terminar.
+- En Mi Cuenta, "Encuestas" es una pestaña más del menú (como Mensajes) con el listado de pendientes/respondidas; abrir una encuesta puntual para responderla sí es una página aparte, necesario para que el link funcione.
+- En Administración, la ficha de cada encuesta muestra el link para compartir, y una tarjeta de Resultados (desplegable) con dos gráficos de torta — porcentaje por respuesta y participación por rama —, cuántos respondieron y un botón para exportar todo a PDF (con la opción de incluir o no la nómina de quiénes respondieron y quiénes faltan, agrupada por rama en columnas).

@@ -57,30 +57,36 @@ Dentro de Principal, en la pestaña **"Movimientos"**, podés ver:
 
 Ahí aparecen los avisos que manda el Grupo — generales, para tu rama, para tus hermanos, o para vos en particular — ordenados del más nuevo al más viejo. Si tu rama tiene un grupo de WhatsApp de padres cargado, también vas a ver una tarjeta con el link para unirte, debajo de los mensajes.
 
-## 7. Social
+## 7. Encuestas
+
+Ahí aparecen las encuestas que arma el Grupo (confirmar participación en un campamento, elegir una opción, indicar un talle, etc.), ordenadas de la más nueva a la más vieja, marcadas como "Pendiente de responder" o "Ya respondiste". Tocando una, elegís tu respuesta y la enviás — se puede volver a cambiar mientras la encuesta siga abierta.
+
+Si te llega un link de una encuesta por WhatsApp y todavía no iniciaste sesión, primero te va a pedir rama, nombre y contraseña como siempre, y después te lleva directo a esa encuesta.
+
+## 8. Social
 
 Calendario con los **cumpleaños** de la rama y las **fechas importantes** del Grupo (campamentos, salidas, reuniones), cada una con su ícono según el tipo de evento. Con la lupa se puede buscar a cualquier miembro del Grupo por nombre o filtrar por rama, y ver su ficha (cumpleaños, teléfono, redes sociales y foto, si las cargó).
 
 Tocando la foto de perfil de cualquier miembro (acá, en Perfil, o en la barra superior/lateral con tu propia foto), se agranda animada al centro de la pantalla — tocando afuera, vuelve a achicarse.
 
-## 8. Descargas
+## 9. Descargas
 
 Documentos y autorizaciones en PDF que el Grupo deja disponibles, agrupados por tema.
 
-## 9. Consultas (SanMa)
+## 10. Consultas (SanMa)
 
 Un chat con **SanMa**, el asistente del Grupo. Le podés preguntar dudas sobre el Proyecto Educativo, las reuniones de padres, la historia del Grupo o la vida scout en general (campamentos, especialidades, progresión), y responde en base a esa información.
 - Escribí tu pregunta y tocá "Enviar".
 - En el celular, también podés tocar el ícono de micrófono y dictarla en vez de escribirla.
 - SanMa puede cometer errores — para algo importante, confirmalo con el Consejo de Grupo.
 
-## 10. Perfil
+## 11. Perfil
 
 Desde el menú, entrás a tu ficha personal:
 - Datos de contacto (teléfono, redes sociales) y foto.
 - Cambiar tu contraseña.
 
-## 11. Salir
+## 12. Salir
 
 Tocá "Salir" en el menú. La app te va a preguntar si estás seguro antes de cerrar la sesión.
 

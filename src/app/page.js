@@ -6,6 +6,16 @@ import { Quicksand } from "next/font/google";
 import { createClient } from "@/lib/supabase/client";
 import { ingresarFamilia } from "./login-actions";
 
+// Si se llegó acá desde un link a una sección puntual (p. ej. una
+// encuesta compartida por WhatsApp) sin haber iniciado sesión, esa
+// sección le pasa su propia URL en "?next=" para volver ahí después de
+// loguearse, en vez de caer siempre en Mi Cuenta a secas. Se valida que
+// apunte adentro de /mi-cuenta para no poder mandar a nadie a otro lado.
+function obtenerDestino() {
+  const destino = new URLSearchParams(window.location.search).get("next");
+  return destino && destino.startsWith("/mi-cuenta") ? destino : null;
+}
+
 const quicksand = Quicksand({
   variable: "--font-quicksand",
   subsets: ["latin"],
@@ -115,7 +125,7 @@ export default function FamilyLoginPage() {
       return;
     }
 
-    router.push("/mi-cuenta");
+    router.push(obtenerDestino() ?? "/mi-cuenta");
     router.refresh();
   }
 

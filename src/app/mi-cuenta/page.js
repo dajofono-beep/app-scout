@@ -7,6 +7,7 @@ import MovimientosPanel from "./movimientos-panel";
 import PagoForm from "./pago-form";
 import Social from "./social";
 import Mensajes from "./mensajes";
+import EncuestasLista from "./encuestas-lista";
 import CuentaNav from "./cuenta-nav";
 import TarjetaSaldo from "./tarjeta-saldo";
 import { calcularVencimientos } from "./proximo-vencimiento";
@@ -248,6 +249,26 @@ export default async function MiCuentaPage() {
     <Mensajes mensajes={mensajesConDestinatario} linkGrupoWhatsapp={linkGrupoWhatsapp} />
   );
 
+  // Independientes entre sí, se piden juntas en vez de una atrás de la
+  // otra (misma razón que en las páginas de /mi-cuenta/encuestas).
+  const [{ data: encuestas }, { data: respuestasPropias }] = await Promise.all([
+    supabase.from("encuestas").select("id, titulo, created_at, alcance_respuesta").order("created_at", { ascending: false }),
+    supabase.from("encuesta_respuestas").select("encuesta_id, miembro_id, familia_id"),
+  ]);
+
+  // Mismo criterio de "solo por chico si no tiene familia asignada" que
+  // en encuestas/actions.js y las páginas de Encuestas.
+  const encuestasConEstado = (encuestas ?? []).map((e) => {
+    const porFamilia = e.alcance_respuesta === "familia" && miembro.familia_id;
+    const respondida = (respuestasPropias ?? []).some((r) =>
+      r.encuesta_id === e.id &&
+      (porFamilia ? r.familia_id === miembro.familia_id : r.miembro_id === miembro.id)
+    );
+    return { ...e, respondida };
+  });
+
+  const panelEncuestas = <EncuestasLista encuestas={encuestasConEstado} />;
+
   const panelPrincipal = (
     <div className="space-y-4">
       <TarjetaSaldo
@@ -273,6 +294,7 @@ export default async function MiCuentaPage() {
       panelPrincipal={panelPrincipal}
       panelSocial={panelSocial}
       panelMensajes={panelMensajes}
+      panelEncuestas={panelEncuestas}
     />
   );
 }

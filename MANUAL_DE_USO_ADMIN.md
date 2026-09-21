@@ -85,11 +85,19 @@ Avisos para las familias, ordenados del más nuevo al más viejo.
 
 - **+ Nuevo mensaje**: título, texto, a quién va dirigido (Todos / una Rama / unos Hermanos / un Participante puntual) y el período de vigencia (desde una fecha, o hasta otra).
 
-### 8.2 Grupos de Padres
+### 8.2 Encuestas
+
+Preguntas para que las familias respondan desde Mi Cuenta (confirmar participación en un campamento, elegir una opción, indicar un talle, etc.).
+
+- **+ Nueva encuesta**: título, descripción opcional, tipo de respuesta (elegir una opción, con las opciones cargadas una por línea, o texto libre), quién responde (cada chico por separado, o una sola respuesta por familia), a quién va dirigida (Todos / una Rama / unos Hermanos / un Participante puntual) y vigencia (desde/hasta cierre). Hasta la fecha de cierre, las familias pueden responder o cambiar su respuesta las veces que quieran.
+- Cada encuesta tiene un **link corto para compartir** (por WhatsApp, por ejemplo) — quien lo abra sin haber iniciado sesión pasa primero por el login habitual y cae directo en esa encuesta.
+- **Resultados** (desplegable, dentro de la ficha de la encuesta): dos gráficos de torta (porcentaje por respuesta, y participación por rama), cuántos respondieron, un botón para ver el listado de participantes/faltantes (agrupado por rama), y un botón para **exportar todo a PDF** — con la opción de incluir o no esa nómina.
+
+### 8.3 Grupos de Padres
 
 Acá se carga el link de invitación al grupo de WhatsApp de cada rama. Con el interruptor general activado, las familias ven el link de su propia rama en la sección Mensajes de Mi Cuenta.
 
-### 8.3 Fechas importantes
+### 8.4 Fechas importantes
 
 Calendario de campamentos, salidas, reuniones y efemérides que las familias ven en la sección Social de Mi Cuenta.
 

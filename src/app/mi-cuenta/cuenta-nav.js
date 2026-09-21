@@ -13,6 +13,7 @@ const ITEMS = [
   { id: "principal", texto: "Principal", icono: "/Barra Lateral Familias/Principal.png" },
   { id: "social", texto: "Social", icono: "/Barra Lateral Familias/Social.png" },
   { id: "mensajes", texto: "Mensajes", icono: "/Barra Lateral Familias/Mensajes.png" },
+  { id: "encuestas", texto: "Encuestas", icono: "/Barra Lateral Familias/Encuestas.png" },
   { id: "descargas", texto: "Descargas", icono: "/Barra Lateral Familias/Descargas.png" },
   { id: "consultas", texto: "Consultas", icono: "/Barra Lateral Familias/Consultas III.png" },
 ];
@@ -24,9 +25,36 @@ export default function CuentaNav({
   panelPrincipal,
   panelSocial,
   panelMensajes,
+  panelEncuestas,
 }) {
   const [activa, setActiva] = useState("principal");
   const [avisoSalir, setAvisoSalir] = useState(false);
+
+  // Si se llegó acá con "?tab=encuestas" (p. ej. al tocar "Volver" desde
+  // una encuesta puntual), pasa directo a esa pestaña en vez de quedarse
+  // en Principal. Se hace en un efecto (no como estado inicial) para
+  // que el primer render coincida con el del servidor y no haya
+  // parpadeo por una discordancia de hidratación.
+  useEffect(() => {
+    const tab = new URLSearchParams(window.location.search).get("tab");
+    if (tab) setActiva(tab);
+  }, []);
+
+  function renderItemDesktop(item) {
+    return (
+      <button
+        key={item.id}
+        type="button"
+        onClick={() => setActiva(item.id)}
+        className={`flex items-center gap-2 text-left text-sm font-semibold ${
+          activa === item.id ? "text-sky-600" : "text-slate-600 hover:text-sky-600"
+        }`}
+      >
+        <img src={item.icono} alt="" className="w-[17px] h-[17px] shrink-0" />
+        {item.texto}
+      </button>
+    );
+  }
 
   // Sincroniza el historial del navegador con la pestaña activa para que
   // el botón/gesto "Atrás" del celular navegue dentro de la app en vez de
@@ -130,21 +158,7 @@ export default function CuentaNav({
         </div>
 
         <div className="hidden md:flex md:flex-col gap-1 flex-1">
-          {ITEMS.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => setActiva(item.id)}
-              className={`flex items-center gap-2 text-left text-sm font-semibold ${
-                activa === item.id
-                  ? "text-sky-600"
-                  : "text-slate-600 hover:text-sky-600"
-              }`}
-            >
-              <img src={item.icono} alt="" className="w-[17px] h-[17px] shrink-0" />
-              {item.texto}
-            </button>
-          ))}
+          {ITEMS.map(renderItemDesktop)}
         </div>
 
         <div className="hidden md:flex md:flex-col gap-2 items-start">
@@ -194,6 +208,14 @@ export default function CuentaNav({
             onVolver={() => setActiva("principal")}
           />
           {panelMensajes}
+        </div>
+        <div className={`max-w-2xl mx-auto ${activa === "encuestas" ? "" : "hidden"}`}>
+          <TituloSeccion
+            icono="/Encuestas.png"
+            nombre="Encuestas"
+            onVolver={() => setActiva("principal")}
+          />
+          {panelEncuestas}
         </div>
         <div className={`max-w-2xl mx-auto ${activa === "consultas" ? "" : "hidden"}`}>
           <TituloSeccion

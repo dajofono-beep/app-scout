@@ -9,6 +9,7 @@ export const NAV_ITEMS = [
 
 export const ITEMS_COMUNICACION = [
   { href: "/admin/mensajes", label: "Mensajes" },
+  { href: "/admin/encuestas", label: "Encuestas" },
   { href: "/admin/grupos-padres", label: "Grupos de Padres" },
   { href: "/admin/fechas-importantes", label: "Fechas importantes" },
 ];

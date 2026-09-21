@@ -9,6 +9,7 @@ const ITEMS = [
   { id: "principal", texto: "Principal", icono: "/Barra Lateral Familias/Principal.png" },
   { id: "social", texto: "Social", icono: "/Barra Lateral Familias/Social.png" },
   { id: "mensajes", texto: "Mensajes", icono: "/Barra Lateral Familias/Mensajes.png" },
+  { id: "encuestas", texto: "Encuestas", icono: "/Barra Lateral Familias/Encuestas.png" },
   { id: "descargas", texto: "Descargas", icono: "/Barra Lateral Familias/Descargas.png" },
   { id: "consultas", texto: "Consultas", icono: "/Barra Lateral Familias/Consultas III.png" },
 ];
@@ -48,6 +49,32 @@ export default function BarraCuenta({
   function elegir(id) {
     onSeleccionar?.(id);
     setMenuAbierto(false);
+  }
+
+  function renderItem(item) {
+    return onSeleccionar ? (
+      <button
+        key={item.id}
+        type="button"
+        onClick={() => elegir(item.id)}
+        className={`flex items-center gap-2.5 text-left text-base font-semibold ${
+          activa === item.id ? "text-sky-600" : "text-slate-600 hover:text-sky-600"
+        }`}
+      >
+        <img src={item.icono} alt="" className="w-[22px] h-[22px] shrink-0" />
+        {item.texto}
+      </button>
+    ) : (
+      <Link
+        key={item.id}
+        href="/mi-cuenta"
+        onClick={() => setMenuAbierto(false)}
+        className="flex items-center gap-2.5 text-base font-semibold text-slate-600 hover:text-sky-600"
+      >
+        <img src={item.icono} alt="" className="w-[22px] h-[22px] shrink-0" />
+        {item.texto}
+      </Link>
+    );
   }
 
   return (
@@ -95,33 +122,7 @@ export default function BarraCuenta({
         }`}
       >
         <div className="flex flex-col gap-3 p-4">
-          {ITEMS.map((item) =>
-            onSeleccionar ? (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => elegir(item.id)}
-                className={`flex items-center gap-2.5 text-left text-base font-semibold ${
-                  activa === item.id
-                    ? "text-sky-600"
-                    : "text-slate-600 hover:text-sky-600"
-                }`}
-              >
-                <img src={item.icono} alt="" className="w-[22px] h-[22px] shrink-0" />
-                {item.texto}
-              </button>
-            ) : (
-              <Link
-                key={item.id}
-                href="/mi-cuenta"
-                onClick={() => setMenuAbierto(false)}
-                className="flex items-center gap-2.5 text-base font-semibold text-slate-600 hover:text-sky-600"
-              >
-                <img src={item.icono} alt="" className="w-[22px] h-[22px] shrink-0" />
-                {item.texto}
-              </Link>
-            )
-          )}
+          {ITEMS.map(renderItem)}
           <Link
             href="/mi-cuenta/perfil"
             onClick={() => setMenuAbierto(false)}

@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "gray-on-color",
+        "value": "*",
+        "files": [
+          "src/app/mi-cuenta/barra-cuenta.js"
+        ],
+        "createdAt": "2026-09-21T23:13:58.008Z",
+        "reason": "false positive: hamburger button (line 86) sits on plain bg-white (line 80), not a colored background; pre-existing code, unrelated to this session's changes"
+      }
+    ]
+  }
+}
