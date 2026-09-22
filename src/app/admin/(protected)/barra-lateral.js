@@ -37,7 +37,7 @@ export default function BarraLateral({ nombreAdmin }) {
         colapsado ? "w-16" : "w-56"
       }`}
       style={{
-        backgroundImage: "url('/fondo-sidebar.png')",
+        backgroundImage: "url('/fondo-sidebar_Micuenta.png')",
         backgroundSize: "cover",
         backgroundPosition: "top left",
       }}

@@ -348,3 +348,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 
 - En los tres lugares donde se carga una vigencia con fecha de inicio y fin (Mensajes, Encuestas, Fechas importantes), la fecha de fin ya no deja elegir un día anterior al de inicio — el campo lo bloquea directamente.
 - De paso se corrigió que, si igual llegaba una fecha inválida (o cualquier otro dato inválido) al guardar, se mostraba la pantalla de error genérica de producción en vez del motivo real — ahora los tres formularios muestran el mensaje real, igual que ya pasa en el resto de la app.
+
+## 2026-09-22 — Fondo del panel de Administración
+
+- La barra lateral de Administración ahora usa la misma ilustración de montañas que el menú de Mi Cuenta (`fondo-sidebar_Micuenta.png`), en vez de la imagen anterior — se eliminó del repositorio por quedar sin uso.
