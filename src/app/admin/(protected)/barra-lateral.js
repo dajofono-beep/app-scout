@@ -37,9 +37,15 @@ export default function BarraLateral({ nombreAdmin }) {
         colapsado ? "w-16" : "w-56"
       }`}
       style={{
-        backgroundImage: "url('/fondo-sidebar_Micuenta.png')",
+        backgroundImage:
+          "linear-gradient(rgba(2, 132, 199, 0.2), rgba(2, 132, 199, 0.2)), url('/fondo-sidebar_Micuenta.png')",
         backgroundSize: "cover",
         backgroundPosition: "top left",
+        // "fixed" ancla el tamaño/recorte a la ventana en vez de al alto
+        // total de la barra, que en pantallas altas de contenido se
+        // estira tanto como <main> (son flex hermanos) — sin esto,
+        // "cover" termina mostrando un recorte distinto al de <main>.
+        backgroundAttachment: "fixed",
       }}
     >
       <div className="p-3 shrink-0">

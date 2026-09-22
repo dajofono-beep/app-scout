@@ -220,7 +220,23 @@ export default async function AdminDashboardPage({ searchParams }) {
   });
 
   return (
-    <div id="resumen-imprimible">
+    <div
+      id="resumen-imprimible"
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(2, 132, 199, 0.2), rgba(2, 132, 199, 0.2)), url('/FondoAdmin.jfif')",
+        backgroundSize: "cover",
+        backgroundPosition: "left top",
+        // "fixed" ancla el tamaño/recorte a la ventana en vez de al alto
+        // total de esta pantalla (mucho más alta que la ventana, por las
+        // tarjetas apiladas) — <main> y la barra lateral son flex
+        // hermanos, así que ambos se estiran a ese mismo alto; sin
+        // "fixed" en los dos, "cover" termina mostrando un recorte
+        // distinto en cada uno.
+        backgroundAttachment: "fixed",
+      }}
+      className="-m-4 md:-m-8 p-4 md:p-8 print:m-0 print:p-0"
+    >
       <h1 className="text-2xl font-bold text-slate-800 mb-1">Resumen</h1>
       <div className="flex items-center justify-between gap-3 mb-6">
         <p className="text-sm text-slate-400">

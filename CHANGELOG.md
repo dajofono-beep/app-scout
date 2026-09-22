@@ -352,3 +352,4 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-09-22 — Fondo del panel de Administración
 
 - La barra lateral de Administración ahora usa la misma ilustración de montañas que el menú de Mi Cuenta (`fondo-sidebar_Micuenta.png`), en vez de la imagen anterior — se eliminó del repositorio por quedar sin uso.
+- Se probó un fondo ilustrado también en la pantalla de Resumen, con un velo celeste y anclado a la ventana (en vez del contenido, que en pantallas con muchas tarjetas es mucho más alto) para que combine con el tono de la barra lateral — queda pendiente de retomar más adelante, probablemente cambiando alguna de las dos imágenes.

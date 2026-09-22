@@ -63,4 +63,8 @@ body {
   #resumen-imprimible .rounded-2xl {
     break-inside: avoid;
   }
+
+  #resumen-imprimible {
+    background-image: none !important;
+  }
 }

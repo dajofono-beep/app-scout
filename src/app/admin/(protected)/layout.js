@@ -24,9 +24,9 @@ export default async function AdminLayout({ children }) {
   }
 
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-sky-100 to-sky-50">
+    <div className="min-h-screen flex bg-sky-50">
       <BarraLateral nombreAdmin={admin.nombre} />
-      <main className="flex-1 min-w-0 p-4 md:p-8 print:p-0 bg-sky-100 print:bg-white">
+      <main className="flex-1 min-w-0 p-4 md:p-8 print:p-0 bg-sky-50 print:bg-white">
         {children}
       </main>
     </div>
