@@ -23,6 +23,9 @@ export async function guardarMercadoPagoConfig(formData) {
     formData.get("access_token_produccion")?.toString().trim() || null;
   const public_key_produccion =
     formData.get("public_key_produccion")?.toString().trim() || null;
+  const webhook_secret_prueba = formData.get("webhook_secret_prueba")?.toString().trim() || null;
+  const webhook_secret_produccion =
+    formData.get("webhook_secret_produccion")?.toString().trim() || null;
   const recargoRaw = formData.get("recargo_porcentaje")?.toString();
   const recargo_porcentaje = recargoRaw ? Number(recargoRaw) : 0;
 
@@ -52,6 +55,8 @@ export async function guardarMercadoPagoConfig(formData) {
       public_key_prueba,
       access_token_produccion,
       public_key_produccion,
+      webhook_secret_prueba,
+      webhook_secret_produccion,
       recargo_porcentaje,
       updated_at: new Date().toISOString(),
     })

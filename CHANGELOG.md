@@ -364,3 +364,10 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-09-23 — Corrección: fondo de la barra lateral de Administración casi invisible
 
 - La ilustración de montañas de la barra lateral (`fondo-sidebar_Micuenta.png`) se veía casi en blanco en pantallas anchas de escritorio: el ajuste anterior calculaba el recorte de la imagen contra el ancho de toda la ventana en vez del angosto de la barra, así que la agrandaba de más y solo dejaba ver una tira de cielo liso. Se corrigió dándole a la barra su propio alto fijo de pantalla (se mantiene siempre visible al hacer scroll) para que el recorte se calcule contra su tamaño real y angosto — las montañas vuelven a verse.
+
+## 2026-09-23 — Auditoría de seguridad (Strix) y primeras correcciones
+
+- Se corrió un análisis de seguridad estático con [Strix](https://github.com/usestrix/strix) sobre una copia del código sin credenciales. De los hallazgos, se corrigieron los dos más urgentes:
+- Se actualizó `next` de `16.2.10` a `16.3.6`, que resuelve 5 vulnerabilidades conocidas de la librería (incluyendo una de ejecución remota de código en servidores Windows y una de denegación de servicio vía Server Actions).
+- El webhook de Mercado Pago (`/api/mercadopago/webhook`) ahora valida la firma `x-signature` de cada aviso antes de procesarlo, para que no cualquiera en internet pueda gatillarlo con un `paymentId` inventado y gastar la cuota de la API de MP. La clave secreta del webhook se carga en /admin/medios-pago/mercado-pago (separada por ambiente prueba/producción, distinta del access token) — mientras no esté cargada, el webhook sigue funcionando igual que antes (sin esta protección) para no cortar pagos en producción.
+- Quedan pendientes de una próxima pasada: autorización explícita en los server actions de admin (hoy dependen solo de RLS), la política de lectura de `perfiles` que expone teléfono/redes a todo el grupo, HTML injection en el email de notificación de pago, y el resto de los CVEs de dependencias transitivas (menor severidad, ya cubiertos en parte por el upgrade de Next.js).

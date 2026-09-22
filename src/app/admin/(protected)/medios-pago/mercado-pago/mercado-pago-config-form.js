@@ -105,6 +105,24 @@ export default function MercadoPagoConfigForm({ config }) {
             className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
           />
         </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-600 mb-1">
+            Clave secreta del webhook (prueba)
+          </label>
+          <input
+            name="webhook_secret_prueba"
+            type="password"
+            defaultValue={config.webhook_secret_prueba ?? ""}
+            placeholder="Se genera en Tus integraciones → Webhooks"
+            className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
+          />
+          <p className="text-xs text-slate-500 mt-1">
+            Distinta del access token. Se configura en el panel de
+            desarrolladores de Mercado Pago, en la sección de webhooks de tu
+            aplicación de prueba, y sirve para verificar que los avisos que
+            llegan son realmente de Mercado Pago.
+          </p>
+        </div>
       </div>
 
       <div className="border-t border-slate-100 pt-4 space-y-3">
@@ -130,6 +148,18 @@ export default function MercadoPagoConfigForm({ config }) {
             type="password"
             defaultValue={config.public_key_produccion ?? ""}
             placeholder="APP_USR-..."
+            className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-600 mb-1">
+            Clave secreta del webhook (producción)
+          </label>
+          <input
+            name="webhook_secret_produccion"
+            type="password"
+            defaultValue={config.webhook_secret_produccion ?? ""}
+            placeholder="Se genera en Tus integraciones → Webhooks"
             className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
           />
         </div>

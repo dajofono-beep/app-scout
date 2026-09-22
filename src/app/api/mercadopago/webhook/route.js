@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notificarPagoAAdmins } from "@/lib/email/notificar-pago";
+import { verificarFirmaMercadoPago } from "@/lib/mercadopago/firma";
 
 // Mercado Pago avisa acá cuando cambia el estado de un pago. Nunca hay
 // que confiar en los datos que manda el aviso en sí (podrían falsificarse):
@@ -15,7 +16,8 @@ import { notificarPagoAAdmins } from "@/lib/email/notificar-pago";
 // preferencia (ver crearPagoMercadoPago en mi-cuenta/actions.js).
 export async function POST(request) {
   const url = new URL(request.url);
-  let paymentId = url.searchParams.get("data.id") || url.searchParams.get("id");
+  const dataIdDeUrl = url.searchParams.get("data.id") || url.searchParams.get("id");
+  let paymentId = dataIdDeUrl;
 
   if (!paymentId) {
     try {
@@ -31,7 +33,9 @@ export async function POST(request) {
   const admin = createAdminClient();
   const { data: config } = await admin
     .from("mercadopago_config")
-    .select("ambiente, access_token_prueba, access_token_produccion")
+    .select(
+      "ambiente, access_token_prueba, access_token_produccion, webhook_secret_prueba, webhook_secret_produccion"
+    )
     .eq("id", 1)
     .maybeSingle();
 
@@ -40,6 +44,36 @@ export async function POST(request) {
       ? config?.access_token_produccion
       : config?.access_token_prueba;
   if (!accessToken) return new Response("ok", { status: 200 });
+
+  // Antes de gastar una llamada a la API de Mercado Pago (y de tocar la
+  // base), se valida que el aviso realmente venga de Mercado Pago. Sin
+  // esto, cualquiera en internet puede pegarle a este endpoint con un
+  // paymentId inventado y hacer que la app consuma su cuota de MP.
+  const webhookSecret =
+    config?.ambiente === "produccion"
+      ? config?.webhook_secret_produccion
+      : config?.webhook_secret_prueba;
+
+  if (webhookSecret) {
+    const firmaOk = verificarFirmaMercadoPago({
+      xSignature: request.headers.get("x-signature"),
+      xRequestId: request.headers.get("x-request-id"),
+      dataId: dataIdDeUrl,
+      secret: webhookSecret,
+    });
+    if (!firmaOk) {
+      console.warn("webhook mercadopago: firma inválida, aviso rechazado");
+      return new Response("firma inválida", { status: 401 });
+    }
+  } else {
+    // Todavía no se cargó la clave secreta del webhook en
+    // /admin/medios-pago/mercado-pago — se procesa igual para no cortar
+    // pagos en producción, pero queda sin esta protección hasta que se
+    // configure.
+    console.warn(
+      "webhook mercadopago: falta configurar la clave secreta del webhook, aviso procesado sin verificar firma"
+    );
+  }
 
   const respuesta = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
     headers: { Authorization: `Bearer ${accessToken}` },

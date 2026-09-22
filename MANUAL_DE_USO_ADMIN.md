@@ -121,7 +121,7 @@ ABM de las ramas del Grupo (Manada, Unidad Scout, Caminantes, Rovers, Adultos), 
 
 ### 9.4 Medios de Pago
 
-Interruptores para elegir qué medios de pago pueden usar las familias al cargar un pago (Efectivo, Transferencia, Mercado Pago). Desde acá, **Configurar →** en Mercado Pago lleva a cargar el titular de referencia, las credenciales (de prueba y de producción, nunca se muestran a las familias) y el ambiente activo (Prueba/Producción).
+Interruptores para elegir qué medios de pago pueden usar las familias al cargar un pago (Efectivo, Transferencia, Mercado Pago). Desde acá, **Configurar →** en Mercado Pago lleva a cargar el titular de referencia, las credenciales (de prueba y de producción, nunca se muestran a las familias), la **clave secreta del webhook** de cada ambiente (se genera en el panel de Mercado Pago, en Tus integraciones → Webhooks — es distinta del access token, y sirve para que la app verifique que los avisos de pago realmente vienen de Mercado Pago) y el ambiente activo (Prueba/Producción).
 
 Debajo, la tarjeta **Notificaciones Pagos** configura el aviso por mail que se manda a los administradores cada vez que una familia registra un pago — con el detalle de miembro, importe, medio de pago, y si queda pendiente de revisión o ya se acreditó solo.
 
