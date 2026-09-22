@@ -46,33 +46,49 @@ function leerCampos(formData) {
   };
 }
 
+// crearMensaje/actualizarMensaje devuelven { ok, error } en vez de tirar
+// una excepción: Next.js esconde el mensaje real de un `throw` lanzado
+// desde un Server Action en producción (queda el mensaje genérico "An
+// error occurred in the Server Components render..."), así que un
+// valor de retorno normal es la única forma de que motivos como "la
+// fecha de fin no puede ser anterior a la de inicio" lleguen tal cual
+// al formulario.
 export async function crearMensaje(formData) {
-  const { supabase, user } = await requireSession();
-  const campos = leerCampos(formData);
+  try {
+    const { supabase, user } = await requireSession();
+    const campos = leerCampos(formData);
 
-  const { error } = await supabase
-    .from("mensajes")
-    .insert({ ...campos, creado_por: user.id });
-  if (error) throw new Error(error.message);
+    const { error } = await supabase
+      .from("mensajes")
+      .insert({ ...campos, creado_por: user.id });
+    if (error) throw new Error(error.message);
+  } catch (err) {
+    return { ok: false, error: err.message };
+  }
 
   revalidatePath("/admin/mensajes");
   redirect("/admin/mensajes");
 }
 
 export async function actualizarMensaje(formData) {
-  const { supabase } = await requireSession();
   const id = formData.get("id");
-  const campos = leerCampos(formData);
-  const activo = formData.get("activo") === "on";
+  try {
+    const { supabase } = await requireSession();
+    const campos = leerCampos(formData);
+    const activo = formData.get("activo") === "on";
 
-  const { error } = await supabase
-    .from("mensajes")
-    .update({ ...campos, activo })
-    .eq("id", id);
-  if (error) throw new Error(error.message);
+    const { error } = await supabase
+      .from("mensajes")
+      .update({ ...campos, activo })
+      .eq("id", id);
+    if (error) throw new Error(error.message);
+  } catch (err) {
+    return { ok: false, error: err.message };
+  }
 
   revalidatePath("/admin/mensajes");
   revalidatePath(`/admin/mensajes/${id}`);
+  return { ok: true };
 }
 
 export async function eliminarMensaje(formData) {

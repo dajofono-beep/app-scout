@@ -343,3 +343,8 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - Cada encuesta se puede compartir con un link corto (`app.azimut-scout.ar/e/<código>`) para mandar por WhatsApp: quien lo abre sin haber iniciado sesión pasa primero por el login de siempre (rama, nombre y contraseña) y cae directo en esa encuesta al terminar.
 - En Mi Cuenta, "Encuestas" es una pestaña más del menú (como Mensajes) con el listado de pendientes/respondidas; abrir una encuesta puntual para responderla sí es una página aparte, necesario para que el link funcione.
 - En Administración, la ficha de cada encuesta muestra el link para compartir, y una tarjeta de Resultados (desplegable) con dos gráficos de torta — porcentaje por respuesta y participación por rama —, cuántos respondieron y un botón para exportar todo a PDF (con la opción de incluir o no la nómina de quiénes respondieron y quiénes faltan, agrupada por rama en columnas).
+
+## 2026-09-22 — Control de rango de fechas (Mensajes, Encuestas, Fechas importantes)
+
+- En los tres lugares donde se carga una vigencia con fecha de inicio y fin (Mensajes, Encuestas, Fechas importantes), la fecha de fin ya no deja elegir un día anterior al de inicio — el campo lo bloquea directamente.
+- De paso se corrigió que, si igual llegaba una fecha inválida (o cualquier otro dato inválido) al guardar, se mostraba la pantalla de error genérica de producción en vez del motivo real — ahora los tres formularios muestran el mensaje real, igual que ya pasa en el resto de la app.

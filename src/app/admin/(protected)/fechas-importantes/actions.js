@@ -36,26 +36,36 @@ function leerCampos(formData) {
   return { nombre, tipo, fecha_inicio, fecha_fin, mensaje };
 }
 
+// crearFechaImportante/actualizarFechaImportante devuelven { ok, error }
+// en vez de tirar una excepción: Next.js esconde el mensaje real de un
+// `throw` lanzado desde un Server Action en producción, así que un
+// valor de retorno normal es la única forma de que motivos como "la
+// fecha de finalización no puede ser anterior a la de inicio" lleguen
+// tal cual al formulario.
 export async function crearFechaImportante(formData) {
-  const supabase = await requireSession();
-  const campos = leerCampos(formData);
-  const imagen = formData.get("imagen");
+  try {
+    const supabase = await requireSession();
+    const campos = leerCampos(formData);
+    const imagen = formData.get("imagen");
 
-  const { data: fechaImportante, error } = await supabase
-    .from("fechas_importantes")
-    .insert(campos)
-    .select()
-    .single();
-  if (error) throw new Error(error.message);
-
-  if (imagen && typeof imagen !== "string" && imagen.size > 0) {
-    const admin = createAdminClient();
-    const url = await subirImagenFechaImportante(admin, fechaImportante.id, imagen);
-    const { error: updateError } = await admin
+    const { data: fechaImportante, error } = await supabase
       .from("fechas_importantes")
-      .update({ imagen_url: url })
-      .eq("id", fechaImportante.id);
-    if (updateError) throw new Error(updateError.message);
+      .insert(campos)
+      .select()
+      .single();
+    if (error) throw new Error(error.message);
+
+    if (imagen && typeof imagen !== "string" && imagen.size > 0) {
+      const admin = createAdminClient();
+      const url = await subirImagenFechaImportante(admin, fechaImportante.id, imagen);
+      const { error: updateError } = await admin
+        .from("fechas_importantes")
+        .update({ imagen_url: url })
+        .eq("id", fechaImportante.id);
+      if (updateError) throw new Error(updateError.message);
+    }
+  } catch (err) {
+    return { ok: false, error: err.message };
   }
 
   revalidatePath("/admin/fechas-importantes");
@@ -63,30 +73,35 @@ export async function crearFechaImportante(formData) {
 }
 
 export async function actualizarFechaImportante(formData) {
-  const supabase = await requireSession();
   const id = formData.get("id");
-  const campos = leerCampos(formData);
-  const activo = formData.get("activo") === "on";
-  const imagen = formData.get("imagen");
+  try {
+    const supabase = await requireSession();
+    const campos = leerCampos(formData);
+    const activo = formData.get("activo") === "on";
+    const imagen = formData.get("imagen");
 
-  const { error } = await supabase
-    .from("fechas_importantes")
-    .update({ ...campos, activo })
-    .eq("id", id);
-  if (error) throw new Error(error.message);
-
-  if (imagen && typeof imagen !== "string" && imagen.size > 0) {
-    const admin = createAdminClient();
-    const url = await subirImagenFechaImportante(admin, id, imagen);
-    const { error: updateError } = await admin
+    const { error } = await supabase
       .from("fechas_importantes")
-      .update({ imagen_url: url })
+      .update({ ...campos, activo })
       .eq("id", id);
-    if (updateError) throw new Error(updateError.message);
+    if (error) throw new Error(error.message);
+
+    if (imagen && typeof imagen !== "string" && imagen.size > 0) {
+      const admin = createAdminClient();
+      const url = await subirImagenFechaImportante(admin, id, imagen);
+      const { error: updateError } = await admin
+        .from("fechas_importantes")
+        .update({ imagen_url: url })
+        .eq("id", id);
+      if (updateError) throw new Error(updateError.message);
+    }
+  } catch (err) {
+    return { ok: false, error: err.message };
   }
 
   revalidatePath("/admin/fechas-importantes");
   revalidatePath(`/admin/fechas-importantes/${id}`);
+  return { ok: true };
 }
 
 export async function eliminarFechaImportante(formData) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { eliminarMensaje } from "./actions";
 
 const hoy = () => new Date().toISOString().slice(0, 10);
@@ -13,13 +14,46 @@ export default function MensajeForm({
   accion,
   textoBoton,
 }) {
+  const router = useRouter();
   const [tipo, setTipo] = useState(mensaje?.destinatario_tipo ?? "todos");
+  const [fechaInicio, setFechaInicio] = useState(mensaje?.fecha_inicio ?? hoy());
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const destinatarioIdInicial = (tipoEsperado) =>
     mensaje?.destinatario_tipo === tipoEsperado ? mensaje.destinatario_id : "";
 
+  async function handleSubmit(e) {
+    // El botón "Eliminar" tiene su propio formAction — que siga su
+    // camino nativo en vez de pasar por acá.
+    if (e.nativeEvent.submitter?.hasAttribute("formaction")) return;
+
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    try {
+      const resultado = await accion(new FormData(e.currentTarget));
+      if (resultado && !resultado.ok) {
+        setError(resultado.error);
+      } else if (resultado?.ok) {
+        // Solo pasa acá al editar (crear termina en un redirect() del
+        // propio server action) — sin esto, la pantalla se queda con
+        // los datos viejos hasta recargar a mano.
+        router.refresh();
+      }
+    } catch {
+      setError("Ocurrió un error inesperado. Intentá de nuevo.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
-    <form action={accion} className="bg-white rounded-2xl shadow-sm p-5 space-y-3">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white rounded-2xl shadow-sm p-5 space-y-3"
+    >
       {mensaje && <input type="hidden" name="id" value={mensaje.id} />}
 
       <div>
@@ -129,6 +163,7 @@ export default function MensajeForm({
             type="date"
             required
             defaultValue={mensaje?.fecha_inicio ?? hoy()}
+            onChange={(e) => setFechaInicio(e.target.value)}
             className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
           />
         </div>
@@ -139,6 +174,7 @@ export default function MensajeForm({
           <input
             name="fecha_fin"
             type="date"
+            min={fechaInicio}
             defaultValue={mensaje?.fecha_fin ?? ""}
             className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
           />
@@ -155,12 +191,15 @@ export default function MensajeForm({
         </label>
       )}
 
+      {error && <p className="text-sm text-red-500 font-semibold">{error}</p>}
+
       <div className="flex gap-3">
         <button
           type="submit"
-          className="flex-1 bg-sky-600 text-white rounded-full py-2.5 font-bold"
+          disabled={loading}
+          className="flex-1 bg-sky-600 text-white rounded-full py-2.5 font-bold disabled:opacity-50"
         >
-          {textoBoton}
+          {loading ? "Guardando..." : textoBoton}
         </button>
         {mensaje && (
           <button
