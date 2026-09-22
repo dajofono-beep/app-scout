@@ -33,7 +33,7 @@ export default function BarraLateral({ nombreAdmin }) {
 
   return (
     <nav
-      className={`print:hidden shrink-0 flex flex-col relative overflow-hidden border-r border-sky-100 transition-[width] duration-200 ${
+      className={`print:hidden shrink-0 sticky top-0 h-screen flex flex-col relative overflow-hidden border-r border-sky-100 transition-[width] duration-200 ${
         colapsado ? "w-16" : "w-56"
       }`}
       style={{
@@ -41,11 +41,6 @@ export default function BarraLateral({ nombreAdmin }) {
           "linear-gradient(rgba(2, 132, 199, 0.2), rgba(2, 132, 199, 0.2)), url('/fondo-sidebar_Micuenta.png')",
         backgroundSize: "cover",
         backgroundPosition: "top left",
-        // "fixed" ancla el tamaño/recorte a la ventana en vez de al alto
-        // total de la barra, que en pantallas altas de contenido se
-        // estira tanto como <main> (son flex hermanos) — sin esto,
-        // "cover" termina mostrando un recorte distinto al de <main>.
-        backgroundAttachment: "fixed",
       }}
     >
       <div className="p-3 shrink-0">

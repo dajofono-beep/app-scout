@@ -360,3 +360,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - El número de **Miembros totales** ahora queda centrado (vertical y horizontalmente) en el espacio de la tarjeta, y se agrandó para destacarse más.
 - Al imprimir o exportar a PDF la pantalla de Resumen, el fondo ilustrado ya no aparece: queda siempre blanco.
 - **Miembros totales** ahora respeta el filtro de "Filtrar por rama": si se elige una rama, muestra la cantidad (y la tendencia vs. mes anterior) solo de esa rama, en vez del total general siempre.
+
+## 2026-09-23 — Corrección: fondo de la barra lateral de Administración casi invisible
+
+- La ilustración de montañas de la barra lateral (`fondo-sidebar_Micuenta.png`) se veía casi en blanco en pantallas anchas de escritorio: el ajuste anterior calculaba el recorte de la imagen contra el ancho de toda la ventana en vez del angosto de la barra, así que la agrandaba de más y solo dejaba ver una tira de cielo liso. Se corrigió dándole a la barra su propio alto fijo de pantalla (se mantiene siempre visible al hacer scroll) para que el recorte se calcule contra su tamaño real y angosto — las montañas vuelven a verse.
