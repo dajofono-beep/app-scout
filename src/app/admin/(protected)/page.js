@@ -51,16 +51,20 @@ export default async function AdminDashboardPage({ searchParams }) {
     .select("id, nombre, apellido, rama_id, familia_id, created_at, ramas(nombre)")
     .eq("activo", true);
 
-  const totalMiembros = miembrosActivos?.length ?? 0;
+  const miembrosDelFiltro = (miembrosActivos ?? []).filter(
+    (m) => !ramaSeleccionada || m.rama_id === ramaSeleccionada
+  );
+
+  const totalMiembros = miembrosDelFiltro.length;
 
   // Aproximación de "vs. mes anterior": cuántos de los miembros
-  // activos de hoy ya existían antes de este mes. No contempla bajas
-  // (no hay un registro histórico de eso), pero da una tendencia útil
-  // sin necesitar una tabla nueva.
+  // activos de hoy (dentro del filtro de rama actual) ya existían antes
+  // de este mes. No contempla bajas (no hay un registro histórico de
+  // eso), pero da una tendencia útil sin necesitar una tabla nueva.
   const inicioMes = new Date();
   inicioMes.setDate(1);
   inicioMes.setHours(0, 0, 0, 0);
-  const miembrosMesAnterior = (miembrosActivos ?? []).filter(
+  const miembrosMesAnterior = miembrosDelFiltro.filter(
     (m) => new Date(m.created_at) < inicioMes
   ).length;
   const diferenciaMiembros = totalMiembros - miembrosMesAnterior;
@@ -74,9 +78,7 @@ export default async function AdminDashboardPage({ searchParams }) {
     ? (ramas ?? []).find((r) => r.id === ramaSeleccionada)
     : null;
 
-  const idsFiltrados = (miembrosActivos ?? [])
-    .filter((m) => !ramaSeleccionada || m.rama_id === ramaSeleccionada)
-    .map((m) => m.id);
+  const idsFiltrados = miembrosDelFiltro.map((m) => m.id);
 
   const { data: saldos } = await supabase
     .from("saldos_miembros")

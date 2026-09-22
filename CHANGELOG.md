@@ -359,3 +359,4 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - Se redujo el padding y los espaciados internos de las tarjetas de la primera fila (Miembros totales, Participación por rama, Filtrar por rama) y de la segunda (Situación de cobranza, Cobranza mensual, Medios de pago) — incluyendo achicar el alto fijo del gráfico de Cobranza mensual — para que ninguna quede cortada en pantallas más chicas.
 - El número de **Miembros totales** ahora queda centrado (vertical y horizontalmente) en el espacio de la tarjeta, y se agrandó para destacarse más.
 - Al imprimir o exportar a PDF la pantalla de Resumen, el fondo ilustrado ya no aparece: queda siempre blanco.
+- **Miembros totales** ahora respeta el filtro de "Filtrar por rama": si se elige una rama, muestra la cantidad (y la tendencia vs. mes anterior) solo de esa rama, en vez del total general siempre.
