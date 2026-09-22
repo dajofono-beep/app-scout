@@ -2,19 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-
-async function requireSession() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("No autenticado");
-  return supabase;
-}
+import { requireAdmin } from "@/lib/supabase/require-admin";
 
 export async function crearProducto(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
   const nombre = formData.get("nombre")?.toString().trim();
   const descripcion = formData.get("descripcion")?.toString().trim() || null;
   const importe = Number(formData.get("importe"));
@@ -49,7 +40,7 @@ export async function crearProducto(formData) {
 }
 
 export async function actualizarProducto(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
   const id = formData.get("id");
   const nombre = formData.get("nombre")?.toString().trim();
   const descripcion = formData.get("descripcion")?.toString().trim() || null;
@@ -90,7 +81,7 @@ export async function actualizarProducto(formData) {
 }
 
 export async function eliminarProducto(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
   const id = formData.get("id");
 
   const { error } = await supabase.from("productos").delete().eq("id", id);

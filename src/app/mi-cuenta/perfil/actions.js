@@ -36,6 +36,7 @@ export async function actualizarPerfil(formData) {
   const red_social_1 = formData.get("red_social_1")?.toString().trim() || null;
   const red_social_2 = formData.get("red_social_2")?.toString().trim() || null;
   const red_social_3 = formData.get("red_social_3")?.toString().trim() || null;
+  const mostrar_contacto = formData.get("mostrar_contacto") === "on";
   const foto = formData.get("foto");
 
   const { error } = await supabase.from("perfiles").upsert({
@@ -44,6 +45,7 @@ export async function actualizarPerfil(formData) {
     red_social_1,
     red_social_2,
     red_social_3,
+    mostrar_contacto,
     updated_at: new Date().toISOString(),
   });
   if (error) return { ok: false, error: error.message };

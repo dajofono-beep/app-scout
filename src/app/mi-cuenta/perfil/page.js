@@ -61,6 +61,7 @@ export default async function PerfilPage() {
             redSocial1={perfil?.red_social_1}
             redSocial2={perfil?.red_social_2}
             redSocial3={perfil?.red_social_3}
+            mostrarContacto={perfil?.mostrar_contacto}
           />
         </section>
 

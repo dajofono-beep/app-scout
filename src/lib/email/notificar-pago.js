@@ -6,6 +6,19 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://azimut-kappa.verce
 const formatoMoneda = (n) =>
   Number(n).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
 
+// El email se arma con interpolación directa de texto en HTML: cualquier
+// dato que venga de un formulario (medio de pago) o de la base cargado
+// por un admin (nombre de un miembro) tiene que pasar por acá antes de
+// insertarse, para que no se pueda inyectar HTML/JS en el mail que reciben
+// los administradores.
+const escaparHtml = (texto) =>
+  String(texto)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+
 // Avisa por mail a los administradores que optaron por recibirlos
 // cuando se registra un pago (efectivo/transferencia o Mercado Pago).
 // Pensado para nunca interrumpir el flujo de pago: cualquier error acá
@@ -44,7 +57,7 @@ export async function notificarPagoAAdmins({ partes, medioPago, origen }) {
       .select("id, nombre, apellido")
       .in("id", miembroIds);
     const nombrePorId = Object.fromEntries(
-      (miembros ?? []).map((m) => [m.id, `${m.apellido}, ${m.nombre}`])
+      (miembros ?? []).map((m) => [m.id, escaparHtml(`${m.apellido}, ${m.nombre}`)])
     );
 
     const total = partes.reduce((acc, p) => acc + Number(p.importe), 0);
@@ -68,7 +81,7 @@ export async function notificarPagoAAdmins({ partes, medioPago, origen }) {
       subject: `Nuevo pago registrado — ${formatoMoneda(total)}`,
       html: `
         <p>Se registró un nuevo pago en Azimut.</p>
-        <p><strong>Medio de pago:</strong> ${medioPago}</p>
+        <p><strong>Medio de pago:</strong> ${escaparHtml(medioPago)}</p>
         <p><strong>Detalle:</strong><br>${detalle}</p>
         <p><strong>Total:</strong> ${formatoMoneda(total)}</p>
         <p>${estadoTexto}</p>

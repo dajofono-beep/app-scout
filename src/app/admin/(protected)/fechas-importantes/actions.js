@@ -2,18 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { subirImagenFechaImportante } from "@/lib/supabase/fechas-importantes";
-
-async function requireSession() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("No autenticado");
-  return supabase;
-}
 
 const TIPOS_VALIDOS = ["efemeride", "fecha_scout"];
 
@@ -44,7 +35,7 @@ function leerCampos(formData) {
 // tal cual al formulario.
 export async function crearFechaImportante(formData) {
   try {
-    const supabase = await requireSession();
+    const { supabase } = await requireAdmin();
     const campos = leerCampos(formData);
     const imagen = formData.get("imagen");
 
@@ -75,7 +66,7 @@ export async function crearFechaImportante(formData) {
 export async function actualizarFechaImportante(formData) {
   const id = formData.get("id");
   try {
-    const supabase = await requireSession();
+    const { supabase } = await requireAdmin();
     const campos = leerCampos(formData);
     const activo = formData.get("activo") === "on";
     const imagen = formData.get("imagen");
@@ -105,7 +96,7 @@ export async function actualizarFechaImportante(formData) {
 }
 
 export async function eliminarFechaImportante(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
   const id = formData.get("id");
 
   const { error } = await supabase.from("fechas_importantes").delete().eq("id", id);

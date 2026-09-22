@@ -2,32 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-// A diferencia del resto de las acciones del panel (que dejan que la
-// política de RLS "for all using (es_administrador())" bloquee a
-// cualquiera que no sea admin), acá hace falta este chequeo explícito:
-// crear/editar/borrar un administrador usa el cliente con clave de
-// servicio (para poder tocar auth.users), que bypassea RLS por
-// completo. Sin este chequeo, cualquiera que invocara la acción
-// directamente podría crearse a sí mismo como administrador.
-async function requireAdmin() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("No autenticado");
-
-  const { data: soyAdmin } = await supabase
-    .from("administradores")
-    .select("auth_user_id")
-    .eq("auth_user_id", user.id)
-    .maybeSingle();
-  if (!soyAdmin) throw new Error("No tenés permisos de administrador");
-
-  return user;
-}
+// Esta pantalla usa el cliente con clave de servicio para crear/editar/
+// borrar administradores (necesita tocar auth.users, algo que ninguna
+// policy RLS puede cubrir), así que el chequeo explícito de
+// requireAdmin() es la única barrera real acá — sin él, cualquiera que
+// invocara la acción directamente podría crearse a sí mismo como
+// administrador.
 
 // Devuelve { ok: true } o { ok: false, error } en vez de tirar una
 // excepción: Next.js borra el mensaje de cualquier error lanzado con
@@ -115,7 +98,7 @@ export async function actualizarAdministrador(formData) {
 }
 
 export async function eliminarAdministrador(formData) {
-  const user = await requireAdmin();
+  const { user } = await requireAdmin();
 
   const auth_user_id = formData.get("auth_user_id")?.toString();
   if (!auth_user_id) throw new Error("Falta el administrador");

@@ -84,6 +84,7 @@ Un chat con **SanMa**, el asistente del Grupo. Le podés preguntar dudas sobre e
 
 Desde el menú, entrás a tu ficha personal:
 - Datos de contacto (teléfono, redes sociales) y foto.
+- Un check para elegir si querés que tu teléfono y redes se vean en el directorio de Social (sección 8) al resto de las familias del grupo, o preferís que no se muestren. Por defecto queda visible.
 - Cambiar tu contraseña.
 
 ## 12. Salir

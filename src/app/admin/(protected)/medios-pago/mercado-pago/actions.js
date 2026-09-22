@@ -1,19 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
-
-async function requireSession() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("No autenticado");
-  return supabase;
-}
+import { requireAdmin } from "@/lib/supabase/require-admin";
 
 export async function guardarMercadoPagoConfig(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
 
   const titular = formData.get("titular")?.toString().trim() || null;
   const ambiente = formData.get("ambiente")?.toString();

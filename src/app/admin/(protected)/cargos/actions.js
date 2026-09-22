@@ -1,16 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
-
-async function requireSession() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("No autenticado");
-  return { supabase, user };
-}
+import { requireAdmin } from "@/lib/supabase/require-admin";
 
 function sumarMeses(fechaISO, meses) {
   const [y, m, d] = fechaISO.split("-").map(Number);
@@ -79,7 +70,7 @@ async function tieneProductoActivo(supabase, miembro_id, producto_id) {
 }
 
 export async function crearCargoIndividual(formData) {
-  const { supabase, user } = await requireSession();
+  const { supabase, user } = await requireAdmin();
 
   const miembro_id = formData.get("miembro_id")?.toString();
   const producto_id = formData.get("producto_id")?.toString();
@@ -118,7 +109,7 @@ export async function crearCargoIndividual(formData) {
 }
 
 export async function crearCargoPorRama(formData) {
-  const { supabase, user } = await requireSession();
+  const { supabase, user } = await requireAdmin();
 
   const rama_id = formData.get("rama_id")?.toString();
   const producto_id = formData.get("producto_id")?.toString();
@@ -199,7 +190,7 @@ function porcentajeParaOrden(orden, escala) {
 }
 
 export async function crearCargoPorFamilia(formData) {
-  const { supabase, user } = await requireSession();
+  const { supabase, user } = await requireAdmin();
 
   const familia_id = formData.get("familia_id")?.toString();
   const producto_id = formData.get("producto_id")?.toString();
@@ -284,7 +275,7 @@ export async function crearCargoPorFamilia(formData) {
 }
 
 export async function crearCargoManual(formData) {
-  const { supabase, user } = await requireSession();
+  const { supabase, user } = await requireAdmin();
 
   const miembro_id = formData.get("miembro_id")?.toString();
   const concepto = formData.get("concepto")?.toString().trim();
@@ -314,7 +305,7 @@ export async function crearCargoManual(formData) {
 }
 
 export async function actualizarCargo(formData) {
-  const { supabase } = await requireSession();
+  const { supabase } = await requireAdmin();
 
   const id = formData.get("id");
   const concepto = formData.get("concepto")?.toString().trim();
@@ -337,7 +328,7 @@ export async function actualizarCargo(formData) {
 }
 
 export async function cancelarCargo(formData) {
-  const { supabase } = await requireSession();
+  const { supabase } = await requireAdmin();
   const id = formData.get("id");
 
   const { error } = await supabase
@@ -352,7 +343,7 @@ export async function cancelarCargo(formData) {
 }
 
 export async function reactivarCargo(formData) {
-  const { supabase } = await requireSession();
+  const { supabase } = await requireAdmin();
   const id = formData.get("id");
 
   const { error } = await supabase
@@ -402,7 +393,7 @@ async function cancelarCargosDeMiembros(supabase, miembroIds, producto_id) {
 }
 
 export async function cancelarCargosPorFamilia(formData) {
-  const { supabase } = await requireSession();
+  const { supabase } = await requireAdmin();
 
   const familia_id = formData.get("familia_id")?.toString();
   const producto_id = formData.get("producto_id")?.toString();
@@ -432,7 +423,7 @@ export async function cancelarCargosPorFamilia(formData) {
 }
 
 export async function cancelarCargosPorRama(formData) {
-  const { supabase } = await requireSession();
+  const { supabase } = await requireAdmin();
 
   const rama_id = formData.get("rama_id")?.toString();
   const producto_id = formData.get("producto_id")?.toString();
@@ -462,7 +453,7 @@ export async function cancelarCargosPorRama(formData) {
 }
 
 export async function cancelarCargosPorMiembro(formData) {
-  const { supabase } = await requireSession();
+  const { supabase } = await requireAdmin();
 
   const miembro_id = formData.get("miembro_id")?.toString();
   const producto_id = formData.get("producto_id")?.toString();

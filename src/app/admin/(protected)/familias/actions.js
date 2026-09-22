@@ -2,19 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-
-async function requireSession() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("No autenticado");
-  return supabase;
-}
+import { requireAdmin } from "@/lib/supabase/require-admin";
 
 export async function crearFamilia(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
   const nombre = formData.get("nombre")?.toString().trim();
   if (!nombre) throw new Error("El nombre es obligatorio");
 
@@ -27,7 +18,7 @@ export async function crearFamilia(formData) {
 }
 
 export async function actualizarFamilia(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
   const id = formData.get("id");
   const nombre = formData.get("nombre")?.toString().trim();
   if (!nombre) throw new Error("El nombre es obligatorio");
@@ -43,7 +34,7 @@ export async function actualizarFamilia(formData) {
 }
 
 export async function eliminarFamilia(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
   const id = formData.get("id");
 
   const { error } = await supabase.from("familias").delete().eq("id", id);

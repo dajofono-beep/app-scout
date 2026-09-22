@@ -10,6 +10,7 @@ export default function PerfilForm({
   redSocial1,
   redSocial2,
   redSocial3,
+  mostrarContacto,
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -98,6 +99,21 @@ export default function PerfilForm({
           defaultValue={redSocial3 ?? ""}
           className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
         />
+      </div>
+
+      <div className="flex items-start gap-2 pt-1">
+        <input
+          id="mostrar_contacto"
+          name="mostrar_contacto"
+          type="checkbox"
+          defaultChecked={mostrarContacto !== false}
+          className="mt-1"
+        />
+        <label htmlFor="mostrar_contacto" className="text-sm text-slate-600">
+          Mostrar mi teléfono y redes sociales a las demás familias del grupo
+          en el directorio de Social. Desmarcá esto si preferís que no se
+          vean — el resto de tu perfil no cambia.
+        </label>
       </div>
 
       {error && <p className="text-sm text-red-500 font-semibold">{error}</p>}

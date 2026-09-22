@@ -1,19 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
-
-async function requireSession() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("No autenticado");
-  return supabase;
-}
+import { requireAdmin } from "@/lib/supabase/require-admin";
 
 export async function actualizarPorcentaje(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
   const posicion = Number(formData.get("posicion"));
   const porcentaje = Number(formData.get("porcentaje"));
 
@@ -32,7 +23,7 @@ export async function actualizarPorcentaje(formData) {
 }
 
 export async function agregarPosicion(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
   const posicion = Number(formData.get("posicion"));
   const porcentaje = Number(formData.get("porcentaje"));
 
@@ -50,7 +41,7 @@ export async function agregarPosicion(formData) {
 }
 
 export async function eliminarPosicion(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
   const posicion = Number(formData.get("posicion"));
 
   const { error } = await supabase

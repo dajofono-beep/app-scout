@@ -2,16 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-
-async function requireSession() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("No autenticado");
-  return { supabase, user };
-}
+import { requireAdmin } from "@/lib/supabase/require-admin";
 
 const TIPOS_DESTINATARIO_VALIDOS = ["todos", "rama", "familia", "miembro"];
 const TIPOS_RESPUESTA_VALIDOS = ["opcion_unica", "texto_libre"];
@@ -88,7 +79,7 @@ function leerCampos(formData) {
 export async function crearEncuesta(formData) {
   let data;
   try {
-    const { supabase, user } = await requireSession();
+    const { supabase, user } = await requireAdmin();
     const campos = leerCampos(formData);
 
     // Reintenta si el código corto (al azar) choca con uno ya existente
@@ -117,7 +108,7 @@ export async function crearEncuesta(formData) {
 export async function actualizarEncuesta(formData) {
   const id = formData.get("id");
   try {
-    const { supabase } = await requireSession();
+    const { supabase } = await requireAdmin();
     const campos = leerCampos(formData);
     const activo = formData.get("activo") === "on";
 
@@ -136,7 +127,7 @@ export async function actualizarEncuesta(formData) {
 }
 
 export async function eliminarEncuesta(formData) {
-  const { supabase } = await requireSession();
+  const { supabase } = await requireAdmin();
   const id = formData.get("id");
 
   const { error } = await supabase.from("encuestas").delete().eq("id", id);

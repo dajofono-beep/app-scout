@@ -2,16 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-
-async function requireSession() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("No autenticado");
-  return { supabase, user };
-}
+import { requireAdmin } from "@/lib/supabase/require-admin";
 
 const TIPOS_VALIDOS = ["todos", "rama", "familia", "miembro"];
 
@@ -55,7 +46,7 @@ function leerCampos(formData) {
 // al formulario.
 export async function crearMensaje(formData) {
   try {
-    const { supabase, user } = await requireSession();
+    const { supabase, user } = await requireAdmin();
     const campos = leerCampos(formData);
 
     const { error } = await supabase
@@ -73,7 +64,7 @@ export async function crearMensaje(formData) {
 export async function actualizarMensaje(formData) {
   const id = formData.get("id");
   try {
-    const { supabase } = await requireSession();
+    const { supabase } = await requireAdmin();
     const campos = leerCampos(formData);
     const activo = formData.get("activo") === "on";
 
@@ -92,7 +83,7 @@ export async function actualizarMensaje(formData) {
 }
 
 export async function eliminarMensaje(formData) {
-  const { supabase } = await requireSession();
+  const { supabase } = await requireAdmin();
   const id = formData.get("id");
 
   const { error } = await supabase.from("mensajes").delete().eq("id", id);

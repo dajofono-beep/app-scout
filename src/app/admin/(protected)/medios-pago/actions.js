@@ -1,19 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
-
-async function requireSession() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("No autenticado");
-  return supabase;
-}
+import { requireAdmin } from "@/lib/supabase/require-admin";
 
 export async function guardarMediosPago(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
 
   const { data: medios, error: mediosError } = await supabase
     .from("medios_pago")
@@ -34,7 +25,7 @@ export async function guardarMediosPago(formData) {
 }
 
 export async function guardarNotificacionesPagosConfig(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
 
   const email = formData.get("email")?.toString().trim() || null;
   const app_password = formData.get("app_password")?.toString().trim() || null;

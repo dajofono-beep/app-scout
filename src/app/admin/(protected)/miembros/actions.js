@@ -3,25 +3,8 @@
 import ExcelJS from "exceljs";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 import { createAdminClient } from "@/lib/supabase/admin";
-
-async function verificarAdmin() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("No autenticado");
-
-  const { data: admin } = await supabase
-    .from("administradores")
-    .select("auth_user_id")
-    .eq("auth_user_id", user.id)
-    .maybeSingle();
-  if (!admin) throw new Error("No autorizado");
-
-  return supabase;
-}
 
 // Crea la fila en `miembros` y su usuario de acceso (email interno +
 // DNI como contraseña inicial). Usada tanto por el alta manual como por
@@ -71,7 +54,7 @@ async function esRamaAdultos(client, rama_id) {
 }
 
 export async function crearMiembro(formData) {
-  await verificarAdmin();
+  await requireAdmin();
 
   const nombre = formData.get("nombre")?.toString().trim();
   const apellido = formData.get("apellido")?.toString().trim();
@@ -113,7 +96,7 @@ export async function crearMiembro(formData) {
 }
 
 export async function actualizarMiembro(formData) {
-  const supabase = await verificarAdmin();
+  const { supabase } = await requireAdmin();
 
   const id = formData.get("id");
   const nombre = formData.get("nombre")?.toString().trim();
@@ -155,7 +138,7 @@ export async function actualizarMiembro(formData) {
 // Vuelve a poner el DNI como contraseña de acceso del miembro, igual que
 // al darlo de alta, por si olvidó la que puso él mismo.
 export async function restaurarContrasena(formData) {
-  await verificarAdmin();
+  await requireAdmin();
 
   const id = formData.get("id")?.toString();
   if (!id) throw new Error("Falta el id del participante");
@@ -234,7 +217,7 @@ function mapearRamaId(funcion, ramasPorNombre) {
 }
 
 export async function importarMiembros(formData) {
-  await verificarAdmin();
+  await requireAdmin();
 
   const archivo = formData.get("archivo");
   if (!archivo || typeof archivo === "string" || archivo.size === 0) {

@@ -1,19 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
-
-async function requireSession() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("No autenticado");
-  return supabase;
-}
+import { requireAdmin } from "@/lib/supabase/require-admin";
 
 export async function actualizarPago(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
 
   const id = formData.get("id");
   const importe = Number(formData.get("importe"));
@@ -36,7 +27,7 @@ export async function actualizarPago(formData) {
 }
 
 export async function cancelarPago(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
   const id = formData.get("id");
 
   const { error } = await supabase
@@ -51,7 +42,7 @@ export async function cancelarPago(formData) {
 }
 
 export async function reactivarPago(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
   const id = formData.get("id");
 
   const { error } = await supabase
@@ -66,7 +57,7 @@ export async function reactivarPago(formData) {
 }
 
 export async function confirmarPago(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
   const id = formData.get("id");
 
   const { error } = await supabase
@@ -81,7 +72,7 @@ export async function confirmarPago(formData) {
 }
 
 export async function confirmarPagos(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
   const ids = formData.getAll("id").map((v) => v.toString());
   if (ids.length === 0) throw new Error("Elegí al menos un pago");
 
@@ -98,7 +89,7 @@ export async function confirmarPagos(formData) {
 }
 
 export async function reasignarPago(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
   const id = formData.get("id");
   const nuevo_miembro_id = formData.get("nuevo_miembro_id")?.toString();
 

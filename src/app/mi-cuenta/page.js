@@ -115,6 +115,10 @@ export default async function MiCuentaPage() {
 
   const directorio = (miembrosSocial ?? []).map((m) => {
     const perfilMiembro = perfilPorMiembroId[m.id];
+    // Cada miembro puede optar por no mostrar su teléfono/redes al resto
+    // del grupo (ver perfil/actions.js) — a uno mismo siempre se le
+    // muestran sus propios datos, sea cual sea la preferencia.
+    const mostrarContacto = m.id === miembro.id || perfilMiembro?.mostrar_contacto !== false;
     const [, cumpleMes, cumpleDia] = m.fecha_nacimiento
       ? m.fecha_nacimiento.split("-").map(Number)
       : [null, null, null];
@@ -126,10 +130,10 @@ export default async function MiCuentaPage() {
       cumpleMes,
       cumpleDia,
       fotoUrl: perfilMiembro?.foto_url ?? null,
-      telefono: perfilMiembro?.telefono ?? null,
-      redSocial1: perfilMiembro?.red_social_1 ?? null,
-      redSocial2: perfilMiembro?.red_social_2 ?? null,
-      redSocial3: perfilMiembro?.red_social_3 ?? null,
+      telefono: mostrarContacto ? perfilMiembro?.telefono ?? null : null,
+      redSocial1: mostrarContacto ? perfilMiembro?.red_social_1 ?? null : null,
+      redSocial2: mostrarContacto ? perfilMiembro?.red_social_2 ?? null : null,
+      redSocial3: mostrarContacto ? perfilMiembro?.red_social_3 ?? null : null,
     };
   });
 

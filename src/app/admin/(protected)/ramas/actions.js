@@ -2,19 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-
-async function requireSession() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("No autenticado");
-  return supabase;
-}
+import { requireAdmin } from "@/lib/supabase/require-admin";
 
 export async function crearRama(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
   const nombre = formData.get("nombre")?.toString().trim();
   const ordenRaw = formData.get("orden")?.toString();
   const orden = ordenRaw ? Number(ordenRaw) : 0;
@@ -28,7 +19,7 @@ export async function crearRama(formData) {
 }
 
 export async function actualizarRama(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
   const id = formData.get("id");
   const nombre = formData.get("nombre")?.toString().trim();
   const ordenRaw = formData.get("orden")?.toString();
@@ -46,7 +37,7 @@ export async function actualizarRama(formData) {
 }
 
 export async function eliminarRama(formData) {
-  const supabase = await requireSession();
+  const { supabase } = await requireAdmin();
   const id = formData.get("id");
 
   const { error } = await supabase.from("ramas").delete().eq("id", id);

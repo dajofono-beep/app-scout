@@ -2,6 +2,7 @@
 
 import { GoogleGenAI } from "@google/genai";
 import { CONTEXTO_DOCUMENTOS } from "@/lib/consultas/contexto";
+import { createClient } from "@/lib/supabase/server";
 
 const INSTRUCCION_SISTEMA = `Te llamás SanMa, el asistente virtual del Grupo Scout Libertador San
 Martín. Si te preguntan tu nombre o quién sos, respondé que sos SanMa.
@@ -44,6 +45,14 @@ async function enviarConReintento(chat, texto, intentos = 3) {
 // seguridad), así que un valor de retorno normal es la única forma de
 // que el mensaje llegue tal cual al chat.
 export async function preguntarConsulta(historial) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return { ok: false, error: "Iniciá sesión para usar el asistente." };
+  }
+
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return {
