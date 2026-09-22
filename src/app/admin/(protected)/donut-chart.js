@@ -37,7 +37,7 @@ export default function DonutChart({ labels, valores, colores, etiquetasValor, v
   );
 
   const leyenda = (
-    <div className="space-y-1.5 min-w-0">
+    <div className="space-y-1 min-w-0">
       {labels.map((label, i) => (
         <div key={label} className="flex items-center justify-between gap-4 text-sm">
           <span className="flex items-center gap-1.5 text-slate-600 min-w-0">
@@ -55,7 +55,7 @@ export default function DonutChart({ labels, valores, colores, etiquetasValor, v
 
   if (vertical) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-3">
         {dona}
         {leyenda}
       </div>

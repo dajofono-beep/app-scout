@@ -353,3 +353,9 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 
 - La barra lateral de Administración ahora usa la misma ilustración de montañas que el menú de Mi Cuenta (`fondo-sidebar_Micuenta.png`), en vez de la imagen anterior — se eliminó del repositorio por quedar sin uso.
 - Se probó un fondo ilustrado también en la pantalla de Resumen, con un velo celeste y anclado a la ventana (en vez del contenido, que en pantallas con muchas tarjetas es mucho más alto) para que combine con el tono de la barra lateral — queda pendiente de retomar más adelante, probablemente cambiando alguna de las dos imágenes.
+
+## 2026-09-22 — Ajustes en el dashboard de Resumen
+
+- Se redujo el padding y los espaciados internos de las tarjetas de la primera fila (Miembros totales, Participación por rama, Filtrar por rama) y de la segunda (Situación de cobranza, Cobranza mensual, Medios de pago) — incluyendo achicar el alto fijo del gráfico de Cobranza mensual — para que ninguna quede cortada en pantallas más chicas.
+- El número de **Miembros totales** ahora queda centrado (vertical y horizontalmente) en el espacio de la tarjeta, y se agrandó para destacarse más.
+- Al imprimir o exportar a PDF la pantalla de Resumen, el fondo ilustrado ya no aparece: queda siempre blanco.

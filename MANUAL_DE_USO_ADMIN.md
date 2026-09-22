@@ -30,7 +30,7 @@ Es la pantalla principal al ingresar. Muestra de un vistazo el estado del Grupo:
 - **Más deuda / Menos deuda**: rankings de miembros.
 - **Familias al día / Familias con deuda**: sobre las fechas ya vencidas (no cuenta cuotas futuras).
 
-Arriba a la derecha, el botón **Imprimir** abre el diálogo de impresión del navegador — desde ahí se puede imprimir en papel o guardar como PDF en tamaño A4, con las tarjetas en la misma distribución que se ve en pantalla.
+Arriba a la derecha, el botón **Imprimir** abre el diálogo de impresión del navegador — desde ahí se puede imprimir en papel o guardar como PDF en tamaño A4, con las tarjetas en la misma distribución que se ve en pantalla. El fondo ilustrado de la pantalla nunca sale en lo impreso/exportado: siempre queda blanco.
 
 ## 3. Miembros
 

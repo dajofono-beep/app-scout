@@ -33,9 +33,9 @@ export default function CobranzaMensualChart({ meses }) {
   const escalaMax = calcularEscala(maxTotal);
   const pasos = [0, 0.25, 0.5, 0.75, 1].map((f) => escalaMax * f);
 
-  const alto = 175;
-  const abajo = 145;
-  const arriba = 10;
+  const alto = 145;
+  const abajo = 115;
+  const arriba = 8;
   const izquierda = 85;
   const anchoGrupo = 70;
   const derecha = izquierda + anchoGrupo * meses.length;
@@ -51,7 +51,7 @@ export default function CobranzaMensualChart({ meses }) {
 
   return (
     <div>
-      <div className="flex items-center gap-4 text-xs text-slate-500 mb-2">
+      <div className="flex items-center gap-4 text-xs text-slate-500 mb-1.5">
         <span className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-sm bg-sky-600" /> Cobrado
         </span>

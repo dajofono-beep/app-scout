@@ -238,17 +238,17 @@ export default async function AdminDashboardPage({ searchParams }) {
       className="-m-4 md:-m-8 p-4 md:p-8 print:m-0 print:p-0"
     >
       <h1 className="text-2xl font-bold text-slate-800 mb-1">Resumen</h1>
-      <div className="flex items-center justify-between gap-3 mb-6">
+      <div className="flex items-center justify-between gap-3 mb-3">
         <p className="text-sm text-slate-400">
           Mostrando: {ramaActual ? ramaActual.nombre : "Todo el grupo"}
         </p>
         <BotonImprimir />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-6 print:grid-cols-6 gap-4 mb-4">
+      <div className="grid grid-cols-1 lg:grid-cols-6 print:grid-cols-6 gap-4 mb-3">
         <Link
           href="/admin"
-          className={`bg-white rounded-2xl shadow-sm p-5 block lg:col-span-1 print:col-span-1 ${
+          className={`bg-white rounded-2xl shadow-sm p-4 flex flex-col lg:col-span-1 print:col-span-1 ${
             !ramaSeleccionada ? "ring-2 ring-sky-500" : ""
           }`}
         >
@@ -256,29 +256,31 @@ export default async function AdminDashboardPage({ searchParams }) {
             <img
               src="/Dashboard/Miembros Totales.png"
               alt=""
-              className="w-7 h-7 object-contain"
+              className="w-6 h-6 object-contain"
             />
             <p className="text-sm font-bold text-sky-700">Miembros totales</p>
           </div>
-          <p className="text-3xl font-bold text-slate-800">{totalMiembros}</p>
-          {diferenciaMiembros !== 0 && (
-            <p
-              className={`text-xs font-semibold mt-1 ${
-                diferenciaMiembros > 0 ? "text-emerald-600" : "text-red-500"
-              }`}
-            >
-              {diferenciaMiembros > 0 ? "↗" : "↘"} {diferenciaMiembros > 0 ? "+" : ""}
-              {diferenciaMiembros} vs. mes anterior
-            </p>
-          )}
+          <div className="flex-1 flex flex-col items-center justify-center text-center">
+            <p className="text-5xl font-bold text-slate-800">{totalMiembros}</p>
+            {diferenciaMiembros !== 0 && (
+              <p
+                className={`text-xs font-semibold mt-1 ${
+                  diferenciaMiembros > 0 ? "text-emerald-600" : "text-red-500"
+                }`}
+              >
+                {diferenciaMiembros > 0 ? "↗" : "↘"} {diferenciaMiembros > 0 ? "+" : ""}
+                {diferenciaMiembros} vs. mes anterior
+              </p>
+            )}
+          </div>
         </Link>
 
-        <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2 print:col-span-2">
-          <div className="flex items-center gap-2 mb-3">
+        <div className="bg-white rounded-2xl shadow-sm p-4 lg:col-span-2 print:col-span-2">
+          <div className="flex items-center gap-2 mb-2">
             <img
               src="/Dashboard/Participación por rama.png"
               alt=""
-              className="w-7 h-7 object-contain"
+              className="w-6 h-6 object-contain"
             />
             <p className="text-sm font-bold text-sky-700">Participación por rama</p>
           </div>
@@ -290,19 +292,19 @@ export default async function AdminDashboardPage({ searchParams }) {
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-3 print:col-span-3">
-          <div className="flex items-center gap-2 mb-3">
+        <div className="bg-white rounded-2xl shadow-sm p-4 lg:col-span-3 print:col-span-3">
+          <div className="flex items-center gap-2 mb-2">
             <img
               src="/Dashboard/Filtrar por rama.png"
               alt=""
-              className="w-7 h-7 object-contain"
+              className="w-6 h-6 object-contain"
             />
             <p className="text-sm font-bold text-sky-700">Filtrar por rama</p>
           </div>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-1.5">
             <Link
               href="/admin"
-              className={`text-sm font-semibold px-3 py-2 rounded-full border text-center ${
+              className={`text-sm font-semibold px-3 py-1.5 rounded-full border text-center ${
                 !ramaSeleccionada
                   ? "bg-sky-600 border-sky-600 text-white"
                   : "bg-white border-slate-200 text-slate-600"
@@ -316,7 +318,7 @@ export default async function AdminDashboardPage({ searchParams }) {
                 <Link
                   key={r.id}
                   href={`/admin?rama_id=${r.id}`}
-                  className={`text-sm font-semibold px-3 py-2 rounded-full border text-center ${
+                  className={`text-sm font-semibold px-3 py-1.5 rounded-full border text-center ${
                     activa
                       ? "bg-sky-600 border-sky-600 text-white"
                       : "bg-white border-slate-200 text-slate-600"
@@ -330,7 +332,7 @@ export default async function AdminDashboardPage({ searchParams }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-8 print:grid-cols-8 gap-4 mb-4 lg:items-stretch print:items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-8 print:grid-cols-8 gap-4 mb-3 lg:items-stretch print:items-stretch">
         <div className="lg:col-span-3 print:col-span-3">
           <SituacionCobranza
             totalAcreditado={totalAcreditado}
@@ -339,12 +341,12 @@ export default async function AdminDashboardPage({ searchParams }) {
           />
         </div>
         <CobranzaMensualCard mesesCompletos={cobranzaMensual} />
-        <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-2 print:col-span-2 h-full">
-          <div className="flex items-center gap-2 mb-3">
+        <div className="bg-white rounded-2xl shadow-sm p-4 lg:col-span-2 print:col-span-2 h-full">
+          <div className="flex items-center gap-2 mb-2">
             <img
               src="/Dashboard/Medios de pago.png"
               alt=""
-              className="w-7 h-7 object-contain"
+              className="w-6 h-6 object-contain"
             />
             <p className="text-sm font-bold text-sky-700">Medios de pago</p>
           </div>

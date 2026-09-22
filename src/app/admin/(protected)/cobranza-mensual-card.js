@@ -12,13 +12,13 @@ export default function CobranzaMensualCard({ mesesCompletos }) {
   const meses = mesesCompletos.slice(-cantidad);
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm p-5 lg:col-span-3 print:col-span-3 h-full">
-      <div className="flex items-center justify-between gap-3 mb-3">
+    <div className="bg-white rounded-2xl shadow-sm p-4 lg:col-span-3 print:col-span-3 h-full">
+      <div className="flex items-center justify-between gap-3 mb-2">
         <div className="flex items-center gap-2">
           <img
             src="/Dashboard/Cobranza mensual.png"
             alt=""
-            className="w-7 h-7 object-contain"
+            className="w-6 h-6 object-contain"
           />
           <p className="text-sm font-bold text-sky-700">Cobranza mensual</p>
         </div>

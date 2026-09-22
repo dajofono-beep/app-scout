@@ -19,13 +19,13 @@ export default function SituacionCobranza({ totalAcreditado, totalPendiente, tot
   const pct = (v) => (totalGeneral > 0 ? (v / totalGeneral) * 100 : 0);
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm p-5 h-full flex flex-col">
-      <div className="flex items-start justify-between gap-3 mb-3">
+    <div className="bg-white rounded-2xl shadow-sm p-4 h-full flex flex-col">
+      <div className="flex items-start justify-between gap-3 mb-2">
         <div className="flex items-center gap-2">
           <img
             src="/Dashboard/Situación de cobranza.png"
             alt=""
-            className="w-7 h-7 object-contain"
+            className="w-6 h-6 object-contain"
           />
           <p className="text-sm font-bold text-sky-700">Situación de cobranza</p>
         </div>
@@ -48,7 +48,7 @@ export default function SituacionCobranza({ totalAcreditado, totalPendiente, tot
         ))}
       </div>
 
-      <div className="space-y-1.5 mt-3">
+      <div className="space-y-1 mt-2">
         {segmentos.map((s) => (
           <div key={s.label} className="flex items-center justify-between gap-2 text-sm">
             <span className="flex items-center gap-1.5 text-slate-600 min-w-0">
@@ -66,7 +66,7 @@ export default function SituacionCobranza({ totalAcreditado, totalPendiente, tot
       </div>
 
       {totalFaltante > 0 && (
-        <div className="mt-auto bg-red-50 text-red-700 text-sm font-bold rounded-xl px-3 py-2 text-center">
+        <div className="mt-auto bg-red-50 text-red-700 text-sm font-bold rounded-xl px-3 py-1.5 text-center">
           Pendiente: {formatoMoneda(totalFaltante)}
         </div>
       )}

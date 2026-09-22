@@ -65,6 +65,6 @@ body {
   }
 
   #resumen-imprimible {
-    background-image: none !important;
+    background: #ffffff !important;
   }
 }
