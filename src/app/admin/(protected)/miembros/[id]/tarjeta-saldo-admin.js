@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import BarraProgreso3DAdmin from "./barra-progreso-3d-admin";
 
 const formatoMoneda = (n) =>
   Number(n).toLocaleString("es-AR", { style: "currency", currency: "ARS" });
@@ -10,10 +11,11 @@ function formatoFechaCorta(iso) {
   return `${dia}/${mes}`;
 }
 
-// Misma información y misma lógica que la tarjeta de saldo de Mi
-// Cuenta (tarjeta-saldo.js), pero en blanco (para distinguirse a
-// simple vista de lo que ve la familia) y con el texto en tercera
-// persona, ya que acá lo lee el administrador sobre otra persona.
+// Misma información, misma lógica y misma barra de progreso de pago
+// que la tarjeta de saldo de Mi Cuenta (tarjeta-saldo.js), pero en
+// blanco (para distinguirse a simple vista de lo que ve la familia) y
+// con el texto en tercera persona, ya que acá lo lee el administrador
+// sobre otra persona.
 export default function TarjetaSaldoAdmin({
   saldoTotal,
   totalCargos,
@@ -22,6 +24,15 @@ export default function TarjetaSaldoAdmin({
   vencimiento,
 }) {
   const [abierto, setAbierto] = useState(false);
+  // Cuántas veces se abrió el panel — cambia solo al abrir, y se usa
+  // como `key` del contenido para forzar que se vuelva a montar (y así
+  // BarraProgreso3DAdmin repita su animación) cada vez que se abre.
+  const [aperturas, setAperturas] = useState(0);
+
+  function alternarInfo() {
+    if (!abierto) setAperturas((a) => a + 1);
+    setAbierto((v) => !v);
+  }
 
   return (
     <section className="bg-white rounded-2xl shadow-sm p-5">
@@ -42,7 +53,8 @@ export default function TarjetaSaldoAdmin({
       )}
 
       {abierto && (
-        <div className="mt-3 pt-3 border-t border-slate-100">
+        <div key={aperturas} className="mt-3 pt-3 border-t border-slate-100 space-y-3">
+          <BarraProgreso3DAdmin totalCargos={totalCargos} pagosRealizados={pagosRealizados} />
           {vencimiento ? (
             vencimiento.estado === "vencido" ? (
               <>
@@ -73,7 +85,7 @@ export default function TarjetaSaldoAdmin({
       )}
       <button
         type="button"
-        onClick={() => setAbierto((v) => !v)}
+        onClick={alternarInfo}
         className="flex items-center gap-1 mt-3 text-xs font-semibold text-sky-600"
       >
         {abierto ? "Ocultar" : "Más información"}

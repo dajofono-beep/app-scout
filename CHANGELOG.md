@@ -393,3 +393,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - Sin sesión (`anon`) solo se puede leer lo que usa la pantalla de ingreso: `ramas` y `miembros_publico`.
 - De ahora en adelante, cada migración que cree una tabla o vista tiene que incluir sus propios `GRANT`.
 - **Fuga de datos corregida en las vistas de pagos y saldos**: `estado_pagos` y `saldos_miembros` se ejecutaban con los permisos de su dueño y salteaban el RLS, así que cualquiera con la clave pública, incluso sin iniciar sesión, podía leer los pagos y saldos de todo el grupo desde la API de Supabase (comprobado: 26 pagos y 73 saldos visibles sin login). La migración `032_vistas_security_invoker.sql` las pasa a `security_invoker` y les quita el acceso a `anon`: los administradores siguen viendo todo y cada familia solo lo suyo.
+
+## 2026-09-23 — Progreso de pago en la tarjeta de saldo del administrador
+
+- La tarjeta de saldo de cada miembro, en su ficha dentro de Administración, ahora también muestra la barra de "Progreso de pago" dentro de "Más información" — la misma que ya tenía la tarjeta de saldo de la familia en Mi Cuenta, con la misma animación, pero en versión clara para combinar con el resto del panel.
