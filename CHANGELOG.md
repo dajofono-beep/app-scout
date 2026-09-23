@@ -386,3 +386,10 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - `npm audit` quedó en 0 vulnerabilidades altas/críticas; nanoid, postcss y brace-expansion ya habían quedado resueltos por el upgrade de Next.js y el `npm audit fix` anteriores.
 - Único ítem restante: `exceljs@4.4.0` (la última versión estable) trae `uuid@8.3.2`, con una advisory moderada (GHSA-w5hq-g745-h8pq) sobre `uuid.v4()/v5()/v6()` cuando se les pasa un buffer propio. Se revisó el código fuente de exceljs: solo usa `uuidv4()` sin argumentos (para IDs de reglas de formato condicional, que esta app ni siquiera usa), por lo que la ruta vulnerable nunca se ejecuta acá. La única corrección que ofrece `npm audit fix --force` es bajar exceljs a la versión 3.4.0 (breaking change, sin arreglar nada real en este caso), así que se dejó como está — riesgo aceptado, no explotable en este uso.
 - Con esto se cierra por completo el backlog del reporte de Strix.
+
+## 2026-09-23 — Permisos explícitos de la Data API de Supabase
+
+- Supabase deja de otorgar automáticamente permisos de la Data API a las tablas nuevas del esquema `public` a partir del 30/10/2026. Se agregó la migración `031_grants_explicitos.sql`, que deja escritos los `GRANT` de todas las tablas y vistas actuales, para que recrear la base desde las migraciones (proyecto nuevo, preview, `db reset`) siga funcionando. Solo agrega permisos: en producción no cambia nada.
+- Sin sesión (`anon`) solo se puede leer lo que usa la pantalla de ingreso: `ramas` y `miembros_publico`.
+- De ahora en adelante, cada migración que cree una tabla o vista tiene que incluir sus propios `GRANT`.
+- **Fuga de datos corregida en las vistas de pagos y saldos**: `estado_pagos` y `saldos_miembros` se ejecutaban con los permisos de su dueño y salteaban el RLS, así que cualquiera con la clave pública, incluso sin iniciar sesión, podía leer los pagos y saldos de todo el grupo desde la API de Supabase (comprobado: 26 pagos y 73 saldos visibles sin login). La migración `032_vistas_security_invoker.sql` las pasa a `security_invoker` y les quita el acceso a `anon`: los administradores siguen viendo todo y cada familia solo lo suyo.
