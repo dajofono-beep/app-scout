@@ -414,3 +414,9 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - Cualquiera con la clave pública de Supabase (que viaja en el navegador) podía leer, sin iniciar sesión, los mensajes dirigidos a "Todos", los **perfiles** (teléfono, redes sociales y foto), las encuestas dirigidas a "Todos" y el calendario de fechas importantes. Es el mismo tipo de fuga que ya se había cerrado en pagos y saldos.
 - Migraciones `036_mensajes_solo_autenticados.sql` y `037_perfiles_encuestas_fechas_solo_autenticados.sql`: se les quita el acceso a `anon` y sus políticas de lectura quedan limitadas a usuarios con sesión. Verificado: sin sesión esas tablas ya no devuelven nada, y lo único legible sin ingresar queda en `ramas` y `miembros_publico` (lo que necesita la pantalla de ingreso). El link corto `/e/<código>` sigue funcionando (usa el cliente admin).
 - Pendiente: el opt-out "no mostrar mi contacto" de los perfiles se aplica solo en pantalla, no en la base; un miembro logueado que consulte la API directo todavía podría leer el teléfono de quien lo ocultó.
+
+## 2026-11-01 — El opt-out de contacto ahora se aplica en la base
+
+- "No mostrar mi contacto" (Perfil) se aplicaba solo en pantalla: la app traía los perfiles de todo el grupo y ocultaba teléfono y redes al dibujar el directorio de Social, pero un miembro logueado que consultara la API directo podía leer el teléfono de quien lo había ocultado (comprobado con usuarios de prueba).
+- Migración `038_perfiles_directorio.sql`: nueva vista `perfiles_directorio`, que entrega a todo el grupo la foto y, solo de quienes lo permiten (y siempre de uno mismo), teléfono y redes. El directorio de Social ahora lee esa vista.
+- Migración `039_perfiles_solo_propios.sql`: la tabla `perfiles` pasa a ser legible solo por su dueño y por los administradores. Se ejecuta después de publicar el código que lee la vista.
