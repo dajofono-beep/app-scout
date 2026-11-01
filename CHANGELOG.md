@@ -402,3 +402,9 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 
 - Cada mensaje en Mi Cuenta tiene ahora un botón "Marcar como leído" (queda verde con un tilde y se puede desmarcar). La marca es por familia: si un hermano lo marca, queda leído para todos los hermanos; un participante sin familia asignada se trata como una familia de uno solo, igual que en Encuestas.
 - Migración `033_mensaje_lecturas.sql`: nueva tabla `mensaje_lecturas` con RLS (cada familia ve y modifica solo sus marcas, y solo de mensajes que le corresponden) y sus `GRANT`.
+
+## 2026-11-01 — Mensajes: archivos adjuntos PDF
+
+- Los mensajes pueden llevar hasta 3 PDFs adjuntos (4 MB en total). En Administración, el formulario de mensaje tiene una sección "Archivos adjuntos (PDF)" para agregar y quitar archivos, y el listado muestra un 📎 con la cantidad. En Mi Cuenta, cada mensaje muestra sus archivos como tarjetas que se abren en una pestaña nueva.
+- Los archivos viven en un bucket privado (`mensajes-adjuntos`) y se abren con un link firmado de 60 segundos, que solo se genera si la familia puede ver ese mensaje (`/mensaje-adjunto/<id>`). Se valida en el servidor que realmente sean PDF (cabecera `%PDF-`), y al borrar un mensaje también se borran sus archivos.
+- Migraciones `034_mensaje_adjuntos.sql` (tabla `mensaje_adjuntos`, RLS, grants y bucket) y `035_adjuntos_solo_autenticados.sql` (quita el acceso de `anon` a `mensaje_adjuntos` y `mensaje_lecturas`: sin sesión se podían leer los nombres de los adjuntos de mensajes para "Todos").

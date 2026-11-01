@@ -3,6 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/supabase/require-admin";
+import { createAdminClient } from "@/lib/supabase/admin";
+import {
+  archivosNuevos,
+  validarAdjuntos,
+  subirAdjuntos,
+  borrarArchivos,
+} from "@/lib/supabase/mensaje-adjuntos";
 
 const TIPOS_VALIDOS = ["todos", "rama", "familia", "miembro"];
 
@@ -48,11 +55,33 @@ export async function crearMensaje(formData) {
   try {
     const { supabase, user } = await requireAdmin();
     const campos = leerCampos(formData);
+    const nuevos = archivosNuevos(formData);
+    // Se valida antes de insertar para no dejar un mensaje a medio crear
+    // por un adjunto inválido.
+    await validarAdjuntos(nuevos);
 
-    const { error } = await supabase
+    const { data: mensaje, error } = await supabase
       .from("mensajes")
-      .insert({ ...campos, creado_por: user.id });
+      .insert({ ...campos, creado_por: user.id })
+      .select("id")
+      .single();
     if (error) throw new Error(error.message);
+
+    if (nuevos.length > 0) {
+      const admin = createAdminClient();
+      try {
+        const filas = await subirAdjuntos(admin, mensaje.id, nuevos);
+        const { error: errorAdjuntos } = await supabase.from("mensaje_adjuntos").insert(filas);
+        if (errorAdjuntos) {
+          await borrarArchivos(admin, filas.map((f) => f.ruta));
+          throw new Error(errorAdjuntos.message);
+        }
+      } catch (err) {
+        // Sin los adjuntos el mensaje quedaría incompleto: se deshace.
+        await supabase.from("mensajes").delete().eq("id", mensaje.id);
+        throw err;
+      }
+    }
   } catch (err) {
     return { ok: false, error: err.message };
   }
@@ -67,12 +96,47 @@ export async function actualizarMensaje(formData) {
     const { supabase } = await requireAdmin();
     const campos = leerCampos(formData);
     const activo = formData.get("activo") === "on";
+    const nuevos = archivosNuevos(formData);
+    const idsAQuitar = new Set(formData.getAll("quitar_adjuntos").map(String));
+
+    const { data: existentes } = await supabase
+      .from("mensaje_adjuntos")
+      .select("id, ruta, tamano")
+      .eq("mensaje_id", id);
+    const aQuitar = (existentes ?? []).filter((a) => idsAQuitar.has(a.id));
+    const conservados = (existentes ?? []).filter((a) => !idsAQuitar.has(a.id));
+    await validarAdjuntos(nuevos, conservados);
+
+    // Orden pensado para que un fallo no deje nada a medias: primero se
+    // suben los archivos nuevos, recién después se toca el mensaje y, al
+    // final, se borra lo que se quitó.
+    const admin = createAdminClient();
+    const subidos = nuevos.length > 0 ? await subirAdjuntos(admin, id, nuevos) : [];
 
     const { error } = await supabase
       .from("mensajes")
       .update({ ...campos, activo })
       .eq("id", id);
-    if (error) throw new Error(error.message);
+    if (error) {
+      await borrarArchivos(admin, subidos.map((s) => s.ruta));
+      throw new Error(error.message);
+    }
+
+    if (subidos.length > 0) {
+      const { error: errorAdjuntos } = await supabase.from("mensaje_adjuntos").insert(subidos);
+      if (errorAdjuntos) {
+        await borrarArchivos(admin, subidos.map((s) => s.ruta));
+        throw new Error(errorAdjuntos.message);
+      }
+    }
+
+    if (aQuitar.length > 0) {
+      await supabase
+        .from("mensaje_adjuntos")
+        .delete()
+        .in("id", aQuitar.map((a) => a.id));
+      await borrarArchivos(admin, aQuitar.map((a) => a.ruta));
+    }
   } catch (err) {
     return { ok: false, error: err.message };
   }
@@ -86,8 +150,20 @@ export async function eliminarMensaje(formData) {
   const { supabase } = await requireAdmin();
   const id = formData.get("id");
 
+  const { data: adjuntos } = await supabase
+    .from("mensaje_adjuntos")
+    .select("ruta")
+    .eq("mensaje_id", id);
+
   const { error } = await supabase.from("mensajes").delete().eq("id", id);
   if (error) throw new Error(error.message);
+
+  // Las filas de mensaje_adjuntos se borran solas (cascade), pero los
+  // archivos del bucket no.
+  await borrarArchivos(
+    createAdminClient(),
+    (adjuntos ?? []).map((a) => a.ruta)
+  );
 
   revalidatePath("/admin/mensajes");
   redirect("/admin/mensajes");

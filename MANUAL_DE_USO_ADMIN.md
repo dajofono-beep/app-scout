@@ -84,6 +84,7 @@ Sección con todo lo que las familias reciben o consultan desde Mi Cuenta.
 Avisos para las familias, ordenados del más nuevo al más viejo.
 
 - **+ Nuevo mensaje**: título, texto, a quién va dirigido (Todos / una Rama / unos Hermanos / un Participante puntual) y el período de vigencia (desde una fecha, o hasta otra).
+- **Archivos adjuntos (PDF)**: hasta 3 PDFs por mensaje y 4 MB en total. Al editar se pueden agregar más o quitar los que ya tiene (la baja se confirma al guardar, con "Deshacer" mientras tanto); tocando el nombre de un archivo se abre. En el listado, los mensajes con adjuntos muestran un 📎 con la cantidad. Los archivos los ven únicamente las familias a las que les llega el mensaje, mientras esté vigente.
 
 ### 8.2 Encuestas
 

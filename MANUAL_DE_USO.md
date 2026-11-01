@@ -57,6 +57,8 @@ Dentro de Principal, en la pestaña **"Movimientos"**, podés ver:
 
 Ahí aparecen los avisos que manda el Grupo — generales, para tu rama, para tus hermanos, o para vos en particular — ordenados del más nuevo al más viejo. Si tu rama tiene un grupo de WhatsApp de padres cargado, también vas a ver una tarjeta con el link para unirte, debajo de los mensajes.
 
+Algunos mensajes traen **archivos adjuntos** (PDF), que aparecen debajo del texto: tocá el que quieras para abrirlo o descargarlo.
+
 Cada mensaje tiene un botón **Marcar como leído**: al tocarlo queda en verde con un tilde ("Leído"), y si lo tocás de nuevo se desmarca. La marca vale para toda la familia: si un hermano lo marca, les aparece como leído a los demás.
 
 ## 7. Encuestas

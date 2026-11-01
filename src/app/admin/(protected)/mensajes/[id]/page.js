@@ -15,6 +15,12 @@ export default async function FichaMensajePage({ params }) {
     .maybeSingle();
   if (!mensaje) notFound();
 
+  const { data: adjuntos } = await supabase
+    .from("mensaje_adjuntos")
+    .select("id, nombre, tamano")
+    .eq("mensaje_id", id)
+    .order("created_at");
+
   const { data: ramas } = await supabase.from("ramas").select("id, nombre").order("nombre");
   const { data: familias } = await supabase
     .from("familias")
@@ -35,6 +41,7 @@ export default async function FichaMensajePage({ params }) {
 
       <MensajeForm
         mensaje={mensaje}
+        adjuntos={adjuntos ?? []}
         ramas={ramas ?? []}
         familias={familias ?? []}
         miembros={miembros ?? []}

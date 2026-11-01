@@ -1,4 +1,5 @@
 import BotonMensajeLeido from "./boton-mensaje-leido";
+import { formatoPeso } from "@/lib/mensaje-adjuntos-limites";
 
 const MESES = [
   "enero",
@@ -20,7 +21,8 @@ function formatoFecha(iso) {
   return `${dia} de ${MESES[mes - 1]}`;
 }
 
-// mensajes: [{ id, titulo, cuerpo, created_at, destinatarioTexto, leido }], ya
+// mensajes: [{ id, titulo, cuerpo, created_at, destinatarioTexto, leido,
+// adjuntos: [{ id, nombre, tamano }] }], ya
 // ordenados del más nuevo al más viejo (la RLS ya filtra a los que le
 // corresponden a esta familia y están vigentes).
 export default function Mensajes({ mensajes, linkGrupoWhatsapp }) {
@@ -42,6 +44,37 @@ export default function Mensajes({ mensajes, linkGrupoWhatsapp }) {
               <p className="text-sm text-slate-600 mt-1 whitespace-pre-wrap">
                 {m.cuerpo}
               </p>
+              {m.adjuntos.length > 0 && (
+                <div className="mt-3 pt-3 border-t border-slate-100 space-y-1.5">
+                  <p className="text-xs font-bold text-slate-600">
+                    {m.adjuntos.length === 1
+                      ? "Archivo adjunto"
+                      : `Archivos adjuntos (${m.adjuntos.length})`}
+                  </p>
+                  {m.adjuntos.map((a) => (
+                    <a
+                      key={a.id}
+                      href={`/mensaje-adjunto/${a.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2.5 rounded-xl border border-sky-100 bg-sky-50 px-2.5 py-2"
+                    >
+                      <span className="shrink-0 w-8 h-9 rounded-md bg-red-100 text-red-700 text-[10px] font-extrabold grid place-items-end justify-center pb-1">
+                        PDF
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-bold text-sky-700">
+                          {a.nombre}
+                        </span>
+                        <span className="block text-xs text-slate-600">{formatoPeso(a.tamano)}</span>
+                      </span>
+                      <span aria-hidden="true" className="text-sky-600 font-bold">
+                        ↓
+                      </span>
+                    </a>
+                  ))}
+                </div>
+              )}
               <BotonMensajeLeido mensajeId={m.id} leidoInicial={m.leido} />
             </div>
           ))}

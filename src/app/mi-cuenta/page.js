@@ -204,11 +204,21 @@ export default async function MiCuentaPage() {
   // La RLS de mensaje_lecturas ya deja pasar solo las marcas de mi
   // familia (o las mías, si no tengo familia), así que alcanza con pedirlas
   // todas.
-  const [{ data: mensajes }, { data: lecturas }] = await Promise.all([
+  // mensaje_adjuntos sigue el mismo criterio: la RLS solo deja pasar los
+  // de los mensajes que esta familia puede ver.
+  const [{ data: mensajes }, { data: lecturas }, { data: adjuntos }] = await Promise.all([
     supabase.from("mensajes").select("*").order("created_at", { ascending: false }),
     supabase.from("mensaje_lecturas").select("mensaje_id"),
+    supabase
+      .from("mensaje_adjuntos")
+      .select("id, mensaje_id, nombre, tamano")
+      .order("created_at"),
   ]);
   const mensajesLeidos = new Set((lecturas ?? []).map((l) => l.mensaje_id));
+  const adjuntosPorMensaje = {};
+  for (const a of adjuntos ?? []) {
+    (adjuntosPorMensaje[a.mensaje_id] ??= []).push(a);
+  }
 
   // La tabla `familias` es de solo lectura para el admin (RLS), así que
   // el nombre de "mis hermanos" se resuelve acá con el cliente admin en
@@ -236,6 +246,7 @@ export default async function MiCuentaPage() {
     ...m,
     destinatarioTexto: etiquetaDestinatario(m),
     leido: mensajesLeidos.has(m.id),
+    adjuntos: adjuntosPorMensaje[m.id] ?? [],
   }));
 
   const { data: config } = await supabase

@@ -20,6 +20,12 @@ export default async function MensajesPage() {
     .select("*")
     .order("created_at", { ascending: false });
 
+  const { data: adjuntos } = await supabase.from("mensaje_adjuntos").select("mensaje_id");
+  const adjuntosPorMensaje = {};
+  for (const a of adjuntos ?? []) {
+    adjuntosPorMensaje[a.mensaje_id] = (adjuntosPorMensaje[a.mensaje_id] ?? 0) + 1;
+  }
+
   const { data: ramas } = await supabase.from("ramas").select("id, nombre");
   const { data: familias } = await supabase.from("familias").select("id, nombre");
   const { data: miembros } = await supabase
@@ -78,6 +84,14 @@ export default async function MensajesPage() {
                   >
                     {m.titulo}
                   </Link>
+                  {adjuntosPorMensaje[m.id] > 0 && (
+                    <span
+                      className="ml-2 text-xs text-slate-600 whitespace-nowrap"
+                      title={`${adjuntosPorMensaje[m.id]} archivo(s) adjunto(s)`}
+                    >
+                      📎 {adjuntosPorMensaje[m.id]}
+                    </span>
+                  )}
                 </td>
                 <td className="p-3 text-slate-600">{etiquetaDestinatario(m)}</td>
                 <td className="p-3 text-slate-600 whitespace-nowrap">
