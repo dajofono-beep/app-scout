@@ -1,3 +1,5 @@
+import BotonMensajeLeido from "./boton-mensaje-leido";
+
 const MESES = [
   "enero",
   "febrero",
@@ -18,7 +20,7 @@ function formatoFecha(iso) {
   return `${dia} de ${MESES[mes - 1]}`;
 }
 
-// mensajes: [{ id, titulo, cuerpo, created_at, destinatarioTexto }], ya
+// mensajes: [{ id, titulo, cuerpo, created_at, destinatarioTexto, leido }], ya
 // ordenados del más nuevo al más viejo (la RLS ya filtra a los que le
 // corresponden a esta familia y están vigentes).
 export default function Mensajes({ mensajes, linkGrupoWhatsapp }) {
@@ -40,6 +42,7 @@ export default function Mensajes({ mensajes, linkGrupoWhatsapp }) {
               <p className="text-sm text-slate-600 mt-1 whitespace-pre-wrap">
                 {m.cuerpo}
               </p>
+              <BotonMensajeLeido mensajeId={m.id} leidoInicial={m.leido} />
             </div>
           ))}
           {mensajes.length === 0 && (

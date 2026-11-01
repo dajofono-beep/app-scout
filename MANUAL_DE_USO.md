@@ -57,6 +57,8 @@ Dentro de Principal, en la pestaña **"Movimientos"**, podés ver:
 
 Ahí aparecen los avisos que manda el Grupo — generales, para tu rama, para tus hermanos, o para vos en particular — ordenados del más nuevo al más viejo. Si tu rama tiene un grupo de WhatsApp de padres cargado, también vas a ver una tarjeta con el link para unirte, debajo de los mensajes.
 
+Cada mensaje tiene un botón **Marcar como leído**: al tocarlo queda en verde con un tilde ("Leído"), y si lo tocás de nuevo se desmarca. La marca vale para toda la familia: si un hermano lo marca, les aparece como leído a los demás.
+
 ## 7. Encuestas
 
 Ahí aparecen las encuestas que arma el Grupo (confirmar participación en un campamento, elegir una opción, indicar un talle, etc.), ordenadas de la más nueva a la más vieja, marcadas como "Pendiente de responder" o "Ya respondiste". Tocando una, elegís tu respuesta y la enviás — se puede volver a cambiar mientras la encuesta siga abierta.

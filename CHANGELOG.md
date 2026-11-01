@@ -397,3 +397,8 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-09-23 — Progreso de pago en la tarjeta de saldo del administrador
 
 - La tarjeta de saldo de cada miembro, en su ficha dentro de Administración, ahora también muestra la barra de "Progreso de pago" dentro de "Más información" — la misma que ya tenía la tarjeta de saldo de la familia en Mi Cuenta, con la misma animación, pero en versión clara para combinar con el resto del panel.
+
+## 2026-11-01 — Mensajes: marcar como leído
+
+- Cada mensaje en Mi Cuenta tiene ahora un botón "Marcar como leído" (queda verde con un tilde y se puede desmarcar). La marca es por familia: si un hermano lo marca, queda leído para todos los hermanos; un participante sin familia asignada se trata como una familia de uno solo, igual que en Encuestas.
+- Migración `033_mensaje_lecturas.sql`: nueva tabla `mensaje_lecturas` con RLS (cada familia ve y modifica solo sus marcas, y solo de mensajes que le corresponden) y sus `GRANT`.
