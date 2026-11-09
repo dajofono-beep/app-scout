@@ -8,7 +8,7 @@ import GraficoTorta from "../grafico-torta";
 import ParticipantesToggle from "../participantes-toggle";
 import ResultadosCard from "../resultados-card";
 import ExportarPdfForm from "../exportar-pdf-form";
-import { armarResultados } from "../resultados";
+import { armarResultados, porcentajeDe } from "../resultados";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://app.azimut-scout.ar";
 
@@ -75,7 +75,7 @@ export default async function FichaEncuestaPage({ params }) {
 
         <p className="text-sm text-slate-600">
           Respondieron <span className="font-bold">{respondieron.length}</span> de{" "}
-          {grupos.size}
+          {grupos.size} ({porcentajeDe(respondieron.length, grupos.size)})
         </p>
 
         <ParticipantesToggle participantes={participantes} />

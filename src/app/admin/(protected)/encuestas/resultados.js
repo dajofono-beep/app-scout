@@ -8,6 +8,12 @@ const ETIQUETA_TIPO_DESTINATARIO = {
   miembro: "Participante",
 };
 
+// "41 de 67" -> "61%". Sin destinatarios (total 0) da "0%" en vez de NaN.
+export function porcentajeDe(parte, total) {
+  const pct = total > 0 ? (parte / total) * 100 : 0;
+  return `${Math.round(pct).toLocaleString("es-AR")}%`;
+}
+
 export function armarResultados({ encuesta, miembros, familias, ramas, respuestas }) {
   const nombreFamilia = Object.fromEntries((familias ?? []).map((f) => [f.id, f.nombre]));
   const nombreRama = Object.fromEntries((ramas ?? []).map((r) => [r.id, r.nombre]));

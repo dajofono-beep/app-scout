@@ -1,7 +1,7 @@
 import path from "path";
 import PDFDocument from "pdfkit";
 import { createClient } from "@/lib/supabase/server";
-import { armarResultados } from "../../resultados";
+import { armarResultados, porcentajeDe } from "../../resultados";
 import { dibujarTortaPdf } from "../../dibujar-torta-pdf";
 import { escribirNominaPdf } from "../../escribir-nomina-pdf";
 
@@ -89,7 +89,11 @@ export async function POST(request, { params }) {
   doc
     .fontSize(11)
     .fillColor("#334155")
-    .text(`Respondieron ${respondieron.length} de ${grupos.size}`, margin, y);
+    .text(
+      `Respondieron ${respondieron.length} de ${grupos.size} (${porcentajeDe(respondieron.length, grupos.size)})`,
+      margin,
+      y
+    );
   y = doc.y + 20;
 
   // Apiladas una debajo de la otra (no lado a lado): las etiquetas de

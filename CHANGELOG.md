@@ -424,3 +424,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-11-08 — Mismo fondo en todas las secciones de Administración
 
 - El fondo ilustrado de Resumen (montañas con velo celeste) ahora se ve en todas las secciones del panel de Administración (Pagos, Miembros, Cargos, Conceptos, Mensajes, etc.), no solo en Resumen: se movió al layout compartido del panel. Queda anclado a la ventana, así que se ve igual en pantallas cortas y en las de listas largas. Al imprimir o exportar a PDF sigue saliendo siempre sobre fondo blanco.
+
+## 2026-11-09 — Encuestas: porcentaje de respuestas
+
+- En los resultados de cada encuesta (Administración), la leyenda "Respondieron X de Y" ahora suma el porcentaje que representan, por ejemplo "Respondieron 41 de 67 (61%)". Lo mismo en el PDF exportado.
