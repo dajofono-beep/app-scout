@@ -420,3 +420,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 - "No mostrar mi contacto" (Perfil) se aplicaba solo en pantalla: la app traía los perfiles de todo el grupo y ocultaba teléfono y redes al dibujar el directorio de Social, pero un miembro logueado que consultara la API directo podía leer el teléfono de quien lo había ocultado (comprobado con usuarios de prueba).
 - Migración `038_perfiles_directorio.sql`: nueva vista `perfiles_directorio`, que entrega a todo el grupo la foto y, solo de quienes lo permiten (y siempre de uno mismo), teléfono y redes. El directorio de Social ahora lee esa vista.
 - Migración `039_perfiles_solo_propios.sql`: la tabla `perfiles` pasa a ser legible solo por su dueño y por los administradores. Se ejecuta después de publicar el código que lee la vista.
+
+## 2026-11-08 — Mismo fondo en todas las secciones de Administración
+
+- El fondo ilustrado de Resumen (montañas con velo celeste) ahora se ve en todas las secciones del panel de Administración (Pagos, Miembros, Cargos, Conceptos, Mensajes, etc.), no solo en Resumen: se movió al layout compartido del panel. Queda anclado a la ventana, así que se ve igual en pantallas cortas y en las de listas largas. Al imprimir o exportar a PDF sigue saliendo siempre sobre fondo blanco.

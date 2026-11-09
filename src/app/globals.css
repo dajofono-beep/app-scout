@@ -64,6 +64,7 @@ body {
     break-inside: avoid;
   }
 
+  #admin-main,
   #resumen-imprimible {
     background: #ffffff !important;
   }
