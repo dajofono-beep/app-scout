@@ -3,13 +3,11 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { urlFirmadaComprobante } from "@/lib/supabase/comprobantes";
-import { actualizarMiembro } from "../actions";
 import { iniciales, colorParaRama } from "../avatar";
-import RestaurarContrasenaBoton from "../restaurar-contrasena-boton";
 import FichaMiembroTabs from "./ficha-miembro-tabs";
+import MiembroDatosForm from "./miembro-datos-form";
 import AsignarCargoIndividualForm from "./asignar-cargo-individual-form";
 import { cancelarCargo, reactivarCargo } from "../../cargos/actions";
-import CamposRamaHermanos from "../campos-rama-hermanos";
 import TarjetaSaldoAdmin from "./tarjeta-saldo-admin";
 import { calcularVencimientos } from "@/app/mi-cuenta/proximo-vencimiento";
 
@@ -94,84 +92,11 @@ export default async function FichaMiembroPage({ params }) {
   });
 
   const panelDatos = (
-    <form
-      action={actualizarMiembro}
-      className="bg-white rounded-2xl shadow-sm p-5 space-y-3"
-    >
-      <input type="hidden" name="id" value={miembro.id} />
-
-      <div>
-        <label className="block text-sm font-semibold text-slate-600 mb-1">
-          Nombre
-        </label>
-        <input
-          name="nombre"
-          defaultValue={miembro.nombre}
-          required
-          className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-semibold text-slate-600 mb-1">
-          Apellido
-        </label>
-        <input
-          name="apellido"
-          defaultValue={miembro.apellido}
-          required
-          className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-semibold text-slate-600 mb-1">
-          DNI
-        </label>
-        <input
-          value={miembro.dni}
-          disabled
-          className="w-full border border-slate-200 rounded-xl px-4 py-2.5 bg-slate-50 text-slate-400"
-        />
-        <p className="text-xs text-slate-500 mt-1">
-          Solo refleja la contraseña inicial; no se edita acá.
-        </p>
-      </div>
-      <CamposRamaHermanos
-        ramas={ramas ?? []}
-        familias={familias ?? []}
-        ramaIdInicial={miembro.rama_id}
-        familiaIdInicial={miembro.familia_id ?? ""}
-        ordenFamiliaInicial={miembro.orden_familia ?? ""}
-      />
-      <div>
-        <label className="block text-sm font-semibold text-slate-600 mb-1">
-          Fecha de nacimiento
-        </label>
-        <input
-          name="fecha_nacimiento"
-          type="date"
-          defaultValue={miembro.fecha_nacimiento ?? ""}
-          className="w-full border border-slate-200 rounded-xl px-4 py-2.5"
-        />
-      </div>
-      <div className="flex items-center justify-between">
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            name="activo"
-            defaultChecked={miembro.activo}
-          />
-          Activo
-        </label>
-        <RestaurarContrasenaBoton miembroId={miembro.id} />
-      </div>
-
-      <button
-        type="submit"
-        className="w-full bg-sky-600 text-white rounded-full py-2.5 font-bold"
-      >
-        Guardar cambios
-      </button>
-    </form>
+    <MiembroDatosForm
+      miembro={miembro}
+      ramas={ramas ?? []}
+      familias={familias ?? []}
+    />
   );
 
   const panelCargos = (
@@ -328,8 +253,13 @@ export default async function FichaMiembroPage({ params }) {
           {iniciales(miembro.nombre, miembro.apellido)}
         </span>
         <div>
-          <h1 className="text-xl font-bold">
+          <h1 className="text-xl font-bold flex items-center gap-2 flex-wrap">
             {miembro.apellido}, {miembro.nombre}
+            {!miembro.activo && (
+              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900">
+                Inactivo
+              </span>
+            )}
           </h1>
           <p className="text-sm text-slate-500">
             DNI {miembro.dni} · {miembro.ramas?.nombre}

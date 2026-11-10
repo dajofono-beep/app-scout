@@ -42,6 +42,7 @@ Listado de todos los participantes (chicos y adultos) del Grupo.
 - **+ Nuevo miembro**: nombre, apellido, DNI (queda como contraseña inicial), rama, hermanos (opcional) y orden entre hermanos, fecha de nacimiento.
 - **Ficha de un miembro**: tres solapas —
   - **Datos Generales**: la misma información de saldo que ve la familia (deuda, pagado, alerta de próximo vencimiento), pero en blanco y en tercera persona para distinguirla a simple vista.
+  - Al guardar los cambios aparece un mensaje de confirmación. Si se desmarca **Activo**, el miembro deja de verse en el listado (que muestra solo Activos por defecto) hasta que se filtre por Inactivos o Todos; en su ficha se ve una etiqueta "Inactivo" junto al nombre.
   - **Cargos**: todos los cargos de ese miembro, con un total al pie.
   - **Pagos**: todos los pagos de ese miembro, con un total al pie.
   - Desde la ficha también se puede **restaurar la contraseña** (vuelve a ser el DNI) y editar sus datos.

@@ -428,3 +428,8 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-11-09 — Encuestas: porcentaje de respuestas
 
 - En los resultados de cada encuesta (Administración), la leyenda "Respondieron X de Y" ahora suma el porcentaje que representan, por ejemplo "Respondieron 41 de 67 (61%)". Lo mismo en el PDF exportado.
+
+## 2026-11-10 — Miembros: confirmación al guardar los cambios de la ficha
+
+- Al guardar los datos de un miembro en su ficha (Administración), ahora aparece un mensaje que confirma el cambio. Si se lo deja Inactivo avisa que quedó Inactivo y que ya no aparece en el listado salvo que se filtre por "Inactivos" o "Todos"; si queda Activo, lo confirma en verde. El botón muestra "Guardando..." mientras trabaja, y la cabecera de la ficha muestra una etiqueta "Inactivo" junto al nombre.
+- Si el guardado falla, ahora se muestra el motivo real en el formulario en vez de la pantalla de error genérica de producción.

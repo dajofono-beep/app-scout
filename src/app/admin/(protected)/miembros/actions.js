@@ -95,44 +95,54 @@ export async function crearMiembro(formData) {
   redirect("/admin/miembros");
 }
 
+// Devuelve { ok, error, activo } en vez de tirar una excepción: Next.js
+// esconde el mensaje real de un `throw` lanzado desde un Server Action en
+// producción, y el formulario necesita mostrar el motivo (o confirmar el
+// guardado, incluido el estado Activo/Inactivo que quedó).
 export async function actualizarMiembro(formData) {
-  const { supabase } = await requireAdmin();
-
   const id = formData.get("id");
-  const nombre = formData.get("nombre")?.toString().trim();
-  const apellido = formData.get("apellido")?.toString().trim();
-  const rama_id = formData.get("rama_id")?.toString();
   const activo = formData.get("activo") === "on";
-  let familia_id = formData.get("familia_id")?.toString() || null;
-  const ordenRaw = formData.get("orden_familia")?.toString();
-  let orden_familia = ordenRaw ? Number(ordenRaw) : null;
-  const fecha_nacimiento = formData.get("fecha_nacimiento")?.toString() || null;
 
-  if (!nombre || !apellido || !rama_id) {
-    throw new Error("Nombre, apellido y rama son obligatorios");
+  try {
+    const { supabase } = await requireAdmin();
+
+    const nombre = formData.get("nombre")?.toString().trim();
+    const apellido = formData.get("apellido")?.toString().trim();
+    const rama_id = formData.get("rama_id")?.toString();
+    let familia_id = formData.get("familia_id")?.toString() || null;
+    const ordenRaw = formData.get("orden_familia")?.toString();
+    let orden_familia = ordenRaw ? Number(ordenRaw) : null;
+    const fecha_nacimiento = formData.get("fecha_nacimiento")?.toString() || null;
+
+    if (!nombre || !apellido || !rama_id) {
+      throw new Error("Nombre, apellido y rama son obligatorios");
+    }
+
+    if (await esRamaAdultos(supabase, rama_id)) {
+      familia_id = null;
+      orden_familia = null;
+    }
+
+    const { error } = await supabase
+      .from("miembros")
+      .update({
+        nombre,
+        apellido,
+        rama_id,
+        activo,
+        familia_id,
+        orden_familia,
+        fecha_nacimiento,
+      })
+      .eq("id", id);
+    if (error) throw new Error(error.message);
+  } catch (err) {
+    return { ok: false, error: err.message };
   }
-
-  if (await esRamaAdultos(supabase, rama_id)) {
-    familia_id = null;
-    orden_familia = null;
-  }
-
-  const { error } = await supabase
-    .from("miembros")
-    .update({
-      nombre,
-      apellido,
-      rama_id,
-      activo,
-      familia_id,
-      orden_familia,
-      fecha_nacimiento,
-    })
-    .eq("id", id);
-  if (error) throw new Error(error.message);
 
   revalidatePath("/admin/miembros");
   revalidatePath(`/admin/miembros/${id}`);
+  return { ok: true, activo };
 }
 
 // Vuelve a poner el DNI como contraseña de acceso del miembro, igual que
