@@ -93,7 +93,7 @@ Preguntas para que las familias respondan desde Mi Cuenta (confirmar participaci
 
 - **+ Nueva encuesta**: título, descripción opcional, tipo de respuesta (elegir una opción, con las opciones cargadas una por línea, o texto libre), quién responde (cada chico por separado, o una sola respuesta por familia), a quién va dirigida (Todos / una Rama / unos Hermanos / un Participante puntual) y vigencia (desde/hasta cierre). Hasta la fecha de cierre, las familias pueden responder o cambiar su respuesta las veces que quieran.
 - Cada encuesta tiene un **link corto para compartir** (por WhatsApp, por ejemplo) — quien lo abra sin haber iniciado sesión pasa primero por el login habitual y cae directo en esa encuesta.
-- **Resultados** (desplegable, dentro de la ficha de la encuesta): dos gráficos de torta (porcentaje por respuesta, y participación por rama), cuántos respondieron, un botón para ver el listado de participantes/faltantes (agrupado por rama), y un botón para **exportar todo a PDF** — con la opción de incluir o no esa nómina.
+- **Resultados** (desplegable, dentro de la ficha de la encuesta): dos gráficos de torta (porcentaje por respuesta, y participación por rama — esta última con el color de cada rama: Manada amarillo, Unidad Scout verde, Caminantes celeste, Rovers rojo y Adultos violeta), cuántos respondieron, un botón para ver el listado de participantes/faltantes (agrupado por rama), y un botón para **exportar todo a PDF** — con la opción de incluir o no esa nómina.
 
 ### 8.3 Grupos de Padres
 

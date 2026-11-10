@@ -106,6 +106,7 @@ export async function POST(request, { params }) {
     y,
     titulo: "Participación por rama",
     datos: conteoPorRama,
+    porRama: true,
   });
 
   doc.y = y;

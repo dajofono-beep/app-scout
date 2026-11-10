@@ -433,3 +433,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 
 - Al guardar los datos de un miembro en su ficha (Administración), ahora aparece un mensaje que confirma el cambio. Si se lo deja Inactivo avisa que quedó Inactivo y que ya no aparece en el listado salvo que se filtre por "Inactivos" o "Todos"; si queda Activo, lo confirma en verde. El botón muestra "Guardando..." mientras trabaja, y la cabecera de la ficha muestra una etiqueta "Inactivo" junto al nombre.
 - Si el guardado falla, ahora se muestra el motivo real en el formulario en vez de la pantalla de error genérica de producción.
+
+## 2026-11-10 — Encuestas: colores de ramas en la torta
+
+- En los resultados de cada encuesta (Administración), la torta "Participación por rama" ahora usa el color de cada rama: Manada amarillo, Unidad Scout verde, Caminantes celeste, Rovers rojo y Adultos violeta. Lo mismo en el PDF exportado. La torta de "Respuestas" mantiene su paleta general.

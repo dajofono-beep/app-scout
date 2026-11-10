@@ -70,7 +70,7 @@ export default async function FichaEncuestaPage({ params }) {
       <ResultadosCard>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {conteoOpciones && <GraficoTorta titulo="Respuestas" datos={conteoOpciones} />}
-          <GraficoTorta titulo="Participación por rama" datos={conteoPorRama} />
+          <GraficoTorta titulo="Participación por rama" datos={conteoPorRama} porRama />
         </div>
 
         <p className="text-sm text-slate-600">

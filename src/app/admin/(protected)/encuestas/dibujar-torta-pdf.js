@@ -1,4 +1,4 @@
-import { PALETA } from "./grafico-torta";
+import { colorDePorcion } from "./grafico-torta";
 
 const RADIO = 55;
 const ALTO_LINEA_LEYENDA = 16;
@@ -10,7 +10,7 @@ const ANCHO_LEYENDA = 260;
 // donde terminó, para poder apilar la próxima torta debajo sin pisarla
 // (las etiquetas de las opciones pueden ser largas, así que se evita
 // ponerlas una al lado de la otra).
-export function dibujarTortaPdf(doc, { x, y, titulo, datos }) {
+export function dibujarTortaPdf(doc, { x, y, titulo, datos, porRama = false }) {
   doc.fontSize(12).fillColor("#334155").text(titulo, x, y);
   const yContenido = y + 20;
 
@@ -27,7 +27,7 @@ export function dibujarTortaPdf(doc, { x, y, titulo, datos }) {
   datos.forEach((d, i) => {
     if (d.cantidad <= 0) return;
     const anguloBarrido = (d.cantidad / total) * 2 * Math.PI;
-    const color = PALETA[i % PALETA.length];
+    const color = colorDePorcion(d, i, porRama);
 
     // Un arco SVG no puede recorrer una vuelta completa (el punto de
     // inicio y el de fin quedarían pegados) — si esta porción es el
@@ -52,7 +52,7 @@ export function dibujarTortaPdf(doc, { x, y, titulo, datos }) {
   const legendaX = x + RADIO * 2 + 25;
   let legendaY = yContenido;
   datos.forEach((d, i) => {
-    const color = PALETA[i % PALETA.length];
+    const color = colorDePorcion(d, i, porRama);
     doc.rect(legendaX, legendaY + 2, 8, 8).fill(color);
     doc
       .fontSize(9)
