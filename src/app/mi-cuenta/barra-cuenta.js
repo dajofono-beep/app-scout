@@ -57,7 +57,7 @@ export default function BarraCuenta({
         key={item.id}
         type="button"
         onClick={() => elegir(item.id)}
-        className={`flex items-center gap-2.5 text-left text-base font-semibold ${
+        className={`flex items-center gap-2.5 text-left text-[17px] font-semibold ${
           activa === item.id ? "text-sky-600" : "text-slate-600 hover:text-sky-600"
         }`}
       >
@@ -69,7 +69,7 @@ export default function BarraCuenta({
         key={item.id}
         href="/mi-cuenta"
         onClick={() => setMenuAbierto(false)}
-        className="flex items-center gap-2.5 text-base font-semibold text-slate-600 hover:text-sky-600"
+        className="flex items-center gap-2.5 text-[17px] font-semibold text-slate-600 hover:text-sky-600"
       >
         <img src={item.icono} alt="" className="w-[22px] h-[22px] shrink-0" />
         {item.texto}
@@ -121,12 +121,12 @@ export default function BarraCuenta({
           menuAbierto ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex flex-col gap-3 p-4">
+        <div className="flex flex-col gap-[18px] p-4">
           {ITEMS.map(renderItem)}
           <Link
             href="/mi-cuenta/perfil"
             onClick={() => setMenuAbierto(false)}
-            className="flex items-center gap-2.5 text-base font-semibold text-slate-600 hover:text-sky-600"
+            className="flex items-center gap-2.5 text-[17px] font-semibold text-slate-600 hover:text-sky-600"
           >
             <img
               src="/Barra Lateral Familias/Perfil.png"
@@ -136,7 +136,7 @@ export default function BarraCuenta({
             Perfil
           </Link>
           <LogoutButton
-            className="flex items-center gap-2.5 text-left text-base font-semibold text-slate-600 hover:text-sky-600"
+            className="flex items-center gap-2.5 text-left text-[17px] font-semibold text-slate-600 hover:text-sky-600"
             icono="/Barra Lateral Familias/Salir.png"
             iconoClassName="w-[22px] h-[22px]"
           />

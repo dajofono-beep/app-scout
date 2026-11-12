@@ -437,3 +437,7 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-11-10 — Encuestas: colores de ramas en la torta
 
 - En los resultados de cada encuesta (Administración), la torta "Participación por rama" ahora usa el color de cada rama: Manada amarillo, Unidad Scout verde, Caminantes celeste, Rovers rojo y Adultos violeta. Lo mismo en el PDF exportado. La torta de "Respuestas" mantiene su paleta general.
+
+## 2026-11-12 — Mi Cuenta: menú del celular más espaciado
+
+- En el menú lateral de Mi Cuenta en el celular, los ítems (Principal, Social, Mensajes, etc., más Perfil y Salir) ahora están más separados entre sí (de 36 a 42 px entre uno y otro) y con la letra un poco más grande (de 16 a 17 px), para que sea más cómodo de leer y de tocar.
