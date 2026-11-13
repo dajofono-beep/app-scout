@@ -441,3 +441,8 @@ Este archivo documenta, en orden cronológico, todas las funcionalidades y cambi
 ## 2026-11-12 — Mi Cuenta: menú del celular más espaciado
 
 - En el menú lateral de Mi Cuenta en el celular, los ítems (Principal, Social, Mensajes, etc., más Perfil y Salir) ahora están más separados entre sí (de 36 a 42 px entre uno y otro) y con la letra un poco más grande (de 16 a 17 px), para que sea más cómodo de leer y de tocar.
+
+## 2026-11-13 — Aviso de encuesta cerrada y pantalla 404 en español
+
+- Al abrir el link de una encuesta que ya cerró (por ejemplo, desde un mensaje viejo de WhatsApp), Mi Cuenta ahora muestra "Esta encuesta ya cerró" con la fecha en que terminó el plazo y un botón para volver. Antes aparecía una pantalla de error 404, y dos familias creyeron que la app estaba rota.
+- La pantalla 404 de toda la app (links incompletos, páginas que no existen) ahora está en español, con el logo de Azimut y un botón "Volver al inicio", en lugar de la pantalla en inglés que trae Next.js.

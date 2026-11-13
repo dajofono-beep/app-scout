@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -31,7 +32,43 @@ export default async function EncuestaDetallePage({ params }) {
     supabase.from("encuestas").select("*").eq("id", id).maybeSingle(),
   ]);
   if (!miembro) redirect(`/?next=/mi-cuenta/encuestas/${id}`);
-  if (!encuesta) notFound();
+  if (!encuesta) {
+    // La RLS esconde las encuestas cerradas: sin esto, quien abre un link
+    // viejo (p. ej. de WhatsApp) veía un 404 como si la app estuviera
+    // rota. Se consulta con el cliente admin solo para distinguir
+    // "ya cerró" de "no existe / no es para vos", y no se muestra nada
+    // más que la fecha de cierre.
+    const { data: cerrada } = await createAdminClient()
+      .from("encuestas")
+      .select("fecha_cierre, activo")
+      .eq("id", id)
+      .maybeSingle();
+    const hoy = new Date().toISOString().slice(0, 10);
+    if (cerrada?.activo && cerrada.fecha_cierre && cerrada.fecha_cierre < hoy) {
+      return (
+        <div className="max-w-lg mx-auto space-y-4 px-4 py-8">
+          <TituloSeccion
+            icono="/Encuestas.png"
+            nombre="Encuestas"
+            hrefVolver="/mi-cuenta?tab=encuestas"
+          />
+          <section className="bg-white rounded-2xl shadow-sm p-5 text-center">
+            <p className="font-bold text-slate-800">Esta encuesta ya cerró</p>
+            <p className="text-sm text-slate-500 mt-1">
+              El plazo para responderla terminó el {formatoFecha(cerrada.fecha_cierre)}.
+            </p>
+            <Link
+              href="/mi-cuenta"
+              className="mt-4 block w-full bg-sky-600 text-white rounded-full py-2.5 font-bold"
+            >
+              Volver a Mi Cuenta
+            </Link>
+          </section>
+        </div>
+      );
+    }
+    notFound();
+  }
 
   // Si la encuesta es "por familia" pero este miembro no tiene familia
   // asignada, su respuesta se guardó como si fuera "por chico" (ver

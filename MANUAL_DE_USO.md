@@ -65,7 +65,7 @@ Cada mensaje tiene un botón **Marcar como leído**: al tocarlo queda en verde c
 
 Ahí aparecen las encuestas que arma el Grupo (confirmar participación en un campamento, elegir una opción, indicar un talle, etc.), ordenadas de la más nueva a la más vieja, marcadas como "Pendiente de responder" o "Ya respondiste". Tocando una, elegís tu respuesta y la enviás — se puede volver a cambiar mientras la encuesta siga abierta.
 
-Si te llega un link de una encuesta por WhatsApp y todavía no iniciaste sesión, primero te va a pedir rama, nombre y contraseña como siempre, y después te lleva directo a esa encuesta.
+Si te llega un link de una encuesta por WhatsApp y todavía no iniciaste sesión, primero te va a pedir rama, nombre y contraseña como siempre, y después te lleva directo a esa encuesta. Si la encuesta ya cerró, en vez de la encuesta te aparece un aviso con la fecha en que terminó el plazo, y ya no se puede responder.
 
 ## 8. Social
 
